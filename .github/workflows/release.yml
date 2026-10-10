@@ -9,6 +9,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   build:
+    if: github.event.deleted == false
     runs-on: windows-latest
     timeout-minutes: 35
     steps:

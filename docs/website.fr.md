@@ -18,6 +18,8 @@ Configuration GitHub, dans l'environnement **production** :
 
 La clé est limitée à `/usr/local/lib/duo/site-receiver.py`, avec commande `deploy`. Pas de shell interactif ni de transfert de ports. Le compte déploie uniquement dans `/var/www/duo`. Il ne modifie pas les autres sites.
 
+Le workflow met à jour les fichiers du site. Une modification du récepteur, de nginx ou du script d’installation doit être relue puis installée via votre accès administrateur. La clé GitHub n’a pas ces permissions.
+
 ## Installer sur un autre VPS Debian/nginx
 
 1. Créer une clé SSH dédiée. Garder la partie privée dans les secrets GitHub, jamais dans le dépôt.
