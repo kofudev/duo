@@ -72,11 +72,20 @@ async function publish() {
     ]);
   }
   gh(['release', 'upload', tag, ...names.map((n) => path.join(folder, n)), '--clobber']);
-  const metadata = cp.spawnSync('gh', ['api', `repos/${repo}/releases/tags/${tag}`], {
-    encoding: 'utf8',
-    maxBuffer: 4 * 1024 * 1024,
-    windowsHide: true,
-  });
+  // The by-tag REST endpoint hides draft releases. Resolve the draft's numeric ID.
+  const apiUrl = JSON.parse(gh(['release', 'view', tag, '--json', 'apiUrl']).stdout).apiUrl;
+  const prefix = `https://api.github.com/repos/${repo}/releases/`;
+  if (!apiUrl.startsWith(prefix) || !/^\d+$/.test(apiUrl.slice(prefix.length)))
+    throw new Error('Unexpected draft API URL.');
+  const metadata = cp.spawnSync(
+    'gh',
+    ['api', `repos/${repo}/releases/${apiUrl.slice(prefix.length)}`],
+    {
+      encoding: 'utf8',
+      maxBuffer: 4 * 1024 * 1024,
+      windowsHide: true,
+    }
+  );
   if (metadata.status !== 0) throw new Error('Cannot verify release metadata.');
   const details = JSON.parse(metadata.stdout);
   if (!details.draft || details.assets.length !== names.length)
