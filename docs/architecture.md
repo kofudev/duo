@@ -44,6 +44,10 @@ The review includes bounded file snapshots and hashes, supplemented by observed 
 
 Mission checkpoints persist original objective, clarifications, plan and each task's implement/review/correct/final-review cursor. Manual resumption skips completed tasks, resumes an interrupted review without repeating the writer and keeps cumulative call/token accounting. Interrupted implementation first needs inspection of partial work; non-idempotent remote actions are never assumed to have failed just because the connection closed. Restart does not automatically replay a mission.
 
+Economy construction removes general conversation history after structured planning and sends compact task handoffs. Original objective, clarifications, acceptance criteria and actual file evidence remain available. Reports keep head and tail excerpts for later steps; complete reports remain in the conversation. `efficiency.cjs` assembles the final report locally, retaining peer review without another inference call. Full mode still requests an AI synthesis.
+
+Up to 200 per-call telemetry entries preserve phase, selected model, request character counts and provider-reported token/cache fields, including interrupted calls. Cache is never deducted from raw token guards. The consumption panel shows missing data explicitly; it does not infer subscription cost or savings against a single agent.
+
 ## Context and state
 
 Personal memory belongs to the local Duo profile. Project memory belongs to a project. Both are selected locally by relevance and pins, then included in the same base context sent to each provider. No extra model call is used to parse imports or create checkpoints.

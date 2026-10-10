@@ -1,3 +1,10 @@
+# Duo 0.5.1 · 2026-10-10
+
+- Mode économe : bilan assemblé localement depuis rapports et résultats, sans appel IA supplémentaire. Relectures conservées ; deux tâches sans correction passent de six à cinq appels.
+- Transmissions compactes : objectif et critères conservés, historique général retiré après plan, extraits gardant début et fin des rapports. Les rapports complets restent visibles.
+- Mémoire sélectionnée depuis objectif conservé à la reprise, au lieu du seul message « CONTINUE ».
+- Consommation par appel et par phase : entrée, sortie, cache lu/écrit et interruptions quand exposés par CLI. Aucun gain monétaire ou pourcentage tokens inventé.
+
 # Duo 0.5.0 · 2026-10-10
 
 - Reprise de mission depuis étape interrompue : objectif, plan, tâches validées et compteurs conservés.

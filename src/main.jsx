@@ -48,6 +48,7 @@ import SkillsView from './SkillsView';
 import ModelsView, { highestEffort } from './ModelsView';
 import ActivityPanel from './ActivityPanel';
 import MissionRecap from './MissionRecap';
+import TokenUsage from './TokenUsage';
 import SSHModal from './SSHModal';
 import PilotView, { ScheduleDialog } from './PilotView';
 import { Modal, IconButton, ErrorContext } from './ui';
@@ -324,7 +325,12 @@ function App() {
               };
             if (event.type === 'phase') return { ...item, phase: event.phase, state: 'running' };
             if (event.type === 'tasks') return { ...item, tasks: event.tasks };
-            if (event.type === 'budget') return { ...item, budget: event.budget };
+            if (event.type === 'budget')
+              return {
+                ...item,
+                budget: event.budget,
+                telemetry: event.telemetry || item.telemetry,
+              };
             if (event.type === 'metrics') return { ...item, metrics: event.metrics };
             if (event.type === 'waiting') return { ...item, waiting: event.waiting };
             if (event.type === 'recap') return { ...item, recap: event.recap };
@@ -1357,6 +1363,7 @@ function App() {
                 ))}
               </div>
               <ActivityPanel key={session?.id} session={session} />
+              <TokenUsage session={session} />
               <div className="local-note">
                 <Circle size={12} />
                 Historique sur votre ordinateur.

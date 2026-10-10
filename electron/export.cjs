@@ -78,6 +78,24 @@ function formatSession(session) {
       );
     lines.push('');
   }
+  if (session.telemetry?.length) {
+    lines.push(
+      '## Consommation par appel',
+      '',
+      'Tokens bruts, cache inclus. Usage reçu pendant interruption peut être partiel. Cache réutilisé ≠ pourcentage d’économie sur abonnement.',
+      ''
+    );
+    for (const record of session.telemetry)
+      lines.push(
+        `- ${names[record.agent] || oneLine(record.agent)} · ${oneLine(record.phase)} · ${record.usageKnown ? count(record.actualTokens) : 'usage inconnu'} tokens · entrée ${count(record.inputTokens)} · sortie ${count(record.outputTokens)} · cache lu ${count(record.cachedInputTokens)} · cache écrit ${count(record.cacheWriteInputTokens)} · ${oneLine(record.state)}`
+      );
+    lines.push('');
+  }
+  if (session.efficiency?.summaryCallsAvoided)
+    lines.push(
+      `${session.efficiency.summaryCallsAvoided} appel de synthèse évité par assemblage local du bilan. Économie tokens face à un agent seul non mesurée.`,
+      ''
+    );
   if (session.waiting) lines.push('## Information attendue', '', session.waiting.question, '');
   if (session.recap) {
     lines.push(

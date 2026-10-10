@@ -211,14 +211,14 @@ async function mission(prompt) {
       result = state.sessions.find((session) => session.id === job.sessionId);
     assert.equal(result.projectId, firstId);
     assert.notEqual(state.activeProjectId, firstId);
-    assert.equal(result.budget.calls, 6);
+    assert.equal(result.budget.calls, 5);
     assert.equal(result.state, 'completed');
     assert.equal(fs.existsSync(path.join(other, 'utility.js')), false);
     assert.ok(
       fs.readFileSync(path.join(project, 'interface.js'), 'utf8').includes('fixture-verified')
     );
     checks.push(
-      'scheduled six-call mission writes original project while another project selected'
+      'scheduled five-call mission writes original project while another project selected'
     );
     await page.evaluate((id) => window.duo.activateProject({ projectId: id }), firstId);
     await page.reload();

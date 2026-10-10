@@ -1,6 +1,6 @@
 {
   "name": "duo-workspace",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "private": true,
   "description": "A shared Windows workspace for Codex and Claude Code",
   "main": "electron/main.cjs",

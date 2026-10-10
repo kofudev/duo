@@ -120,6 +120,12 @@ function sessionShape(session) {
             : entry
         )
       : [],
+    telemetry: (Array.isArray(session.telemetry) ? session.telemetry : [])
+      .slice(-200)
+      .map((record) => ({
+        ...record,
+        state: record.state === 'running' ? 'interrupted' : record.state,
+      })),
     state: session.state === 'running' ? 'stopped' : session.state || 'idle',
     phase: session.state === 'running' ? '' : session.phase || '',
   };
