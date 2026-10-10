@@ -12,7 +12,7 @@ _Exemple illustratif du parcours de collaboration présenté sur le site._
 
 ## Commencer
 
-1. Télécharger **Duo-Setup-0.4.1.exe**, ou extraire toute l'archive portable. Windows x64 requis. Cette première version publique n'est pas signée.
+1. Télécharger **Duo-Setup-0.4.2.exe**, ou extraire toute l'archive portable. Windows x64 requis. Cette première version publique n'est pas signée.
 2. Installer [Codex CLI](https://learn.chatgpt.com/docs/cli) et [Claude Code](https://code.claude.com/docs/en/setup). Connecter vos comptes avec `codex login` et `claude auth login`.
 3. Dans Duo, actualiser **Connexions**, choisir un dossier projet et lancer une demande. Le mode **Discuter** permet de commencer en lecture seule.
 

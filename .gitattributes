@@ -5,3 +5,8 @@
 *.woff2 binary
 *.exe binary
 *.zip binary
+
+# Preserve official provider SVG bytes and recorded hashes.
+website/assets/codex.svg -text
+website/assets/claude.svg -text
+website/assets/github.svg -text

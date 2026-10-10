@@ -12,7 +12,7 @@ _Illustrative workflow from the website. The application shows provider messages
 
 ## Install
 
-1. Download **Duo-Setup-0.4.1.exe** from [Releases](https://github.com/kofudev/duo/releases/latest), or extract the complete portable ZIP. Windows x64 is required. This early release is unsigned.
+1. Download **Duo-Setup-0.4.2.exe** from [Releases](https://github.com/kofudev/duo/releases/latest), or extract the complete portable ZIP. Windows x64 is required. This early release is unsigned.
 2. Install the official [Codex CLI](https://learn.chatgpt.com/docs/cli) and [Claude Code](https://code.claude.com/docs/en/setup). Authenticate with `codex login` and `claude auth login` using accounts that include access to those tools.
 3. Open Duo, refresh **Connexions**, choose a project and send your request. Start in **Discuter** to inspect the proposed approach before allowing changes.
 

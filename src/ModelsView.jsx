@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import ProviderLogo from './ProviderLogo';
 import {
   Search,
   Check,
@@ -50,13 +51,14 @@ export default function ModelsView({
           className={provider === 'codex' ? 'active' : ''}
           onClick={() => setProvider('codex')}
         >
-          ChatGPT / Codex <span>{catalogs.codex?.length || 0}</span>
+          <ProviderLogo provider="codex" /> ChatGPT / Codex{' '}
+          <span>{catalogs.codex?.length || 0}</span>
         </button>
         <button
           className={provider === 'claude' ? 'active' : ''}
           onClick={() => setProvider('claude')}
         >
-          Claude Code <span>{catalogs.claude?.length || 0}</span>
+          <ProviderLogo provider="claude" /> Claude Code <span>{catalogs.claude?.length || 0}</span>
         </button>
       </div>
       <div className="model-summary">

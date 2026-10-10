@@ -1,4 +1,13 @@
-# Validation for the first public release
+# Validation
+
+## Logo update · 0.4.2
+
+- 113 unit tests passed. Production dependency audit reported no known vulnerabilities.
+- Website browser checks passed at 320–1440 px with zero reported axe violations. All five provider images decoded successfully from local assets.
+- Native Electron checks passed for the welcome screen, connections, model catalog, project/workspace management and file editor. Codex, Claude and GitHub marks were visually checked in the connections dialog; both model tabs use the same assets.
+- Website mission and social illustrations were regenerated from the updated page. Provider SVG paths and their recorded hashes are preserved; source notices accompany the installed application.
+
+## First public release · 0.4.1
 
 The 0.4.1 application was checked on Windows 11 x64 with Node.js 24 and Electron 44.4.1. The public release includes the 0.4 memory and duration features.
 

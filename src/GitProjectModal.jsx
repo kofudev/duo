@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import {
   FolderOpen,
   GitBranch,
-  GitFork,
   Download,
   Search,
   LockKeyhole,
@@ -10,6 +9,7 @@ import {
   RefreshCw,
 } from 'lucide-react';
 import { Modal } from './ui';
+import ProviderLogo from './ProviderLogo';
 const api = window.duo;
 const slug = (value) =>
   value
@@ -129,7 +129,7 @@ export default function GitProjectModal({
                         onClick={() => chooseRepository(repo.name)}
                         className={form.repository === repo.name ? 'selected' : ''}
                       >
-                        <GitFork size={15} />
+                        <ProviderLogo provider="github" size={15} />
                         <span>
                           <strong>{repo.name}</strong>
                           {repo.description && <small>{repo.description}</small>}

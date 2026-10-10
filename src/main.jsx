@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import MessageBody from './MessageBody';
+import ProviderLogo, { AgentMark } from './ProviderLogo';
 import {
   ArrowUpRight,
   ArrowRight,
@@ -18,7 +19,6 @@ import {
   Square,
   GitBranch,
   GitCommitHorizontal,
-  GitFork as Github,
   RefreshCw,
   Download,
   Copy,
@@ -64,13 +64,6 @@ function Mark({ small = false }) {
     <span className={`duo-mark ${small ? 'small' : ''}`} aria-hidden="true">
       <i />
       <i />
-    </span>
-  );
-}
-function AgentMark({ agent }) {
-  return (
-    <span className={`agent-mark ${agent}`} aria-hidden="true">
-      {agent === 'codex' ? <Workflow size={18} /> : <Sparkles size={18} />}
     </span>
   );
 }
@@ -1323,7 +1316,7 @@ function App() {
                     Push vers distant
                   </button>
                   <button className="text-link" onClick={() => perform(() => api.remote())}>
-                    <Github size={15} />
+                    <ProviderLogo provider="github" size={15} />
                     Ouvrir dépôt GitHub <ExternalLink size={12} />
                   </button>
                 </>

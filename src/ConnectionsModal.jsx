@@ -1,17 +1,7 @@
 import React from 'react';
-import {
-  GitFork,
-  Workflow,
-  Sparkles,
-  Check,
-  AlertCircle,
-  Copy,
-  RefreshCw,
-  Loader2,
-  ExternalLink,
-  Plug,
-} from 'lucide-react';
+import { Check, AlertCircle, Copy, RefreshCw, Loader2, ExternalLink, Plug } from 'lucide-react';
 import { Modal, IconButton } from './ui';
+import { AgentMark } from './ProviderLogo';
 const api = window.duo;
 const resetTime = (value) =>
   Number.isFinite(value)
@@ -68,10 +58,10 @@ export default function ConnectionsModal({ connections, close, busy, refresh, pe
         ni jeton importé.
       </p>
       {[
-        ['codex', 'Codex CLI', Workflow],
-        ['claude', 'Claude Code', Sparkles],
-        ['github', 'GitHub CLI', GitFork],
-      ].map(([id, title, Icon]) => {
+        ['codex', 'Codex CLI'],
+        ['claude', 'Claude Code'],
+        ['github', 'GitHub CLI'],
+      ].map(([id, title]) => {
         const connection = connections[id] || {},
           command =
             connection.command ||
@@ -79,9 +69,7 @@ export default function ConnectionsModal({ connections, close, busy, refresh, pe
         return (
           <div className="connection-row" key={id}>
             <div>
-              <span className={`agent-mark ${id}`}>
-                <Icon size={19} />
-              </span>
+              <AgentMark agent={id} />
               <span>
                 <strong>{title}</strong>
                 <small>

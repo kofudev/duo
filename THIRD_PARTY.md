@@ -23,3 +23,7 @@ Electron's `LICENSE.electron.txt` and `LICENSES.chromium.html` accompany Duo.exe
 `@anthropic-ai/claude-agent-sdk` **0.3.296** has an Anthropic license, not Duo's MIT license. Its original LICENSE.md and README.md are included in `resources/licenses`. See [Anthropic legal agreements](https://code.claude.com/docs/en/legal-and-compliance). Duo uses this SDK only to discover supported Claude Code model metadata and delegates actual inference to the separately installed, officially authenticated Claude CLI. The native SDK CLI packages are excluded from Duo's distribution.
 
 The transitive `standardwebhooks` 1.1.1 package declares MIT but omits a license file. Its original npm metadata and the upstream Apache-2.0 LICENSE at the published gitHead are both retained, with provenance, in the generated notices. Sources: [published upstream revision](https://github.com/standard-webhooks/standard-webhooks/blob/b4d2c14fc5b4ccff3ff271e3b087dff812254c59/LICENSE), `build/license-sources/standardwebhooks-1.1.1/README.md`.
+
+## Provider marks
+
+Codex, Claude and GitHub logos identify their respective integrations. They remain the property of OpenAI, Anthropic and GitHub and are excluded from Duo’s MIT license. Source assets, preserved geometry and brand guidance are recorded in [website/assets/BRANDS.txt](website/assets/BRANDS.txt). The application and site share those SVG files.

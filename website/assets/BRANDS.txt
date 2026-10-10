@@ -1,0 +1,15 @@
+# Provider logos
+
+These marks identify the services Duo connects to. Duo is an independent application; no endorsement or partnership is implied. The marks remain the property of their owners and are not covered by Duo's MIT license.
+
+- `codex.svg`: the `codex_new` symbol shipped in OpenAI's official Codex VS Code extension, version 26.1002.51308. Original SVG paths, black fill and viewBox are unchanged. [Official extension](https://marketplace.visualstudio.com/items?itemName=openai.chatgpt), [OpenAI brand guidelines and usage terms](https://openai.com/brand/).
+- `claude.svg`: the copper Claude symbol from the official [Claude website](https://claude.com/), retrieved on 2026-10-10. Its path and `#D97757` fill are unchanged; the symbol is isolated from the header wordmark with its original 125 × 125 bounds. [Anthropic press kit](https://www.anthropic.com/news).
+- `github.svg`: `GitHub Logos/SVG/GitHub_Invertocat_White.svg` from [GitHub's official logo archive](https://brand.github.com/GitHub_Logos.zip), retrieved on 2026-10-10. Original SVG unchanged. [GitHub brand guidelines](https://brand.github.com/foundations/logo).
+
+The application imports these same files. The site loads local copies from this directory, without contacting the providers for images. Rendered website and documentation illustrations include these marks.
+
+## SHA-256
+
+- `codex.svg`: `0b490f33f9c5b62c7db578f5101497efb87b774720f91b9e878243e761952c52`
+- `claude.svg`: `2c98c5e8bc7c72a8faccaf501225ffe3ba2eb3a554e6bfc127c5485db1be3baf`
+- `github.svg`: `ccd84c89b1056345608fc3489357f8acc7397e49a3cdc2d418b6c8016911d47b`

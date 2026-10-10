@@ -1,3 +1,8 @@
+# Duo 0.4.2 · 2026-10-10
+
+- Logos Codex, Claude et GitHub issus des ressources officielles, partagés entre les écrans de l’application et le site.
+- Illustrations du site et des guides actualisées ; provenance et droits des marques documentés.
+
 # Duo 0.4.1 · 2026-10-10
 
 - Première publication publique : guides français/anglais, contribution, sécurité, architecture et vérifications documentées.

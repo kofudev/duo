@@ -1,4 +1,4 @@
-# Duo · Windows · 0.4.1
+# Duo · Windows · 0.4.2
 
 Un prompt → Codex + Claude. Analyses simultanées → discussion croisée → plan partagé → écritures séquentielles → relecture partenaire.
 
@@ -6,7 +6,7 @@ Application personnelle locale. Electron + React. CLI officiels installés sur o
 
 ## Installer et connecter
 
-1. Télécharger puis ouvrir `Duo-Setup-0.4.1.exe` depuis [GitHub Releases](https://github.com/kofudev/duo/releases/latest). Installation Windows x64, dossier configurable. Installateur non signé.
+1. Télécharger puis ouvrir `Duo-Setup-0.4.2.exe` depuis [GitHub Releases](https://github.com/kofudev/duo/releases/latest). Installation Windows x64, dossier configurable. Installateur non signé.
 2. Installer CLI officiels [Codex](https://learn.chatgpt.com/docs/cli), [Claude Code](https://code.claude.com/docs/en/setup) et Git. Node.js reste requis pour lanceurs npm JavaScript. Versions natives prises en charge.
 3. Connecter comptes dans PowerShell :
 

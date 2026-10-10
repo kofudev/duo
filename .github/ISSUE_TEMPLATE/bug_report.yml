@@ -9,7 +9,7 @@ body:
     id: duo_version
     attributes:
       label: Duo version
-      placeholder: 0.4.1
+      placeholder: 0.4.2
     validations:
       required: true
   - type: textarea

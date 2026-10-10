@@ -384,12 +384,12 @@ nav a:hover {
   line-height: 1;
 }
 .codex {
-  color: #c2dfc0;
-  background: #354c38;
+  color: #0d0d0d;
+  background: #dce9d7;
 }
 .claude {
-  color: #edb9a4;
-  background: #523c32;
+  color: #d97757;
+  background: #f6eee7;
 }
 .agent-message p {
   font-size: 12px;
@@ -1639,4 +1639,13 @@ nav a:hover {
 }
 .light .step-number {
   color: #536b43;
+}
+
+.agent-avatar img {
+  display: block;
+  object-fit: contain;
+}
+.context-recipients .agent-avatar img {
+  width: 22px;
+  height: 22px;
 }

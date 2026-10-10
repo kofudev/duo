@@ -1,6 +1,6 @@
 {
   "name": "duo-workspace",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "private": true,
   "description": "A shared Windows workspace for Codex and Claude Code",
   "main": "electron/main.cjs",
@@ -105,8 +105,15 @@
         "to": "README.fr.md"
       },
       {
-        "from": "website/assets/mission-example.png",
-        "to": "website/assets/mission-example.png"
+        "from": "website/assets",
+        "to": "website/assets",
+        "filter": [
+          "mission-example.png",
+          "BRANDS.txt",
+          "codex.svg",
+          "claude.svg",
+          "github.svg"
+        ]
       }
     ],
     "win": {
