@@ -1,11 +1,17 @@
 """Create a deployable static website archive, with index.html at its root."""
 import hashlib
+import argparse
 import json
 from pathlib import Path
 from zipfile import ZIP_DEFLATED, ZipFile
 
 ROOT = Path(__file__).resolve().parent.parent
-SITE = ROOT / 'website'
+parser = argparse.ArgumentParser()
+parser.add_argument('--prepared', action='store_true')
+arguments = parser.parse_args()
+SITE = ROOT / ('website-package' if arguments.prepared else 'website')
+if not (SITE / 'index.html').is_file():
+    raise RuntimeError('Website folder missing')
 VERSION = json.loads((ROOT / 'package.json').read_text(encoding='utf-8'))['version']
 OUTPUT = ROOT / 'release' / f'Duo-{VERSION}-site.zip'
 OUTPUT.parent.mkdir(exist_ok=True)

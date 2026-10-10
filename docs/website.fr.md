@@ -1,17 +1,39 @@
-# Installer le site sur duo.varelia.fr
+# Héberger le site Duo
 
-Site statique : HTML, CSS, JavaScript, images et polices locales. Aucun serveur Node.js ni base de données requis.
+Le site est statique : aucun serveur Node.js ni base de données. Les installateurs sont servis par GitHub Releases. Le bouton Télécharger mène directement au fichier `.exe`, y compris sans JavaScript.
 
-1. Télécharger `Duo-0.4.1-site.zip` depuis les Releases GitHub.
-2. Extraire l'archive. `index.html` se trouve directement à la racine.
-3. Associer `duo.varelia.fr` au dossier web voulu dans votre hébergement. Déposer **tout le contenu extrait** dans ce dossier, en conservant `assets/`.
-4. Activer HTTPS, ouvrir `https://duo.varelia.fr` et tester un téléchargement.
+## Déploiement automatique sur VPS
 
-Le dépôt n'a pas modifié votre DNS ou votre hébergement. La configuration du sous-domaine reste à faire dans votre espace hébergeur si elle n'existe pas encore. Les fichiers Windows sont téléchargés depuis GitHub Releases.
+`Deploy website` se lance quand les fichiers du site changent sur `main`, après une publication Windows, ou à la demande depuis Actions. Il vérifie le site, récupère le manifeste de la dernière version publique puis déploie une archive. Les fichiers de développement ne sont pas envoyés.
 
-Le site n'utilise ni cookies ni mesure d'audience. Votre hébergeur peut conserver ses propres journaux d'accès. Le navigateur ne contacte GitHub qu'après un clic vers un téléchargement ou le dépôt.
+Configuration GitHub, dans l'environnement **production** :
 
-## Depuis les sources
+| Type     | Nom                   | Contenu                                            |
+| -------- | --------------------- | -------------------------------------------------- |
+| Secret   | `DUO_SSH_KEY`         | Clé privée dédiée au déploiement Duo               |
+| Secret   | `DUO_SSH_KNOWN_HOSTS` | Clé publique SSH du VPS, vérifiée hors du workflow |
+| Variable | `DUO_SSH_HOST`        | Adresse du VPS                                     |
+| Variable | `DUO_SSH_USER`        | `duo-deploy`                                       |
+| Variable | `DUO_SSH_PORT`        | `22`, ou le port SSH configuré                     |
+
+La clé est limitée à `/usr/local/lib/duo/site-receiver.py`, avec commande `deploy`. Pas de shell interactif ni de transfert de ports. Le compte déploie uniquement dans `/var/www/duo`. Il ne modifie pas les autres sites.
+
+## Installer sur un autre VPS Debian/nginx
+
+1. Créer une clé SSH dédiée. Garder la partie privée dans les secrets GitHub, jamais dans le dépôt.
+2. Via votre accès administrateur existant, copier `deploy/site-receiver.py` vers `/tmp/duo-site-receiver.py`, `deploy/nginx.conf` vers `/tmp/duo-nginx.conf` et la clé **publique** vers `/tmp/duo-deploy.pub`.
+3. Lire puis exécuter `deploy/setup.sh` en root sur le VPS. Il refuse un site ou compte Duo déjà existant. Adapter le domaine dans la configuration pour un autre hébergement.
+4. Configurer les secrets et variables ci-dessus. Épingler la véritable clé SSH du serveur, sans accepter aveuglément une clé obtenue sur le réseau.
+5. Publier une version Windows puis lancer Deploy website. Les fichiers sont dans `releases/<date>` et `current` pointe vers la version active.
+6. Activer HTTPS avec votre certificat. Pour Let's Encrypt : `certbot certonly --webroot -w /var/www/duo/acme -d duo.varelia.fr`. Ajouter ensuite le serveur nginx TLS avec ce certificat, vérifier `nginx -t` avant de recharger. Garder le contrôle de santé local HTTP fonctionnel.
+
+Le récepteur refuse chemins sortants, liens symboliques, fichiers cachés et contenus exécutables serveur. Après bascule, il vérifie le manifeste servi par nginx. En cas d'échec, il restaure la version précédente. Les cinq derniers déploiements restent disponibles.
+
+## Dépôt de fichiers manuel
+
+Télécharger l'archive `Duo-<version>-site.zip`, extraire son contenu dans le dossier du sous-domaine et activer HTTPS. `index.html` se trouve directement à la racine. Conserver `assets/` et tous les fichiers.
+
+Pour prévisualiser et vérifier localement :
 
 ```powershell
 npm run site:preview
@@ -19,10 +41,4 @@ npm run test:site
 python scripts/package-site.py
 ```
 
-L'archive utilise Python 3, exclut les fichiers de développement et vérifie son intégrité. Le ZIP est créé dans `release/`.
-
-## Mettre à jour
-
-Modifier la version et les liens dans `website/release.json`, puis les liens de secours et la version dans `website/index.html`. Les liens fonctionnent sans JavaScript. Ne publiez pas un lien avant ses fichiers GitHub. Les empreintes finales sont attachées à la release dans `SHA256SUMS.txt`.
-
-Le nom canonique, le sitemap et les métadonnées de partage utilisent `https://duo.varelia.fr`. Un autre domaine nécessite leur mise à jour. Le site vise la racine du sous-domaine ; un sous-dossier demande d'adapter les liens commençant par `/`.
+Le site n'utilise ni cookies ni mesure d'audience. L'hébergeur conserve éventuellement ses propres journaux d'accès. Le navigateur ne contacte GitHub qu'après un clic de téléchargement ou vers le dépôt. Domaine canonique : `https://duo.varelia.fr`.

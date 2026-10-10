@@ -1,0 +1,66 @@
+name: Deploy website
+on:
+  push:
+    branches: [main]
+    paths:
+      [
+        'website/**',
+        'deploy/**',
+        'scripts/prepare-site.cjs',
+        'scripts/package-site.py',
+        '.github/workflows/website.yml',
+      ]
+  workflow_dispatch:
+  workflow_call:
+permissions:
+  contents: read
+concurrency:
+  group: duo-website
+  cancel-in-progress: false
+jobs:
+  website:
+    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: production
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          ref: main
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:site
+      - run: python tests/deploy-security.py
+      - id: prepare
+        run: node scripts/prepare-site.cjs --allow-empty
+      - if: steps.prepare.outputs.ready == 'true'
+        run: python scripts/package-site.py --prepared
+      - name: Deploy with restricted SSH key
+        if: steps.prepare.outputs.ready == 'true'
+        env:
+          DUO_SSH_KEY: ${{ secrets.DUO_SSH_KEY }}
+          DUO_SSH_KNOWN_HOSTS: ${{ secrets.DUO_SSH_KNOWN_HOSTS }}
+          DUO_SSH_HOST: ${{ vars.DUO_SSH_HOST }}
+          DUO_SSH_USER: ${{ vars.DUO_SSH_USER }}
+          DUO_SSH_PORT: ${{ vars.DUO_SSH_PORT }}
+        run: |
+          set -euo pipefail
+          test -n "$DUO_SSH_KEY"
+          test -n "$DUO_SSH_KNOWN_HOSTS"
+          umask 077
+          export DUO_SSH_KEY_FILE="$RUNNER_TEMP/duo_key"
+          export DUO_SSH_KNOWN_HOSTS_FILE="$RUNNER_TEMP/duo_known_hosts"
+          trap 'rm -f -- "$DUO_SSH_KEY_FILE" "$DUO_SSH_KNOWN_HOSTS_FILE"' EXIT
+          printf '%s\n' "$DUO_SSH_KEY" > "$DUO_SSH_KEY_FILE"
+          printf '%s\n' "$DUO_SSH_KNOWN_HOSTS" > "$DUO_SSH_KNOWN_HOSTS_FILE"
+          node deploy/client.cjs
+      - name: Verify public website
+        if: steps.prepare.outputs.ready == 'true'
+        run: |
+          curl --fail --retry 3 --retry-delay 3 --max-time 15 https://duo.varelia.fr/release.json -o /tmp/duo-live.json
+          cmp website-package/release.json /tmp/duo-live.json

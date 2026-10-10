@@ -34,6 +34,8 @@ const { JsonStore } = require('./storage.cjs');
 const { listGitHubRepos, cloneGitHub, createWorktree } = require('./git-projects.cjs');
 const { FileObserver } = require('./file-observer.cjs');
 const { formatSession } = require('./export.cjs');
+const { checkUpdate } = require('./updates.cjs');
+let checkedUpdate = null;
 
 let window,
   store,
@@ -168,6 +170,17 @@ function handler(channel, fn) {
   });
 }
 function register() {
+  handler('duo:update:check', async () => {
+    checkedUpdate = null;
+    checkedUpdate = await checkUpdate(app.getVersion());
+    return checkedUpdate;
+  });
+  handler('duo:update:download', async () => {
+    if (!checkedUpdate?.available)
+      throw new Error('Vérifier les mises à jour avant téléchargement.');
+    await shell.openExternal(checkedUpdate.url);
+    return true;
+  });
   handler('duo:bootstrap', () => ({
     ...librarySnapshot(),
     ...(lastConnections || {

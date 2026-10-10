@@ -43,6 +43,7 @@ import LibraryView from './LibraryView';
 import SessionList from './SessionList';
 import FilesView from './FilesView';
 import ConnectionsModal from './ConnectionsModal';
+import UpdatesModal from './UpdatesModal';
 import SkillsView from './SkillsView';
 import ModelsView, { highestEffort } from './ModelsView';
 import ActivityPanel from './ActivityPanel';
@@ -566,6 +567,10 @@ function App() {
               <Plug size={17} />
               Connexions
               <span className="connection-dot" />
+            </button>
+            <button onClick={() => setModal('updates')}>
+              <Download size={17} />
+              Mises à jour
             </button>
           </nav>
           <div className="sidebar-section">
@@ -1357,6 +1362,7 @@ function App() {
             notify={setNotice}
           />
         )}
+        {modal === 'updates' && <UpdatesModal close={() => setModal(null)} />}
         {modal === 'settings' && (
           <Modal title="Réglages mission" close={() => setModal(null)}>
             <p className="modal-intro">

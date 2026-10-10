@@ -5,6 +5,9 @@
 - CI Windows, actions épinglées, construction manuelle et archives publiques sans profils ni rapports locaux.
 - Licences et ressources d’origine conservées ; données personnelles exclues des sources distribuées.
 - Chemins Windows courts (8.3) pris en charge pour découverte de skills et contrôles d'import ; jonctions restent refusées dans les skills projet.
+- Téléchargement direct de l’installateur depuis le site, avec lien permanent vers la dernière version.
+- Bouton Mises à jour dans Duo : vérification explicite et téléchargement direct, sans redémarrage pendant une mission.
+- Publication Windows automatique sur tag versionné ; déploiement du site après tests, par accès SSH restreint, avec bascule atomique et retour arrière en cas d’échec.
 
 # Duo 0.4.0 · 2026-10-10
 

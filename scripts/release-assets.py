@@ -1,4 +1,4 @@
-"""Prepare reviewed Windows artifacts and the static site for a manual release.
+"""Prepare Windows artifacts and the static site for a release.
 
 Run after npm run dist and staging the public source files. Does not publish.
 """
@@ -52,6 +52,10 @@ subprocess.run(['node', str(ROOT / 'node_modules' / 'prettier' / 'bin' / 'pretti
 run('package-release.py', 'source')
 run('package-site.py')
 assets = [installer, portable, RELEASE / f'Duo-{VERSION}-sources.zip', RELEASE / f'Duo-{VERSION}-site.zip']
+for source, name in [(installer, 'Duo-Setup.exe'), (portable, 'Duo-Windows-x64.zip'), (assets[2], 'Duo-Sources.zip'), (manifest_file, 'release.json')]:
+    alias = RELEASE / name
+    shutil.copyfile(source, alias)
+    assets.append(alias)
 for file in assets:
     if file.suffix == '.zip':
         with ZipFile(file) as archive:

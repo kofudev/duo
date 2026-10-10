@@ -1,5 +1,7 @@
 const { contextBridge, ipcRenderer } = require('electron');
 contextBridge.exposeInMainWorld('duo', {
+  checkUpdate: () => ipcRenderer.invoke('duo:update:check'),
+  downloadUpdate: () => ipcRenderer.invoke('duo:update:download'),
   bootstrap: () => ipcRenderer.invoke('duo:bootstrap'),
   connections: () => ipcRenderer.invoke('duo:connections'),
   pickProject: () => ipcRenderer.invoke('duo:project'),

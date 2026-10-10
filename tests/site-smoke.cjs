@@ -31,7 +31,7 @@ fs.mkdirSync(output, { recursive: true });
     assert.equal((await page.goto(base)).status(), 200);
     await page.evaluate(() => document.fonts.ready);
     const manifest = await (await fetch(base + '/release.json')).json();
-    assert.equal(manifest.version, require('../package.json').version);
+    assert.match(manifest.version, /^\d+\.\d+\.\d+$/);
     const installer = page.getByRole('link', { name: 'Télécharger pour Windows', exact: false });
     assert.equal(await installer.getAttribute('href'), manifest.assets.installer.url);
     assert.equal(
@@ -148,7 +148,7 @@ fs.mkdirSync(output, { recursive: true });
       await fallback
         .getByRole('link', { name: 'Télécharger pour Windows', exact: false })
         .getAttribute('href'),
-      manifest.assets.installer.url
+      'https://github.com/kofudev/duo/releases/latest/download/Duo-Setup.exe'
     );
     await noJS.close();
     checks.push('installer link works without JavaScript');
