@@ -33,7 +33,7 @@ test('clone uses argument arrays, fresh destination, and cancellation-aware runn
       },
     }
   );
-  assert.equal(result.path, path.join(parent, 'Mon dépôt'));
+  assert.equal(result.path, fs.realpathSync.native(path.join(parent, 'Mon dépôt')));
   assert.ok(call.args.includes(result.path));
   assert.equal(call.options.signal, controller.signal);
   assert.equal(call.options.env.GIT_TERMINAL_PROMPT, '0');

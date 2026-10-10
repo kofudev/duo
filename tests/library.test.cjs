@@ -133,8 +133,8 @@ test('relink updates session paths and refuses duplicate project ownership', () 
   const project = library.importProject(original, 'Moved'),
     session = library.newSession();
   library.relinkProject(project.id, moved);
-  assert.equal(project.path, moved);
-  assert.equal(session.project, moved);
+  assert.equal(project.path, fs.realpathSync.native(moved));
+  assert.equal(session.project, fs.realpathSync.native(moved));
   const other = library.importProject(fixture(), 'Other');
   assert.throws(() => library.relinkProject(other.id, moved), /déjà lié/);
   assert.throws(

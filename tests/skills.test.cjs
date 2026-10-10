@@ -110,6 +110,43 @@ test('import preflight bounds empty directories and refuses nested destination',
   assert.throws(() => copySkill(source, path.join(source, 'nested')), /hors dossier source/);
 });
 
+test('project skill discovery also refuses junctions pointing inside the project', () => {
+  const project = fixture(),
+    actual = path.join(project, 'actual'),
+    skill = path.join(actual, 'skills', 'linked-rule');
+  fs.mkdirSync(skill, { recursive: true });
+  fs.writeFileSync(
+    path.join(skill, 'SKILL.md'),
+    '---\nname: linked-rule\ndescription: Linked rule.\n---\nBody'
+  );
+  fs.symlinkSync(
+    actual,
+    path.join(project, '.agents'),
+    process.platform === 'win32' ? 'junction' : 'dir'
+  );
+  assert.ok(
+    !new Skills(resources, fixture())
+      .list(project)
+      .some((skill) => skill.id === 'project-agents-linked-rule')
+  );
+});
+
+test('import rejects a destination whose existing parent resolves into the source', () => {
+  const source = fixture(),
+    outside = fixture(),
+    alias = path.join(outside, 'alias');
+  fs.writeFileSync(
+    path.join(source, 'SKILL.md'),
+    '---\nname: source-rule\ndescription: Import source.\n---\nBody'
+  );
+  fs.symlinkSync(source, alias, process.platform === 'win32' ? 'junction' : 'dir');
+  assert.throws(
+    () => copySkill(source, path.join(alias, 'missing', 'nested')),
+    /hors dossier source/
+  );
+  assert.ok(!fs.existsSync(path.join(source, 'missing')));
+});
+
 test('personal skill editing preserves metadata and rejects stale edits or bundled mutation', () => {
   const skills = new Skills(resources, fixture());
   skills.create({

@@ -4,6 +4,7 @@
 - Site statique français pour duo.varelia.fr, parcours illustratif interactif et téléchargements Windows.
 - CI Windows, actions épinglées, construction manuelle et archives publiques sans profils ni rapports locaux.
 - Licences et ressources d’origine conservées ; données personnelles exclues des sources distribuées.
+- Chemins Windows courts (8.3) pris en charge pour découverte de skills et contrôles d'import ; jonctions restent refusées dans les skills projet.
 
 # Duo 0.4.0 · 2026-10-10
 

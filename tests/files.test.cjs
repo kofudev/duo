@@ -5,7 +5,7 @@ const path = require('node:path');
 const os = require('node:os');
 const { listFiles, searchFiles, readFile, saveFile } = require('../electron/files.cjs');
 function fixture() {
-  return fs.mkdtempSync(path.join(os.tmpdir(), 'duo-files-'));
+  return fs.realpathSync.native(fs.mkdtempSync(path.join(os.tmpdir(), 'duo-files-')));
 }
 test('quick file search finds nested Unicode and fuzzy names without following junctions', () => {
   const project = fixture(),

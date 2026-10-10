@@ -40,7 +40,10 @@ function normalFolder(root, boundary) {
   if (fs.lstatSync(root).isSymbolicLink() || !fs.statSync(root).isDirectory())
     throw new Error('Dossier skill normal requis. Liens symboliques refusés.');
   if (boundary) {
-    const base = fs.realpathSync.native(boundary),
+    // Walk the original project path to keep junction checks, even when Windows
+    // represents its ancestors with short 8.3 names. Canonicalize both sides only
+    // for the final containment check.
+    const base = path.resolve(boundary),
       relative = path.relative(base, path.resolve(root));
     if (!inside(base, path.resolve(root))) throw new Error('Skill hors projet.');
     let current = base;
@@ -49,13 +52,25 @@ function normalFolder(root, boundary) {
       if (fs.lstatSync(current).isSymbolicLink())
         throw new Error('Ancêtre skill : lien symbolique refusé.');
     }
-    if (!inside(base, fs.realpathSync.native(root))) throw new Error('Skill hors projet.');
+    if (!inside(fs.realpathSync.native(boundary), fs.realpathSync.native(root)))
+      throw new Error('Skill hors projet.');
   }
 }
 function copySkill(source, target) {
   normalFolder(source);
   source = fs.realpathSync.native(source);
   target = path.resolve(target);
+  // The destination may not exist yet. Resolve its closest existing parent so
+  // aliases or junctions cannot hide an import back into the source tree.
+  const suffix = [path.basename(target)];
+  let ancestor = path.dirname(target);
+  while (!fs.existsSync(ancestor)) {
+    suffix.unshift(path.basename(ancestor));
+    const parent = path.dirname(ancestor);
+    if (parent === ancestor) throw new Error('Parent destination introuvable.');
+    ancestor = parent;
+  }
+  target = path.join(fs.realpathSync.native(ancestor), ...suffix);
   if (inside(source, target))
     throw new Error('Destination import doit rester hors dossier source.');
   const files = [];
