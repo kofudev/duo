@@ -3,6 +3,7 @@ const path = require('node:path');
 const { randomUUID } = require('node:crypto');
 const { BUDGET_DEFAULTS, budgetPatch, cleanLedger } = require('./budget.cjs');
 const { cleanMemory } = require('./memory.cjs');
+const { cleanProfile } = require('./ssh.cjs');
 
 const DEFAULT_SKILLS = [
   'caveman',
@@ -26,6 +27,7 @@ const DEFAULT_SETTINGS = Object.freeze({
   allowUsageCredits: false,
   cavemanLevel: 'full',
   skillMode: 'auto',
+  sshProfileId: '',
   ...BUDGET_DEFAULTS,
 });
 const CONFIG_KEYS = Object.keys(DEFAULT_SETTINGS);
@@ -107,6 +109,17 @@ function sessionShape(session) {
     title: String(session.title || 'Nouvelle mission'),
     messages: Array.isArray(session.messages) ? session.messages : [],
     tasks: Array.isArray(session.tasks) ? session.tasks : [],
+    results: Array.isArray(session.results)
+      ? session.results.map((entry) =>
+          entry.status === 'running'
+            ? {
+                ...entry,
+                status: 'unknown',
+                error: 'Duo interrompu pendant action. Vérifier état réel avant répéter.',
+              }
+            : entry
+        )
+      : [],
     state: session.state === 'running' ? 'stopped' : session.state || 'idle',
     phase: session.state === 'running' ? '' : session.phase || '',
   };
@@ -119,7 +132,7 @@ class Library {
   }
   migrate(raw) {
     if (
-      [2, 3, 4].includes(raw?.schemaVersion) &&
+      [2, 3, 4, 5].includes(raw?.schemaVersion) &&
       Array.isArray(raw.workspaces) &&
       Array.isArray(raw.projects)
     ) {
@@ -139,7 +152,8 @@ class Library {
           description: String(p.description || '').slice(0, 4000),
         }));
       return {
-        schemaVersion: 4,
+        schemaVersion: 5,
+        sshProfiles: this.safeSSH(raw.sshProfiles),
         personalMemory: cleanMemory(raw.personalMemory),
         defaultSettings: { ...DEFAULT_SETTINGS, ...this.safeConfig(raw.defaultSettings) },
         workspaces,
@@ -208,7 +222,8 @@ class Library {
       (p) => raw.settings?.project && pathKey(p.path) === pathKey(raw.settings.project)
     );
     return {
-      schemaVersion: 4,
+      schemaVersion: 5,
+      sshProfiles: [],
       personalMemory: [],
       defaultSettings: settings,
       workspaces: [workspace],
@@ -219,6 +234,16 @@ class Library {
       activeWorkspaceId: workspace.id,
       activeProjectId: activeProject?.id || null,
     };
+  }
+  safeSSH(profiles) {
+    if (!Array.isArray(profiles)) return [];
+    return profiles.slice(0, 50).flatMap((profile) => {
+      try {
+        return typeof profile?.id === 'string' ? [cleanProfile(profile, profile)] : [];
+      } catch {
+        return [];
+      }
+    });
   }
   safeConfig(value) {
     const result = {};

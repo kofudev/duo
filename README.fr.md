@@ -12,7 +12,7 @@ _Exemple illustratif du parcours de collaboration présenté sur le site._
 
 ## Commencer
 
-1. Télécharger **Duo-Setup-0.4.2.exe**, ou extraire toute l'archive portable. Windows x64 requis. Cette première version publique n'est pas signée.
+1. Télécharger **Duo-Setup-0.5.0.exe**, ou extraire toute l'archive portable. Windows x64 requis. Cette première version publique n'est pas signée.
 2. Installer [Codex CLI](https://learn.chatgpt.com/docs/cli) et [Claude Code](https://code.claude.com/docs/en/setup). Connecter vos comptes avec `codex login` et `claude auth login`.
 3. Dans Duo, actualiser **Connexions**, choisir un dossier projet et lancer une demande. Le mode **Discuter** permet de commencer en lecture seule.
 
@@ -20,7 +20,7 @@ Vos abonnements doivent inclure l'accès aux CLI. Duo ne débloque aucun modèle
 
 ## Dans cette version
 
-Projets et worktrees, éditeur, diffs, commits sélectionnés, push confirmé, modèles et efforts compatibles, 19 skills sélectionnables, mémoire personnelle commune, notes par projet, durée facultative et planification locale. Le mode économe est activé par défaut ; le mode complet ajoute des tours de discussion.
+Reprise par étape, consultation réelle du partenaire, récapitulatif de fichiers observés, connexions [SSH par projet](docs/ssh.fr.md), projets et worktrees, éditeur, diffs, commits sélectionnés, push confirmé, modèles et efforts compatibles, 19 skills sélectionnables, mémoire personnelle commune, notes par projet, durée facultative et planification locale. Le mode économe est activé par défaut ; le mode complet ajoute des tours de discussion.
 
 Les imports mémoire passent par un aperçu : texte, Markdown ou JSON mémoire. Vous choisissez ce qui sera partagé. La récupération utilise des extraits ciblés et bornés, sans relire tout votre historique ni appeler un modèle pour l'import.
 

@@ -1,4 +1,4 @@
-# Duo · Windows · 0.4.2
+# Duo · Windows · 0.5.0
 
 Un prompt → Codex + Claude. Analyses simultanées → discussion croisée → plan partagé → écritures séquentielles → relecture partenaire.
 
@@ -6,7 +6,7 @@ Application personnelle locale. Electron + React. CLI officiels installés sur o
 
 ## Installer et connecter
 
-1. Télécharger puis ouvrir `Duo-Setup-0.4.2.exe` depuis [GitHub Releases](https://github.com/kofudev/duo/releases/latest). Installation Windows x64, dossier configurable. Installateur non signé.
+1. Télécharger puis ouvrir `Duo-Setup-0.5.0.exe` depuis [GitHub Releases](https://github.com/kofudev/duo/releases/latest). Installation Windows x64, dossier configurable. Installateur non signé.
 2. Installer CLI officiels [Codex](https://learn.chatgpt.com/docs/cli), [Claude Code](https://code.claude.com/docs/en/setup) et Git. Node.js reste requis pour lanceurs npm JavaScript. Versions natives prises en charge.
 3. Connecter comptes dans PowerShell :
 
@@ -34,6 +34,18 @@ Avant relecture, coordonnateur lit fichiers déclarés du plan, fournit snapshot
 
 Journal conserve 500 invocations outils récentes. Invocation annoncée n’est pas preuve de réussite. Rapports indiquent validations effectuées. Export Markdown comprend conversation, plan, empreintes, compteurs et journal.
 
+## Reprise et échanges entre agents
+
+Chaque mission conserve objectif initial, précisions, plan et étape. Arrêt ou redémarrage → reprise manuelle, aucune exécution rejouée automatiquement. Une relecture interrompue reprend sans répéter construction. Une écriture interrompue exige inspection du travail partiel avant continuation.
+
+Information manquante → carte À vous de répondre. Répondre à question ; CONTINUE seul ne dépense aucun nouvel appel. Si dossier choisi est incorrect, Choisir autre dossier pour mission garde objectif et historique, avant toute modification. Après discussion, Construire à partir de cet échange autorise explicitement écriture sur même objectif.
+
+Les agents disposent du même tableau de mission et peuvent envoyer messages ou consulter réellement partenaire pendant travail. Question et réponse apparaissent avec destinataire. Consultation reste lecture seule, compte dans budgets, ne peut se répéter récursivement et reste limitée à trois par tâche.
+
+Récapitulatif observé compare fichiers avec début mission. Il inclut changements extérieurs éventuels, exclut dépendances, sorties générées, secrets usuels et liens. Gros fichiers suivent métadonnées ; couverture limitée signalée. Commandes affichent code reçu ou résultat non fourni.
+
+Connexion serveur : [guide SSH](ssh.fr.md).
+
 ## Pilotage, durée et quotas
 
 Pilotage & mémoire → **durée libre par défaut**. Activer limite de durée pour choisir 1 à 1 440 minutes. Sans minuterie, fin quand objectif terminé, budget atteint ou arrêt manuel ; aucune coupure horaire de mission. Appels maximum, budget tokens, réservations et plafonds locaux sur 24 h restent actifs. Les CLI gardent leurs délais techniques par appel. Ex. limite 180 minutes = jusqu'à trois heures, fin anticipée possible.
@@ -44,7 +56,7 @@ Réserve fournisseur par défaut : 20 %. Codex : fenêtres compte relues avant p
 
 Ledger usage conservé dans profil Duo, commun à tous projets. Appel échoué/interrompu ou usage non fourni → réservation conservée par prudence. Historique 24 h glissantes. Les valeurs des plafonds utilisées sont celles de mission ; modifier plafond ne rembourse pas usage passé.
 
-Budget atteint → mission en pause, fichiers conservés, aucun appel de bilan supplémentaire. Tâches validées restent visibles ; travail interrompu pendant écriture/relecture demande vérification. Reprendre manuellement via nouvelle demande, après inspection des changements.
+Budget atteint → mission en pause, fichiers conservés, aucun appel de bilan supplémentaire. Tâches validées restent visibles ; travail interrompu pendant écriture/relecture demande vérification. Le bouton Reprendre reprend dernière étape après inspection des changements. Tâches validées ne sont pas réécrites et compteurs restent cumulatifs ; augmenter plafond si nécessaire ne rembourse pas consommation.
 
 ## Planification locale
 

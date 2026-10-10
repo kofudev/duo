@@ -9,7 +9,7 @@ function readJson(file, maxBytes = 100_000_000) {
   const data = JSON.parse(fs.readFileSync(file, 'utf8'));
   if (!data || typeof data !== 'object' || Array.isArray(data))
     throw new Error('Historique JSON invalide.');
-  if (data.schemaVersion && data.schemaVersion > 4)
+  if (data.schemaVersion && data.schemaVersion > 5)
     throw new Error('Historique créé par version Duo plus récente.');
   return { data, file, time: Number(data.storageSavedAt) || stat.mtimeMs };
 }
@@ -51,11 +51,11 @@ class JsonStore {
     this.lastSavedAt = chosen?.time || 0;
     if (fs.existsSync(this.file) && errors.some((error) => error.file === this.file))
       fs.copyFileSync(this.file, this.file + `.corrupt-${Date.now()}`);
-    if (chosen?.data.schemaVersion !== 4 && chosen?.file === this.file)
+    if (chosen?.data.schemaVersion !== 5 && chosen?.file === this.file)
       fs.copyFileSync(
         this.file,
         this.file +
-          `.v${[2, 3].includes(chosen.data.schemaVersion) ? chosen.data.schemaVersion : 1}-backup-${Date.now()}`
+          `.v${[2, 3, 4].includes(chosen.data.schemaVersion) ? chosen.data.schemaVersion : 1}-backup-${Date.now()}`
       );
     return { data: chosen?.data || {}, recovered: !!chosen && chosen.file !== this.file, errors };
   }

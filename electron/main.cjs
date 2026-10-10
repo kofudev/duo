@@ -35,12 +35,15 @@ const { listGitHubRepos, cloneGitHub, createWorktree } = require('./git-projects
 const { FileObserver } = require('./file-observer.cjs');
 const { formatSession } = require('./export.cjs');
 const { checkUpdate } = require('./updates.cjs');
+const { SSH } = require('./ssh.cjs');
+const { captureMission } = require('./mission-evidence.cjs');
 let checkedUpdate = null;
 
 let window,
   store,
   library,
   skillManager,
+  ssh,
   orchestrator,
   scheduler,
   storeFile,
@@ -315,6 +318,99 @@ function register() {
     save();
     return session;
   });
+  handler('duo:session:rebind', (id) =>
+    withMutation(async () => {
+      const session = store.sessions.find((item) => item.id === id && !item.archived);
+      if (
+        !session ||
+        !['waiting_user', 'failed', 'paused', 'stopped', 'attention'].includes(session.state)
+      )
+        throw new Error('Mission doit être interrompue avant changer dossier.');
+      if (
+        session.tasks.some((task) => task.status === 'done') ||
+        session.recap?.changes.length ||
+        session.results?.some(
+          (entry) => entry.remote && ['created', 'modified', 'command'].includes(entry.kind)
+        )
+      )
+        throw new Error(
+          'Travail déjà effectué dans ce projet. Conserver cette mission et créer nouvelle mission pour autre dossier.'
+        );
+      if (dirtyEditors || Object.values(dirtyByProject || {}).some(Boolean))
+        throw new Error('Enregistrer brouillons avant changer dossier mission.');
+      const picked = await dialog.showOpenDialog(window, {
+        title: 'Choisir dossier existant pour cette mission',
+        properties: ['openDirectory'],
+        defaultPath: path.dirname(session.project),
+      });
+      if (picked.canceled) return null;
+      const previous = session.project,
+        project = library.importProject(picked.filePaths[0]);
+      session.project = project.path;
+      session.projectId = project.id;
+      session.workspaceId = project.workspaceId;
+      const selectedSSH = library.settings.sshProfileId;
+      library.updateSettings({ ...configPatch(session.config), sshProfileId: selectedSSH });
+      session.config = { ...session.config, ...library.settings };
+      session.progress ||= {
+        objective:
+          [...session.messages].find((item) => item.agent === 'user')?.text || session.title,
+        mode: session.config.mode,
+        updates: [],
+      };
+      session.progress.stage = 'plan';
+      session.progress.planText = null;
+      session.progress.updates ||= [];
+      session.progress.updates.push(
+        `Utilisateur a choisi nouveau dossier : ${project.path}. Ancien dossier : ${previous}. Réinspecter sources, construire nouveau plan pour dossier choisi.`
+      );
+      session.progress.baseline = captureMission(project.path);
+      session.tasks = [];
+      session.recap = null;
+      session.waiting = null;
+      session.state = 'paused';
+      session.phase = '';
+      orchestrator.message(
+        session,
+        'system',
+        'Dossier corrigé',
+        `Mission conservée. Nouveau dossier : ${project.path}. Reprendre pour inspecter sources et établir plan adapté.`
+      );
+      save();
+      return librarySnapshot();
+    })
+  );
+  handler('duo:ssh:list', () => store.sshProfiles);
+  handler('duo:ssh:key', async () => {
+    const picked = await dialog.showOpenDialog(window, {
+      title: 'Choisir clé privée OpenSSH (contenu jamais importé)',
+      properties: ['openFile'],
+    });
+    return picked.canceled ? null : picked.filePaths[0];
+  });
+  handler('duo:ssh:save', (input) =>
+    withMutation(async () => {
+      ssh.save(input);
+      save();
+      return store.sshProfiles;
+    })
+  );
+  handler('duo:ssh:delete', (id) =>
+    withMutation(async () => {
+      if (!store.sshProfiles.some((profile) => profile.id === id))
+        throw new Error('Connexion SSH introuvable.');
+      store.sshProfiles.splice(
+        store.sshProfiles.findIndex((profile) => profile.id === id),
+        1
+      );
+      for (const project of store.projects)
+        if (project.settings.sshProfileId === id) project.settings.sshProfileId = '';
+      if (store.defaultSettings.sshProfileId === id) store.defaultSettings.sshProfileId = '';
+      save();
+      return store.sshProfiles;
+    })
+  );
+  handler('duo:ssh:test', (id) => withMutation(() => ssh.call(id, 'probe')));
   handler('duo:skill:detail', (id) => skillManager.detail(id, store.settings.project));
   handler('duo:skill:create', (values) => {
     const result = skillManager.create(values);
@@ -393,13 +489,13 @@ function register() {
         skills,
         commands: config.commands === true,
       };
+      if (normalized.sshProfileId) ssh.profile(normalized.sshProfileId);
       if (session.archived || session.projectId !== target.id)
         throw new Error(
           'Mission liée à autre projet ou archivée. Créer nouvelle mission dans projet actif.'
         );
       session.projectId = target.id;
       session.workspaceId = target.workspaceId;
-      session.config = normalized;
       session.title = session.messages.length ? session.title : prompt.trim().slice(0, 64);
       orchestrator.start(session, prompt.trim(), normalized);
       return session;
@@ -649,6 +745,7 @@ else {
       store = library.data;
       Object.defineProperty(store, 'settings', { get: () => library.settings, enumerable: false });
       skillManager = new Skills(skillRoot(), path.join(app.getPath('userData'), 'skills'));
+      ssh = new SSH({ profiles: store.sshProfiles });
       save();
       if (loadedStore.recovered && !storageWarning)
         storageWarning = 'Historique récupéré depuis sauvegarde locale.';
@@ -660,6 +757,7 @@ else {
         undefined,
         {
           ledger: store.usageLedger,
+          ssh,
           memory: (config, prompt) =>
             sharedMemoryContext(
               store.projects.find((project) => project.id === config.projectId)?.memory,

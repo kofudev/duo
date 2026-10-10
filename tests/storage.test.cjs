@@ -64,9 +64,9 @@ test('corrupt primary falls back to valid backup and preserves corrupt file', ()
 });
 test('future schema cannot silently overwrite newer application history', () => {
   const file = fixture();
-  fs.writeFileSync(file, JSON.stringify({ schemaVersion: 5, sessions: ['keep'] }));
+  fs.writeFileSync(file, JSON.stringify({ schemaVersion: 6, sessions: ['keep'] }));
   assert.throws(() => new JsonStore(file).load(), /plus récente/);
-  assert.equal(JSON.parse(fs.readFileSync(file)).schemaVersion, 5);
+  assert.equal(JSON.parse(fs.readFileSync(file)).schemaVersion, 6);
 });
 test('oversized UTF-8 snapshot fails before replacing last valid history', () => {
   const file = fixture(),

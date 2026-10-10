@@ -52,7 +52,7 @@ function formatSession(session) {
   }
   if (session.metrics) {
     lines.push(
-      '## Compteurs dernière mission',
+      '## Compteurs mission (reprises incluses)',
       '',
       `Appels tentés : ${count(session.metrics.calls)}`,
       '',
@@ -75,6 +75,30 @@ function formatSession(session) {
     for (const entry of session.activity)
       lines.push(
         `- ${date(entry.at)} · ${names[entry.agent] || oneLine(entry.agent)} · ${oneLine(entry.phase)} · ${code(entry.tool)} ${entry.detail ? `: ${code(entry.detail)}` : ''}`
+      );
+    lines.push('');
+  }
+  if (session.waiting) lines.push('## Information attendue', '', session.waiting.question, '');
+  if (session.recap) {
+    lines.push(
+      '## Modifications locales observées',
+      '',
+      'Comparaison avec début de mission. Modifications extérieures éventuelles incluses. Fichiers sensibles usuels, dépendances et liens exclus.',
+      ''
+    );
+    for (const file of session.recap.changes)
+      lines.push(
+        `- ${code(file.path)} · ${file.kind}${file.hash ? ` · SHA-256 ${code(file.hash)}` : ''}`
+      );
+    if (session.recap.limited)
+      lines.push('', 'Couverture limitée ; gros fichiers suivis par métadonnées.');
+    lines.push('');
+  }
+  if (session.results?.length) {
+    lines.push('## Résultats outils observés', '');
+    for (const entry of session.results)
+      lines.push(
+        `- ${date(entry.at)} · ${entry.remote ? code(entry.connection) : names[entry.agent]} · ${code(entry.command || entry.path)} · ${Number.isInteger(entry.exitCode) ? `code ${entry.exitCode}` : oneLine(entry.status || entry.kind)}${entry.hash ? ` · SHA-256 ${code(entry.hash)}` : ''}`
       );
     lines.push('');
   }

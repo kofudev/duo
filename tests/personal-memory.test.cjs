@@ -126,7 +126,7 @@ test('v3 migration backs up history, preserves project notes and stores shared p
   fs.writeFileSync(file, JSON.stringify(raw));
   const persistence = new JsonStore(file),
     library = new Library(persistence.load().data);
-  assert.equal(library.data.schemaVersion, 4);
+  assert.equal(library.data.schemaVersion, 5);
   assert.equal(library.data.projects[0].memory[0].text, 'Preserved');
   assert.ok(fs.readdirSync(folder).some((name) => name.includes('.v3-backup-')));
   library.data.personalMemory.push(createNote({ title: 'Profile', text: 'Shared' }));

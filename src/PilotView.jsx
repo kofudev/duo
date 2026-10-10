@@ -30,6 +30,7 @@ const states = {
   failed: 'Échec',
   cancelled: 'Annulée',
   attention: 'À vérifier',
+  waiting_user: 'Réponse requise',
 };
 function NumberField({ label, name, value, min, max, change, help }) {
   const [draft, setDraft] = useState(String(value ?? min));

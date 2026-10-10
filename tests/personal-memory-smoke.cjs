@@ -133,7 +133,7 @@ async function audit(name) {
   try {
     await open();
     const initial = await page.evaluate(() => window.duo.library());
-    assert.equal(initial.schemaVersion, 4);
+    assert.equal(initial.schemaVersion, 5);
     assert.equal(initial.settings.timeLimitEnabled, false);
     assert.equal(initial.projects[0].memory[0].id, 'project-note');
     assert.ok(fs.readdirSync(dataDir).some((file) => file.includes('.v3-backup-')));

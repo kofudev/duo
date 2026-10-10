@@ -254,7 +254,9 @@
             <h2 id="collaboration-title">Le travail avance.<br />Vous gardez le fil.</h2>
             <p>
               Deux points de vue sont utiles quand ils aboutissent à un plan clair. Duo organise la
-              discussion, les fichiers et les relectures dans une seule mission.
+              discussion, les fichiers et les relectures dans une seule mission. Un agent peut
+              consulter réellement son partenaire pendant le travail ; question et réponse restent
+              visibles.
             </p>
             <a class="text-link" href="https://github.com/kofudev/duo/blob/main/docs/usage.fr.md"
               >Lire le guide complet <span aria-hidden="true">↗</span></a
@@ -277,7 +279,8 @@
                 <h3>Un plan et des responsables</h3>
                 <p>
                   Les tâches sont attribuées à Codex ou Claude. Un seul agent écrit à la fois, pour
-                  limiter les changements concurrents.
+                  limiter les changements concurrents. Une interruption conserve objectif, tâches
+                  validées et étape à reprendre.
                 </p>
               </div>
             </li>
@@ -287,7 +290,8 @@
                 <h3>Une relecture par le partenaire</h3>
                 <p>
                   Chaque tâche passe par l'autre agent. Une relecture non validée arrête la suite et
-                  vous laisse inspecter les modifications.
+                  vous laisse inspecter les modifications. Une information manquante attend votre
+                  réponse, sans relancer une boucle de corrections.
                 </p>
               </div>
             </li>
@@ -296,8 +300,9 @@
               <div>
                 <h3>Des changements inspectables</h3>
                 <p>
-                  Messages, outils, plan, éditeur et diffs restent accessibles. Vous choisissez les
-                  fichiers à committer et confirmez le push.
+                  Récapitulatif des fichiers observés, commandes, messages, éditeur et diffs restent
+                  accessibles. Une connexion SSH peut être partagée pour serveur choisi. Vous
+                  choisissez les fichiers à committer et confirmez le push.
                 </p>
               </div>
             </li>
@@ -508,8 +513,9 @@
           </div>
           <p class="release-note">
             Cette version n'est pas signée. Windows peut afficher un avertissement à l'ouverture. La
-            coordination est vérifiée avec des CLI de test locaux ; une mission complète sur deux
-            abonnements réels reste à valider.
+            coordination est vérifiée avec des CLI de test locaux ; les outils partagés ont aussi
+            été vérifiés avec Codex et Claude réels. Une construction complète sur deux abonnements
+            reste à valider.
           </p>
           <div class="release-links">
             <a href="https://github.com/kofudev/duo/releases/latest/download/SHA256SUMS.txt"

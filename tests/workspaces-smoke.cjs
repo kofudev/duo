@@ -33,7 +33,7 @@ async function open() {
   try {
     await open();
     const initial = await page.evaluate(() => window.duo.bootstrap());
-    assert.equal(initial.schemaVersion, 4);
+    assert.equal(initial.schemaVersion, 5);
     assert.equal(initial.skills.length, 19);
     assert.equal(initial.skills.filter((s) => s.invalid).length, 0);
     assert.ok(initial.catalogs.claude.some((m) => m.id === 'claude-opus-5-5'));
@@ -182,7 +182,7 @@ async function open() {
       JSON.stringify({
         passed: true,
         checks: [
-          'schema v4',
+          'schema v5',
           '19 skills',
           'Claude models + versions',
           'workspace creation',

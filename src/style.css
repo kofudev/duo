@@ -3694,3 +3694,168 @@ button:active:not(:disabled) {
   border-radius: 5px;
   background: #f6eee7;
 }
+
+/* Mission continuity and remote connections */
+.mission-wait,
+.mission-resume {
+  padding: 14px 18px;
+  margin-bottom: 12px;
+  border: 1px solid #636044;
+  border-radius: 12px;
+  background: #24251d;
+  font-size: 12px;
+}
+.mission-wait p {
+  white-space: pre-wrap;
+  max-height: 140px;
+  overflow: auto;
+  color: #e0ddc6;
+  margin: 7px 0 12px;
+}
+.mission-wait > div,
+.ssh-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.mission-wait small {
+  display: block;
+  margin-top: 10px;
+  color: #b6b8a9;
+}
+.mission-resume {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+}
+.mission-recap {
+  margin: 24px 0 12px;
+  border: 1px solid #38453c;
+  background: #18211c;
+  border-radius: 12px;
+  padding: 18px;
+  font-size: 12px;
+}
+.recap-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.recap-heading > span {
+  margin-left: auto;
+  color: #c5cfbf;
+}
+.mission-recap p {
+  line-height: 1.6;
+  color: #bac7bc;
+}
+.recap-files {
+  display: grid;
+  gap: 4px;
+}
+.recap-files button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-align: left;
+  padding: 9px;
+  border-radius: 6px;
+  background: #202c24;
+  color: #d9e8dc;
+}
+.recap-files button:disabled {
+  opacity: 0.8;
+}
+.recap-files code {
+  overflow-wrap: anywhere;
+  flex: 1;
+  min-width: 0;
+}
+.recap-files button > span {
+  font-size: 11px;
+  color: #c0d2c0;
+}
+.recap-limited {
+  display: flex;
+  gap: 6px;
+}
+.mission-recap details {
+  margin-top: 14px;
+}
+.mission-recap summary {
+  cursor: pointer;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.recap-command {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 0;
+  border-bottom: 1px solid #344238;
+}
+.recap-command code {
+  flex: 1;
+  min-width: 120px;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+.recap-command span {
+  color: #c6d3c8;
+}
+.ssh-profiles {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+.ssh-profiles button {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: #222b25;
+  border: 1px solid #3c4c40;
+  padding: 8px 10px;
+  border-radius: 7px;
+  color: #d0dfd2;
+}
+.ssh-profiles button.active {
+  border-color: #c0d4ac;
+  background: #34412f;
+}
+.ssh-permissions {
+  display: grid;
+  gap: 12px;
+  margin: 20px 0;
+}
+.ssh-permissions label {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 12px;
+}
+.ssh-permissions input {
+  margin-top: 3px;
+}
+.ssh-permissions small {
+  display: block;
+  line-height: 1.5;
+  color: #bac4b4;
+  margin-top: 4px;
+}
+.ssh-result {
+  padding: 10px;
+  border: 1px solid #455640;
+  border-radius: 8px;
+  font-size: 12px;
+}
+.session-dot.waiting_user {
+  background: #d8bc68;
+}
+.task.waiting .task-number,
+.task.paused .task-number {
+  color: #d8bc68;
+}

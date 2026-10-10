@@ -34,11 +34,14 @@ jobs:
       - run: npx playwright install chromium
       - run: npm run test:site
       - run: npm run test:packaged
+      - run: npm run test:mission
+      - run: node tests/ssh-smoke.cjs
       - name: Check packaged update dialog without network
         shell: pwsh
         run: |
           $env:DUO_PACKAGED_EXE = Join-Path $PWD 'release/win-unpacked/Duo.exe'
           node tests/updates-smoke.cjs
+          node tests/ssh-smoke.cjs
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: release-assets
@@ -50,7 +53,7 @@ jobs:
             release/release.json
             release/SHA256SUMS.txt
   publish:
-    needs: build
+    needs: [build, remote-security]
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
@@ -73,3 +76,11 @@ jobs:
     needs: publish
     uses: ./.github/workflows/website.yml
     secrets: inherit
+  remote-security:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - run: python3 tests/ssh-remote-security.py

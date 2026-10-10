@@ -16,6 +16,37 @@ processTools.stopTree = (target) => {
   setTimeout(() => target.emit('close', 143), 20);
 };
 const { ClaudeProvider } = require('../electron/providers.cjs');
+test('Claude scoped MCP config never places bridge token in argv, restricts native tools and removes private config on exit', async () => {
+  const fs = require('node:fs');
+  const f = fixture();
+  const before = launchOptions;
+  const result = f.provider.run({
+    ...f.options,
+    tools: [
+      {
+        name: 'duo_team_status',
+        description: 'Status',
+        inputSchema: { type: 'object', properties: {} },
+      },
+    ],
+    onToolCall: () => ({ actual: 'board' }),
+    outputSchema: { type: 'object', properties: {} },
+  });
+  for (let i = 0; i < 100 && launchOptions === before; i++)
+    await new Promise((resolve) => setTimeout(resolve, 2));
+  const configPath = launchOptions.args[launchOptions.args.indexOf('--mcp-config') + 1],
+    config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+  assert.ok(!launchOptions.args.join(' ').includes(config.mcpServers.duo.env.DUO_TOOL_TOKEN));
+  assert.ok(launchOptions.args.includes('mcp__duo__duo_team_status'));
+  assert.ok(!launchOptions.args.includes('mcp__*'));
+  assert.equal(launchOptions.args[launchOptions.args.indexOf('--permission-mode') + 1], 'default');
+  assert.ok(!launchOptions.args.includes('Bash'));
+  assert.ok(!launchOptions.args.includes('Write'));
+  f.line({ type: 'result', result: 'Natural language', structured_output: { approved: true } });
+  child.emit('close', 0);
+  assert.deepEqual(JSON.parse(await result), { approved: true });
+  assert.equal(fs.existsSync(configPath), false);
+});
 function fixture() {
   child = new EventEmitter();
   child.pid = 1;

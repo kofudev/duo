@@ -2,6 +2,51 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const { CodexProvider } = require('../electron/providers.cjs');
 const tick = () => new Promise((resolve) => setImmediate(resolve));
+test('Codex dynamic tool request gets actual scoped callback result and structured turn schema', async () => {
+  const f = fixture();
+  const schema = { type: 'object', properties: { approved: { type: 'boolean' } } };
+  const run = f.provider.run({
+    ...f.runOptions,
+    outputSchema: schema,
+    tools: [
+      {
+        name: 'duo_team_status',
+        description: 'Status',
+        inputSchema: { type: 'object', properties: {} },
+      },
+    ],
+    onToolCall: async (name, args) => {
+      assert.equal(name, 'duo_team_status');
+      assert.deepEqual(args, {});
+      return { actual: 'shared-board' };
+    },
+  });
+  await tick();
+  f.rpc.raw({
+    id: 88,
+    method: 'item/tool/call',
+    params: {
+      threadId: 'thread',
+      tool: 'duo_team_status',
+      arguments: {},
+      callId: 'call',
+      turnId: 'turn',
+    },
+  });
+  await tick();
+  assert.equal(f.requests[0].params.dynamicTools[0].type, 'function');
+  assert.deepEqual(
+    f.requests.find((entry) => entry.method === 'turn/start').params.outputSchema,
+    schema
+  );
+  assert.equal(JSON.parse(f.replies[0].result.contentItems[0].text).actual, 'shared-board');
+  assert.equal(f.replies[0].result.success, true);
+  f.emit('item/completed', {
+    item: { id: 'final', type: 'agentMessage', phase: 'final_answer', text: '{"approved":true}' },
+  });
+  f.emit('turn/completed', { turn: { status: 'completed' } });
+  await run;
+});
 function fixture(options = {}) {
   const listeners = new Set(),
     requests = [],

@@ -1,5 +1,15 @@
 # Validation
 
+## Mission continuity and SSH · 0.5.0
+
+- 130 unit tests passed, including cumulative resumption budgets, legacy plan migration, review resumption without repeating a writer, human blockers, real partner dispatch, recursive-consultation rejection and cancellation locks.
+- Native mission fixtures verified that waiting survives reload, CONTINUE spends no additional inference while blocked, and selecting the correct existing folder preserves mission objective and build mode. Observed file changes were displayed independently of model reports.
+- Codex (`gpt-6.1-sol`) and Claude (`haiku`) each completed one live custom-tool call with a canary returned by the coordinator and a structured response. This verifies both transport integrations; a full construction mission across two live subscriptions remains unvalidated.
+- Native SSH management passed create/select/test/edit/delete workflows, readonly defaults and zero reported axe violations in its modal. The connection-test response in this UI fixture is local and does not contact a server.
+- A real OpenSSH readonly probe succeeded on Unix with Python 3.13.5. Four helper tests passed on that server in temporary directories: actual create/read/replace, stale-hash rejection, traversal/symlink/hardlink/secret protections, literal filenames, command exit codes, timeout and bounded output.
+
+The packaged application also passed SSH management, the actual MCP bridge as a child Node process, resource checks and a real file save. Release checks repeat these workflows before publication. These checks do not guarantee model quality or accessibility for every user.
+
 ## Logo update · 0.4.2
 
 - 113 unit tests passed. Production dependency audit reported no known vulnerabilities.
