@@ -4,6 +4,7 @@ const path = require('node:path');
 const cp = require('node:child_process');
 const crypto = require('node:crypto');
 const { version } = require('../package.json');
+const { parseChecksums } = require('./release-checks.cjs');
 const root = path.resolve(__dirname, '..');
 const tag = `v${version}`;
 const repo = 'kofudev/duo';
@@ -37,9 +38,9 @@ async function publish() {
   const folder = path.join(root, 'release');
   for (const name of names)
     if (!fs.statSync(path.join(folder, name)).size) throw new Error(`Empty artifact: ${name}`);
-  const sums = fs.readFileSync(path.join(folder, 'SHA256SUMS.txt'), 'utf8');
+  const sums = parseChecksums(fs.readFileSync(path.join(folder, 'SHA256SUMS.txt'), 'utf8'));
   for (const name of names.filter((n) => n !== 'SHA256SUMS.txt')) {
-    if (!sums.includes(`${sha(path.join(folder, name)).slice(7)}  ${name}\n`))
+    if (sums.get(name) !== sha(path.join(folder, name)).slice(7))
       throw new Error(`Checksum differs: ${name}`);
   }
   const existing = gh(['release', 'view', tag, '--json', 'isDraft'], true);

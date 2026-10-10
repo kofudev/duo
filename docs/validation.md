@@ -2,7 +2,7 @@
 
 The 0.4.1 application was checked on Windows 11 x64 with Node.js 24 and Electron 44.4.1. The public release includes the 0.4 memory and duration features.
 
-- 111 unit tests passed for provider protocols, files, Git, storage, quotas, scheduling, memory, skill path boundaries and update metadata validation.
+- 113 unit tests passed for provider protocols, files, Git, storage, quotas, scheduling, memory, skill path boundaries, update metadata and cross-platform release checksum validation.
 - Native Electron memory tests passed for preview, editing, exclusion, import/export, duplication and persistence.
 - A complete local-fixture mission made ten provider calls, showed both agents working, passed the same personal profile to both, wrote assigned files and completed partner reviews.
 - The packaged application passed the same memory workflow, plus a real file save and resource checks.
