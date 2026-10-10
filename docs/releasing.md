@@ -16,6 +16,8 @@ A version tag publishes the Windows application and then updates the download si
 
 `Publish Windows release` checks the tag against the package version, runs tests and the production audit, builds the unsigned installer, checks the packaged application and update dialog, and creates the source, portable and site archives. It uploads them to a draft release, compares every GitHub asset's size and SHA-256 with the local build, then publishes. An existing public release is never overwritten. A failed upload leaves a draft that can be inspected before rerunning.
 
+`npm run dist` explicitly installs the pinned Electron runtime on fresh machines. Electron Builder publication is disabled; only the verified publish job can publish the release.
+
 Stable links point directly to `Duo-Setup.exe`, `Duo-Windows-x64.zip` and `Duo-Sources.zip` in the latest stable release. Versioned copies remain available. `release.json` carries the versioned URLs and checksums. `SHA256SUMS.txt` covers all distributed files.
 
 The release workflow explicitly calls the site deployment workflow after publication. This also works with GitHub's built-in token, whose release events do not launch another workflow automatically.

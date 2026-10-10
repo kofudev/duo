@@ -16,6 +16,7 @@ Use Windows, Node.js 24, npm and Git. Provider accounts are not needed for unit 
 git clone https://github.com/kofudev/duo.git
 cd duo
 npm ci
+npm run electron:install
 npm run build
 npm start
 ```
