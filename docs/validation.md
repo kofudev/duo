@@ -5,6 +5,8 @@
 - 133 unit tests passed. Economy fixtures complete two writes and mandatory partner reviews in five calls, with a local assembled report; no AI synthesis call is launched. Persisted work already reviewed can finish its local report without requesting quota or inference.
 - A long-report fixture verifies that later writers and reviewers retain original objective, acceptance criteria and the report's final validation warning without repeating the full report. Interrupted token reports retain known cache fields and conservative token accounting.
 - Native Windows fixtures passed both the ten-call full workflow and five-call economy workflow, including the consumption panel, actual file writes, reviews, restart, wrong-folder recovery, cancellation and no renderer errors.
+- The packaged 0.5.1 application passed startup, model catalog and bundled skill checks, 246 dependency notices and an actual file save. The installer was built; runtime checks used its packaged executable, without installing over an existing user copy.
+- The [public 0.5.1 release workflow](https://github.com/kofudev/duo/actions/runs/38079159617) passed Windows build, native mission and SSH checks, artifact verification and website deployment. Downloaded source and site archives passed checksum and CRC checks and show 0.5.1 without JavaScript. The live manifest matches the published artifact; the permanent installer link returns an executable.
 - No live A/B token savings or quality comparison has been performed for this optimization. The 0.5.0 live measurements below include cached tokens and do not establish superiority over a single agent. See [measurement guide](economie.fr.md).
 
 ## Mission continuity and SSH · 0.5.0
