@@ -1,3 +1,14 @@
+# Duo 0.5.0 · 2026-10-10
+
+- Reprise de mission depuis étape interrompue : objectif, plan, tâches validées et compteurs conservés.
+- Attente utilisateur distincte des erreurs de code. CONTINUE seul ne déclenche plus boucle de relecture ; changement de dossier existant possible avant modifications.
+- Outils communs aux deux CLI : tableau de mission, messages visibles et consultation technique réelle du partenaire pendant travail. Consultations bornées, en lecture seule et incluses dans budgets.
+- Sortie structurée demandée aux fournisseurs pour plans et relectures. Passage explicite de discussion à construction avec objectif conservé.
+- Récapitulatif de fichiers créés, modifiés et supprimés à partir de comparaison locale ; résultats de commandes et actions distantes affichés séparément.
+- Connexions SSH par projet : alias ou hôte, agent ou chemin de clé OpenSSH, empreintes strictes, lecture par défaut, écriture avec empreinte et commandes distantes explicitement activées.
+- Schéma V5 avec sauvegarde de migration. Actions distantes interrompues marquées résultat inconnu, à vérifier avant répétition.
+- Tests des protocoles réels Codex/Claude pour outils partagés ; tests de sécurité du helper distant sur Unix. Une construction complète sur deux abonnements réels reste à valider.
+
 # Duo 0.4.2 · 2026-10-10
 
 - Logos Codex, Claude et GitHub issus des ressources officielles, partagés entre les écrans de l’application et le site.

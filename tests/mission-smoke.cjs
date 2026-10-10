@@ -175,6 +175,59 @@ let app;
         .every((c) => !c.tools.includes('Write') && !c.tools.includes('Bash'))
     );
     await page.screenshot({ path: path.join(root, 'qa', 'duo-v2-mission-simulation.png') });
+    // Human blockers survive reload; blind CONTINUE cannot spend or rebuild.
+    await page
+      .getByRole('button', { name: /^Nouvelle mission/ })
+      .first()
+      .click();
+    await page
+      .getByLabel('Demande commune pour Codex et Claude')
+      .fill('MOCK_WAIT : modifier sources existantes, objectif conservé.');
+    await page.getByRole('button', { name: 'Lancer Duo', exact: true }).click();
+    await page.locator('.mission-wait').waitFor();
+    let blocked = await page.evaluate(() => window.duo.library());
+    const blockedId = blocked.sessions[0].id,
+      objective = blocked.sessions[0].progress.objective,
+      callsBefore = records().filter((entry) => entry.event === 'start').length;
+    assert.equal(blocked.sessions[0].state, 'waiting_user');
+    await page.getByLabel('Demande commune pour Codex et Claude').fill('CONTINUE');
+    await page.getByRole('button', { name: 'Lancer Duo', exact: true }).click();
+    await page.waitForFunction(
+      () => !document.querySelector('.phase-bar') && document.querySelector('#prompt').value === ''
+    );
+    assert.equal(records().filter((entry) => entry.event === 'start').length, callsBefore);
+    await page.reload();
+    await page.locator('.mission-wait').waitFor();
+    const corrected = path.join(fixtureDir, 'sources');
+    fs.mkdirSync(corrected);
+    fs.writeFileSync(path.join(corrected, 'README.md'), '# Correct project sources\n');
+    fs.writeFileSync(path.join(corrected, 'sources-ready.txt'), 'actual source root');
+    await app.evaluate(({ dialog }, directory) => {
+      dialog.showOpenDialog = async () => ({ canceled: false, filePaths: [directory] });
+    }, corrected);
+    await page
+      .getByRole('button', { name: 'Choisir autre dossier pour mission', exact: true })
+      .click();
+    await page.getByRole('button', { name: 'Reprendre mission', exact: true }).waitFor();
+    blocked = await page.evaluate(() => window.duo.library());
+    assert.equal(
+      blocked.sessions.find((item) => item.id === blockedId).progress.objective,
+      objective
+    );
+    assert.equal(blocked.settings.mode, 'build');
+    assert.equal(blocked.settings.project, corrected);
+    await page.getByRole('button', { name: 'Reprendre mission', exact: true }).click();
+    await page.waitForFunction(
+      () =>
+        document.querySelectorAll('.task.done').length === 2 &&
+        !document.querySelector('.phase-bar'),
+      null,
+      { timeout: 60000 }
+    );
+    blocked = await page.evaluate(() => window.duo.library());
+    assert.equal(blocked.sessions.find((item) => item.id === blockedId).state, 'completed');
+    assert.ok(fs.existsSync(path.join(corrected, 'utility.js')));
+    assert.equal(await page.locator('.mission-recap .recap-files button').count(), 2);
     // A failed re-review stops before the second task.
     await page
       .getByRole('button', { name: /^Nouvelle mission/ })
@@ -232,6 +285,9 @@ let app;
           'per-agent token counts including cache',
           'read-only tool permissions',
           'native mission accessibility',
+          'waiting user survives reload without CONTINUE calls',
+          'existing folder correction preserves mission objective and build mode',
+          'observed file recap',
           'failed review stops next task',
           'both providers cancelled',
           'no renderer errors',

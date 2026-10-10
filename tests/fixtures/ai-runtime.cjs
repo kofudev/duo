@@ -60,7 +60,17 @@ async function report(agent, prompt, project, writable, onTool = () => {}) {
   });
   await delay(type === 'proposal' ? 550 : 220);
   let result;
-  if (type === 'plan')
+  if (
+    type === 'plan' &&
+    prompt.includes('MOCK_WAIT') &&
+    !fs.existsSync(path.join(project, 'sources-ready.txt'))
+  )
+    result = JSON.stringify({
+      status: 'waiting_user',
+      question: 'Choisir dossier contenant sources existantes.',
+      options: [],
+    });
+  else if (type === 'plan')
     result = JSON.stringify({
       summary: 'Simulation locale : deux tâches',
       tasks: [

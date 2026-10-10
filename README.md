@@ -12,7 +12,7 @@ _Illustrative workflow from the website. The application shows provider messages
 
 ## Install
 
-1. Download **Duo-Setup-0.4.2.exe** from [Releases](https://github.com/kofudev/duo/releases/latest), or extract the complete portable ZIP. Windows x64 is required. This early release is unsigned.
+1. Download **Duo-Setup-0.5.0.exe** from [Releases](https://github.com/kofudev/duo/releases/latest), or extract the complete portable ZIP. Windows x64 is required. This early release is unsigned.
 2. Install the official [Codex CLI](https://learn.chatgpt.com/docs/cli) and [Claude Code](https://code.claude.com/docs/en/setup). Authenticate with `codex login` and `claude auth login` using accounts that include access to those tools.
 3. Open Duo, refresh **Connexions**, choose a project and send your request. Start in **Discuter** to inspect the proposed approach before allowing changes.
 
@@ -21,7 +21,9 @@ Duo uses your CLI subscriptions. It does not import passwords, implement its own
 ## What it does
 
 - **Shared missions:** parallel proposals, cross discussion, an assigned plan and partner reviews. Only one agent writes at a time. An unresolved review pauses further work.
-- **Visible activity:** streamed messages, task ownership, review verdicts, tool events and a Markdown export.
+- **Visible activity:** streamed messages, live partner consultations, task ownership, observed file changes, command results and a Markdown export.
+- **Continuity:** keep the original objective and resume the interrupted step. A missing user choice pauses the mission; bare CONTINUE does not spend more inference while waiting.
+- **SSH targets:** share one explicit Unix server connection per project, with read-only defaults and separate file-write/command permissions. See the [SSH guide](docs/ssh.fr.md).
 - **Project workspaces:** create or import folders, clone repositories, use isolated worktrees, edit files, inspect diffs and commit selected changes. Push requires confirmation.
 - **Models and effort:** catalogs from installed tools, compatible effort levels and CLI upgrade requirements. Web chat catalogs can differ.
 - **Skills:** 19 selectable skills, including Caveman, UI/UX Pro Max, accessibility, debugging and context engineering. Personal and project skills are supported; third-party licenses are retained.
@@ -32,7 +34,7 @@ Economy mode is the default. Full mode adds discussion rounds. Two agents can he
 
 ## Current limits
 
-This is an early Windows release. Coordination has been tested with local CLI fixtures, including a complete ten-call mission and the packaged application's memory workflow. A read-only live Codex call was verified earlier; a full live mission across both subscriptions has **not** been validated. See [validation details](docs/validation.md).
+This is an early Windows release. Coordination has been tested with local CLI fixtures, including a complete ten-call mission and the packaged application's memory workflow. Live custom-tool calls and structured responses were verified with both Codex and Claude; a full live mission across both subscriptions has **not** been validated. See [validation details](docs/validation.md).
 
 Claude account quotas are not exposed by this integration. Strict quota mode blocks when required quota data is unavailable. Local budgets and Codex reserves cannot guarantee that a shared account never reaches its limit: other applications and calls already in progress also consume usage.
 

@@ -47,6 +47,8 @@ import UpdatesModal from './UpdatesModal';
 import SkillsView from './SkillsView';
 import ModelsView, { highestEffort } from './ModelsView';
 import ActivityPanel from './ActivityPanel';
+import MissionRecap from './MissionRecap';
+import SSHModal from './SSHModal';
 import PilotView, { ScheduleDialog } from './PilotView';
 import { Modal, IconButton, ErrorContext } from './ui';
 
@@ -296,7 +298,19 @@ function App() {
             )
           );
       }
-      if (['message', 'phase', 'tasks', 'metrics', 'budget', 'complete'].includes(event.type))
+      if (
+        [
+          'message',
+          'phase',
+          'tasks',
+          'metrics',
+          'budget',
+          'complete',
+          'waiting',
+          'recap',
+          'result',
+        ].includes(event.type)
+      )
         setSessions((old) =>
           old.map((item) => {
             if (item.id !== event.sessionId) return item;
@@ -312,6 +326,16 @@ function App() {
             if (event.type === 'tasks') return { ...item, tasks: event.tasks };
             if (event.type === 'budget') return { ...item, budget: event.budget };
             if (event.type === 'metrics') return { ...item, metrics: event.metrics };
+            if (event.type === 'waiting') return { ...item, waiting: event.waiting };
+            if (event.type === 'recap') return { ...item, recap: event.recap };
+            if (event.type === 'result')
+              return {
+                ...item,
+                results: [
+                  ...(item.results || []).filter((entry) => entry.id !== event.entry.id),
+                  event.entry,
+                ].slice(-200),
+              };
             if (event.type === 'complete') return event.session;
             return item;
           })
@@ -392,8 +416,9 @@ function App() {
     return () => window.removeEventListener('keydown', handler, true);
   }, [loaded, config.project]);
 
-  const launch = async () => {
-    if (!prompt.trim() || running || busy || projectOperation || checkingConnections || !loaded)
+  const launch = async (override, settingsOverride = {}) => {
+    const request = typeof override === 'string' ? override : prompt;
+    if (!request.trim() || running || busy || projectOperation || checkingConnections || !loaded)
       return;
     if (!config.project) {
       setError('Choisir dossier projet avant lancement.');
@@ -419,9 +444,13 @@ function App() {
         id = created.id;
       }
       setActive(id);
-      const result = await api.run({ sessionId: id, prompt, config });
+      const result = await api.run({
+        sessionId: id,
+        prompt: request,
+        config: { ...config, ...settingsOverride },
+      });
       started = true;
-      setSessions((old) => old.map((s) => (s.id === id ? { ...s, title: result.title } : s)));
+      setSessions((old) => old.map((s) => (s.id === id ? result : s)));
       if (result.state !== 'running') setActive(null);
       setPrompt('');
       setView('workspace');
@@ -938,10 +967,107 @@ function App() {
                         </div>
                       </article>
                     ))}
+                    <MissionRecap
+                      session={session}
+                      openFile={async (relative) => {
+                        const file = await perform(() =>
+                          api.readFile({ projectId: library.activeProjectId, relative })
+                        );
+                        if (!file) return;
+                        setFileBuffers((old) => {
+                          const previous = old[library.activeProjectId] || {
+                            documents: {},
+                            activePath: null,
+                          };
+                          return {
+                            ...old,
+                            [library.activeProjectId]: {
+                              ...previous,
+                              activePath: relative,
+                              documents: {
+                                ...previous.documents,
+                                [relative]: previous.documents[relative] || {
+                                  ...file,
+                                  savedContent: file.content,
+                                },
+                              },
+                            },
+                          };
+                        });
+                        setView('files');
+                      }}
+                    />
                   </div>
                 )}
               </div>
               <div className="composer-area">
+                {session?.state === 'completed' &&
+                  session.progress?.mode === 'discuss' &&
+                  !running && (
+                    <div className="mission-resume">
+                      <span>Discussion terminée · aucun fichier modifié en lecture seule</span>
+                      <button
+                        className="secondary-button"
+                        disabled={busy}
+                        onClick={() => {
+                          changeConfig({ mode: 'build' });
+                          launch('CONTINUE', { mode: 'build' });
+                        }}
+                      >
+                        Construire à partir de cet échange
+                      </button>
+                    </div>
+                  )}
+                {session?.waiting && !running && (
+                  <div className="mission-wait" role="status">
+                    <strong>À vous de répondre</strong>
+                    <p>{session.waiting.question}</p>
+                    <div>
+                      {session.waiting.options?.map((option) => (
+                        <button
+                          key={option}
+                          className="secondary-button"
+                          disabled={busy}
+                          onClick={() => launch(option)}
+                        >
+                          {option}
+                        </button>
+                      ))}
+                      <button
+                        className="secondary-button"
+                        disabled={busy}
+                        onClick={async () => {
+                          const data = await perform(() => api.rebindSession(session.id));
+                          if (data) {
+                            applyData(data);
+                            setCurrent(session.id);
+                            setNotice('Dossier changé. Reprendre mission pour inspecter sources.');
+                          }
+                        }}
+                      >
+                        Choisir autre dossier pour mission
+                      </button>
+                    </div>
+                    <small>
+                      Répondre dans champ ci-dessous. Mission et travail conservés. Aucun appel IA
+                      pendant attente.
+                    </small>
+                  </div>
+                )}
+                {session?.progress &&
+                  ['paused', 'stopped', 'failed'].includes(session.state) &&
+                  !running && (
+                    <div className="mission-resume">
+                      <span>Travail conservé · reprise depuis dernière étape</span>
+                      <button
+                        className="secondary-button"
+                        disabled={busy}
+                        onClick={() => launch('CONTINUE')}
+                      >
+                        Reprendre mission
+                      </button>
+                    </div>
+                  )}
                 {session?.phase && (
                   <div className="phase-bar" role="status">
                     <span className="pulse-dot" />
@@ -1009,7 +1135,7 @@ function App() {
                     </IconButton>
                     <button
                       className="send-button"
-                      onClick={launch}
+                      onClick={() => launch()}
                       disabled={
                         !prompt.trim() ||
                         running ||
@@ -1032,6 +1158,13 @@ function App() {
                       : 'Discussion · lecture seule'}
                   </span>
                   <span>Ctrl + Entrée pour lancer</span>
+                  {config.sshProfileId && (
+                    <button className="text-link" onClick={() => setModal('ssh')}>
+                      SSH ·{' '}
+                      {library.sshProfiles?.find((profile) => profile.id === config.sshProfileId)
+                        ?.name || 'Connexion sélectionnée'}
+                    </button>
+                  )}
                 </div>
               </div>
             </>
@@ -1117,6 +1250,8 @@ function App() {
                               review: 'Relecture',
                               done: 'Validé',
                               attention: 'À vérifier',
+                              paused: 'Interrompue',
+                              waiting: 'Réponse requise',
                             }[task.status]
                           }
                         </small>
@@ -1345,8 +1480,21 @@ function App() {
             notify={setNotice}
           />
         )}
+        {modal === 'ssh' && (
+          <SSHModal
+            profiles={library.sshProfiles || []}
+            selected={config.sshProfileId}
+            project={config.project}
+            close={() => setModal(null)}
+            perform={perform}
+            update={(sshProfiles) => setLibrary((old) => ({ ...old, sshProfiles }))}
+            select={(sshProfileId) => changeConfig({ sshProfileId })}
+            locked={running || !!projectOperation}
+          />
+        )}
         {modal === 'connections' && (
           <ConnectionsModal
+            openSSH={() => setModal('ssh')}
             connections={connections}
             close={() => setModal(null)}
             busy={busy}

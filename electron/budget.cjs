@@ -106,16 +106,17 @@ class UsageBudget {
       : null;
     this.records = new Map();
     this.stopReason = null;
+    const previous = session.budget;
     session.budget = {
       deadline: this.deadline,
       maxCalls: this.config.maxCalls,
       tokenBudget: this.config.tokenBudget,
-      calls: 0,
-      tokens: 0,
-      chargedTokens: 0,
-      unknownCalls: 0,
+      calls: previous?.calls || 0,
+      tokens: previous?.tokens || 0,
+      chargedTokens: previous?.chargedTokens || 0,
+      unknownCalls: previous?.unknownCalls || 0,
       reserve: this.config.quotaReserve,
-      quotaWarnings: [],
+      quotaWarnings: previous?.quotaWarnings || [],
     };
   }
   daily() {

@@ -10,8 +10,8 @@ A version tag publishes the Windows application and then updates the download si
 4. Create and push the matching tag:
 
    ```powershell
-   git tag v0.4.2
-   git push origin v0.4.2
+   git tag v0.5.0
+   git push origin v0.5.0
    ```
 
 `Publish Windows release` checks the tag against the package version, runs tests and the production audit, builds the unsigned installer, checks the packaged application and update dialog, and creates the source, portable and site archives. It uploads them to a draft release, compares every GitHub asset's size and SHA-256 with the local build, then publishes. An existing public release is never overwritten. A failed upload leaves a draft that can be inspected before rerunning.

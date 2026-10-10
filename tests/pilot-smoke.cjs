@@ -257,7 +257,7 @@ async function mission(prompt) {
     app = null;
     await open();
     state = await page.evaluate(() => window.duo.library());
-    assert.equal(state.schemaVersion, 4);
+    assert.equal(state.schemaVersion, 5);
     assert.ok(state.projects.find((project) => project.id === firstId).memory.length >= 3);
     assert.equal((await page.evaluate(() => window.duo.usage())).calls, before.calls);
     assert.equal(state.schedules.find((job) => job.id === jobId).state, 'completed');

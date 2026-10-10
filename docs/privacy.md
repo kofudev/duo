@@ -16,6 +16,12 @@ Web ChatGPT memory is separate from Codex's local memory. The Claude web profile
 
 Deleting a Duo note removes it from future context selections. It does not erase copies already sent to a provider or included in earlier conversation history.
 
+## Shared tools and SSH
+
+Partner consultations share the current mission board and bounded recent reports with the other selected provider. They are ordinary provider calls within the mission budget. Claude's local MCP bridge uses a short-lived capability token in a private temporary configuration file, which is removed after the CLI exits. The loopback endpoint closes with the call; it rejects unauthenticated and browser-origin requests.
+
+SSH profiles store host or alias, username, port, authorized starting folder, key-file path and explicit permissions. Key contents and passwords are not imported. Host verification and authentication stay with OpenSSH. Remote tool responses can be seen by the acting provider and may be summarized to its partner. The local operation journal keeps metadata and commands, excluding remote file contents and stdout; provider messages and exports can still contain excerpts. Shell permissions use the SSH account's rights and are not confined by the selected starting folder.
+
 ## Exports and diagnostics
 
 Conversation exports, memory backups and screenshots can include sensitive information. Review them before attaching them to an issue or sharing them. Never commit your Duo profile, `.env`, tokens, credentials or private prompts to the repository.

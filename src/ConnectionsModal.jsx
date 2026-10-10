@@ -47,7 +47,15 @@ export function Quotas({ limits }) {
     </div>
   );
 }
-export default function ConnectionsModal({ connections, close, busy, refresh, perform, notify }) {
+export default function ConnectionsModal({
+  connections,
+  close,
+  busy,
+  refresh,
+  perform,
+  notify,
+  openSSH,
+}) {
   const copy = async (text) => {
     if (await perform(() => api.copy(text))) notify('Commande copiée. Exécuter dans PowerShell.');
   };
@@ -126,6 +134,9 @@ export default function ConnectionsModal({ connections, close, busy, refresh, pe
       <button className="primary-button full" onClick={refresh} disabled={busy}>
         {busy ? <Loader2 size={16} className="spin" /> : <RefreshCw size={16} />}Actualiser
         connexions
+      </button>
+      <button className="secondary-button full" onClick={openSSH}>
+        Gérer serveurs SSH
       </button>
       <button
         className="text-link"

@@ -7,6 +7,10 @@ const {
   runCommand,
 } = require('./process.cjs');
 const readline = require('node:readline');
+const fs = require('node:fs');
+const os = require('node:os');
+const path = require('node:path');
+const { createToolBridge } = require('./tool-bridge.cjs');
 const { parseVersion, mergeClaudeCatalog } = require('./models.cjs');
 const { discoverClaudeModels } = require('./claude-catalog.cjs');
 const { version } = require('../package.json');
@@ -30,6 +34,7 @@ class CodexProvider {
       try {
         await rpc.request('initialize', {
           clientInfo: { name: 'duo_personal_workspace', title: 'Duo Personal Workspace', version },
+          capabilities: { experimentalApi: true },
         });
         rpc.send({ method: 'initialized', params: {} });
       } catch (error) {
@@ -108,6 +113,11 @@ class CodexProvider {
     onTool,
     onUsage = () => {},
     onQuota = () => {},
+    tools = [],
+    onToolCall,
+    onUserInput,
+    onToolResult = () => {},
+    outputSchema,
   }) {
     if (signal.aborted) throw new Error('Arrêt demandé.');
     const rpc = await this.connect();
@@ -120,6 +130,9 @@ class CodexProvider {
       sandbox: write ? 'workspace-write' : 'read-only',
       developerInstructions: instructions,
       ephemeral: true,
+      ...(tools.length
+        ? { dynamicTools: tools.map((tool) => ({ type: 'function', ...tool })) }
+        : {}),
     });
     if (signal.aborted) {
       await rpc.request('thread/unsubscribe', { threadId: thread.id }).catch(() => {});
@@ -176,6 +189,33 @@ class CodexProvider {
         }
         if (p.threadId !== thread.id) return;
         if (message.id !== undefined && message.method) {
+          if (message.method === 'item/tool/call' && onToolCall) {
+            Promise.resolve()
+              .then(() => onToolCall(p.tool, p.arguments || {}))
+              .then(
+                (value) =>
+                  rpc.send({
+                    id: message.id,
+                    result: {
+                      contentItems: [{ type: 'inputText', text: JSON.stringify(value) }],
+                      success: true,
+                    },
+                  }),
+                (error) =>
+                  rpc.send({
+                    id: message.id,
+                    result: {
+                      contentItems: [{ type: 'inputText', text: error.message }],
+                      success: false,
+                    },
+                  })
+              )
+              .catch(() => {});
+            return;
+          }
+          if (message.method === 'item/tool/requestUserInput' && onUserInput) {
+            onUserInput(p.questions || []);
+          }
           // No silent permission escalation in a headless run.
           rpc.send({
             id: message.id,
@@ -191,15 +231,36 @@ class CodexProvider {
         }
         if (message.method === 'item/completed' && p.item?.type === 'agentMessage')
           completedMessages.set(p.item.id, p.item);
+        if (message.method === 'item/completed' && p.item?.type === 'commandExecution')
+          onToolResult({
+            kind: 'command',
+            command: p.item.command,
+            exitCode: p.item.exitCode ?? null,
+            status: p.item.status,
+            durationMs: p.item.durationMs,
+          });
         if (message.method === 'thread/tokenUsage/updated') {
           usage = p.tokenUsage?.total;
           if (usage) onUsage(usage);
         }
         if (
           message.method === 'item/started' &&
-          ['commandExecution', 'fileChange', 'mcpToolCall', 'webSearch'].includes(p.item?.type)
+          [
+            'commandExecution',
+            'fileChange',
+            'mcpToolCall',
+            'dynamicToolCall',
+            'webSearch',
+          ].includes(p.item?.type)
         )
-          onTool(p.item.type, p.item.command || p.item.name || '');
+          onTool(
+            p.item.tool || p.item.type,
+            p.item.command ||
+              p.item.arguments?.path ||
+              p.item.arguments?.question ||
+              p.item.name ||
+              ''
+          );
         if (message.method === 'turn/started') {
           turnId = p.turn.id;
           if (interrupted) cancel();
@@ -222,6 +283,7 @@ class CodexProvider {
           threadId: thread.id,
           input: [{ type: 'text', text: prompt }],
           ...(effort ? { effort } : {}),
+          ...(outputSchema ? { outputSchema } : {}),
         })
         .then((result) => {
           turnId = result.turn.id;
@@ -255,9 +317,46 @@ class ClaudeProvider {
     onDelta,
     onTool,
     onUsage = () => {},
+    tools: sharedTools = [],
+    onToolCall,
+    onToolResult = () => {},
+    outputSchema,
   }) {
     const binary = findBinary('claude');
     if (!binary) throw new Error('Claude Code introuvable. Installer CLI officiel.');
+    const bridge = sharedTools.length
+      ? await createToolBridge(sharedTools, onToolCall, signal)
+      : null;
+    let bridgeFolder, mcpConfig;
+    if (bridge) {
+      try {
+        bridgeFolder = fs.mkdtempSync(path.join(os.tmpdir(), 'duo-tools-'));
+        mcpConfig = path.join(bridgeFolder, 'mcp.json');
+        fs.writeFileSync(
+          mcpConfig,
+          JSON.stringify({
+            mcpServers: {
+              duo: {
+                type: 'stdio',
+                command: process.execPath,
+                args: [path.join(__dirname, 'mcp-proxy.cjs')],
+                env: {
+                  ELECTRON_RUN_AS_NODE: '1',
+                  DUO_TOOL_ENDPOINT: bridge.url,
+                  DUO_TOOL_TOKEN: bridge.token,
+                },
+              },
+            },
+          }),
+          { mode: 0o600 }
+        );
+      } catch (error) {
+        bridge.close();
+        if (mcpConfig && fs.existsSync(mcpConfig)) fs.unlinkSync(mcpConfig);
+        if (bridgeFolder) fs.rmdirSync(bridgeFolder);
+        throw error;
+      }
+    }
     const tools = write
       ? ['Read', 'Glob', 'Grep', 'Edit', 'Write', ...(commands ? ['Bash'] : [])]
       : ['Read', 'Glob', 'Grep'];
@@ -268,100 +367,127 @@ class ClaudeProvider {
       '--verbose',
       '--include-partial-messages',
       '--permission-mode',
-      write ? 'acceptEdits' : 'plan',
+      write ? 'acceptEdits' : bridge ? 'default' : 'plan',
       '--tools',
       tools.join(','),
       '--allowedTools',
       ...tools,
+      ...sharedTools.map((tool) => `mcp__duo__${tool.name}`),
       '--settings',
       JSON.stringify({ disableAllHooks: true }),
       '--strict-mcp-config',
       '--mcp-config',
-      JSON.stringify({ mcpServers: {} }),
-      '--disallowedTools',
-      'mcp__*',
+      mcpConfig || JSON.stringify({ mcpServers: {} }),
+      ...(!bridge ? ['--disallowedTools', 'mcp__*'] : []),
       '--append-system-prompt',
       instructions,
       '--no-session-persistence',
     ];
     if (model && model !== 'default') args.push('--model', model);
     if (effort) args.push('--effort', effort);
-    return new Promise((resolve, reject) => {
-      if (signal.aborted) return reject(new Error('Arrêt demandé.'));
-      const child = launch(binary, args, { cwd: project, subscription: true });
-      let text = '',
-        stderr = '',
-        final = null,
-        done = false,
-        cancelError = null;
-      const finish = (error) => {
-        if (done) return;
-        done = true;
-        clearTimeout(timer);
-        signal.removeEventListener('abort', cancel);
-        error ? reject(error) : resolve(final?.result || text);
-      };
-      const cancel = () => {
-        cancelError = new Error('Arrêt demandé.');
-        stopTree(child);
-      };
-      const timer = setTimeout(
-        () => {
-          cancelError = new Error('Claude : délai de 20 minutes dépassé.');
+    if (outputSchema) args.push('--json-schema', JSON.stringify(outputSchema));
+    try {
+      return await new Promise((resolve, reject) => {
+        if (signal.aborted) return reject(new Error('Arrêt demandé.'));
+        const child = launch(binary, args, { cwd: project, subscription: true });
+        const toolCalls = new Map();
+        let text = '',
+          stderr = '',
+          final = null,
+          done = false,
+          cancelError = null;
+        const finish = (error) => {
+          if (done) return;
+          done = true;
+          clearTimeout(timer);
+          signal.removeEventListener('abort', cancel);
+          error
+            ? reject(error)
+            : resolve(
+                final?.structured_output
+                  ? JSON.stringify(final.structured_output)
+                  : final?.result || text
+              );
+        };
+        const cancel = () => {
+          cancelError = new Error('Arrêt demandé.');
           stopTree(child);
-        },
-        20 * 60 * 1000
-      );
-      signal.addEventListener('abort', cancel, { once: true });
-      readline.createInterface({ input: child.stdout }).on('line', (line) => {
-        let event;
-        try {
-          event = JSON.parse(line);
-        } catch {
-          return;
-        }
-        const delta =
-          event.type === 'stream_event' && event.event?.delta?.type === 'text_delta'
-            ? event.event.delta.text
-            : null;
-        if (delta) {
-          text += delta;
-          onDelta(delta);
-        }
-        if (event.type === 'assistant')
-          for (const block of event.message?.content || [])
-            if (block.type === 'tool_use')
-              onTool(block.name, block.input?.file_path || block.input?.command || '');
-        if (event.type === 'result') {
-          final = event;
-          if (event.usage) {
-            const validTokens = (value) => (Number.isFinite(value) && value >= 0 ? value : null);
-            const fresh = validTokens(event.usage.input_tokens),
-              cached = validTokens(event.usage.cache_read_input_tokens),
-              created = validTokens(event.usage.cache_creation_input_tokens);
-            onUsage({
-              inputTokens: fresh === null ? null : fresh + (cached || 0) + (created || 0),
-              outputTokens: validTokens(event.usage.output_tokens),
-              cachedInputTokens: cached,
-              cacheWriteInputTokens: created,
-            });
+        };
+        const timer = setTimeout(
+          () => {
+            cancelError = new Error('Claude : délai de 20 minutes dépassé.');
+            stopTree(child);
+          },
+          20 * 60 * 1000
+        );
+        signal.addEventListener('abort', cancel, { once: true });
+        readline.createInterface({ input: child.stdout }).on('line', (line) => {
+          let event;
+          try {
+            event = JSON.parse(line);
+          } catch {
+            return;
           }
-        }
+          const delta =
+            event.type === 'stream_event' && event.event?.delta?.type === 'text_delta'
+              ? event.event.delta.text
+              : null;
+          if (delta) {
+            text += delta;
+            onDelta(delta);
+          }
+          if (event.type === 'assistant')
+            for (const block of event.message?.content || [])
+              if (block.type === 'tool_use') {
+                onTool(block.name, block.input?.file_path || block.input?.command || '');
+                toolCalls.set(block.id, { name: block.name, input: block.input });
+              }
+          if (event.type === 'user')
+            for (const block of event.message?.content || []) {
+              const call = toolCalls.get(block.tool_use_id);
+              if (block.type === 'tool_result' && call?.name === 'Bash')
+                onToolResult({
+                  kind: 'command',
+                  command: call.input?.command,
+                  status: block.is_error ? 'failed' : 'completed',
+                  exitCode: null,
+                });
+            }
+          if (event.type === 'result') {
+            final = event;
+            if (event.usage) {
+              const validTokens = (value) => (Number.isFinite(value) && value >= 0 ? value : null);
+              const fresh = validTokens(event.usage.input_tokens),
+                cached = validTokens(event.usage.cache_read_input_tokens),
+                created = validTokens(event.usage.cache_creation_input_tokens);
+              onUsage({
+                inputTokens: fresh === null ? null : fresh + (cached || 0) + (created || 0),
+                outputTokens: validTokens(event.usage.output_tokens),
+                cachedInputTokens: cached,
+                cacheWriteInputTokens: created,
+              });
+            }
+          }
+        });
+        child.stderr.on('data', (chunk) => {
+          stderr = (stderr + chunk).slice(-8000);
+        });
+        child.on('error', finish);
+        child.on('close', (code) =>
+          finish(
+            cancelError ||
+              (code === 0 && final && !final.is_error
+                ? null
+                : new Error(final?.result || stderr || `Claude échoué (${code}).`))
+          )
+        );
+        child.stdin.end(prompt);
       });
-      child.stderr.on('data', (chunk) => {
-        stderr = (stderr + chunk).slice(-8000);
-      });
-      child.on('error', finish);
-      child.on('close', (code) =>
-        finish(
-          cancelError ||
-            (code === 0 && final && !final.is_error
-              ? null
-              : new Error(final?.result || stderr || `Claude échoué (${code}).`))
-        )
-      );
-      child.stdin.end(prompt);
-    });
+    } finally {
+      bridge?.close();
+      if (mcpConfig && fs.existsSync(mcpConfig)) fs.unlinkSync(mcpConfig);
+      if (bridgeFolder) fs.rmdirSync(bridgeFolder);
+    }
   }
 }
 
