@@ -1,0 +1,14 @@
+{
+  "version": "0.4.1",
+  "assets": {
+    "installer": {
+      "url": "https://github.com/kofudev/duo/releases/download/v0.4.1/Duo-Setup-0.4.1.exe"
+    },
+    "portable": {
+      "url": "https://github.com/kofudev/duo/releases/download/v0.4.1/Duo-0.4.1-windows-x64.zip"
+    },
+    "source": {
+      "url": "https://github.com/kofudev/duo/releases/download/v0.4.1/Duo-0.4.1-sources.zip"
+    }
+  }
+}

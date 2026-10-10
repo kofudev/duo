@@ -1,0 +1,640 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#131b15" />
+    <title>Duo — Codex et Claude, sur le même projet</title>
+    <meta
+      name="description"
+      content="Une application Windows ouverte pour faire travailler Codex et Claude ensemble. Discussion visible, tâches partagées, mémoire et budgets. Vos abonnements existants."
+    />
+    <link rel="canonical" href="https://duo.varelia.fr/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:title" content="Duo — Deux regards. Un seul projet." />
+    <meta
+      property="og:description"
+      content="Codex et Claude discutent, se répartissent le travail et relisent leurs changements. Application Windows ouverte."
+    />
+    <meta property="og:url" content="https://duo.varelia.fr/" />
+    <meta property="og:image" content="https://duo.varelia.fr/assets/social.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" type="image/svg+xml" href="assets/duo.svg" />
+    <link rel="preload" href="assets/plex-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="style.css" />
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#contenu">Aller au contenu</a>
+    <header class="header wrap">
+      <a class="brand" href="#" aria-label="Duo, accueil"
+        ><img src="assets/duo.svg" width="38" height="38" alt="" /><span
+          >duo<span class="brand-dot">.</span></span
+        ></a
+      >
+      <button class="menu-toggle" type="button" aria-controls="navigation" aria-expanded="false">
+        Menu <span aria-hidden="true">☰</span>
+      </button>
+      <nav id="navigation" aria-label="Navigation principale">
+        <a href="#collaboration">Comment ça marche</a><a href="#installation">Installation</a
+        ><a href="#contribuer">Contribuer <span aria-hidden="true">↗</span></a>
+        <a class="nav-download" href="#telecharger"
+          >Télécharger <span aria-hidden="true">↓</span></a
+        >
+      </nav>
+    </header>
+    <main id="contenu">
+      <section class="hero wrap" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="eyebrow">
+            <span class="status-dot" aria-hidden="true"></span> CODEX × CLAUDE · WINDOWS
+          </p>
+          <h1 id="hero-title">Deux regards.<br /><span>Un seul projet.</span></h1>
+          <p class="hero-description">
+            Donnez une demande à Codex et Claude. Suivez leur discussion. Laissez-les se répartir le
+            travail et relire les changements.
+          </p>
+          <div class="hero-actions">
+            <a
+              class="button primary"
+              data-download="installer"
+              href="https://github.com/kofudev/duo/releases/download/v0.4.1/Duo-Setup-0.4.1.exe"
+              ><span aria-hidden="true">↓</span> Télécharger pour Windows</a
+            ><a class="source-link" href="https://github.com/kofudev/duo"
+              >Voir le code <span aria-hidden="true">↗</span></a
+            >
+          </div>
+          <p class="download-caption">
+            v<span data-version>0.4.1</span> · Windows x64 · Version publique initiale
+          </p>
+          <div class="hero-footnote">
+            <span class="overlap-symbol" aria-hidden="true">◒◯</span>
+            <p>
+              Vos abonnements existants.<br /><strong>Un espace pour travailler ensemble.</strong>
+            </p>
+          </div>
+        </div>
+        <div class="mission" id="mission-demo" aria-label="Exemple interactif de collaboration">
+          <div class="mission-top">
+            <span><span class="window-dots" aria-hidden="true">● ● ●</span> duo / projet-demo</span
+            ><span class="example-badge">EXEMPLE</span>
+          </div>
+          <div class="mission-request">
+            <span class="small-label">VOTRE DEMANDE</span>
+            <p>Ajoute une recherche accessible à ma bibliothèque de projets.</p>
+            <div class="request-meta">
+              <span>Construire</span><span>Mode complet</span><span>Durée libre</span>
+            </div>
+          </div>
+          <div class="demo-tabs" role="tablist" aria-label="Étapes de la mission">
+            <button
+              type="button"
+              id="tab-discussion"
+              role="tab"
+              aria-selected="true"
+              aria-controls="panel-discussion"
+              tabindex="0"
+            >
+              01 Discussion
+            </button>
+            <button
+              type="button"
+              id="tab-plan"
+              role="tab"
+              aria-selected="false"
+              aria-controls="panel-plan"
+              tabindex="-1"
+            >
+              02 Répartition
+            </button>
+            <button
+              type="button"
+              id="tab-review"
+              role="tab"
+              aria-selected="false"
+              aria-controls="panel-review"
+              tabindex="-1"
+            >
+              03 Relecture
+            </button>
+            <button
+              type="button"
+              id="tab-memory"
+              role="tab"
+              aria-selected="false"
+              aria-controls="panel-memory"
+              tabindex="-1"
+            >
+              04 Mémoire
+            </button>
+          </div>
+          <div class="demo-body">
+            <div
+              id="panel-discussion"
+              role="tabpanel"
+              aria-labelledby="tab-discussion"
+              tabindex="0"
+            >
+              <article class="agent-message">
+                <div class="agent-heading">
+                  <span class="agent-avatar codex" aria-hidden="true">C</span><strong>Codex</strong
+                  ><span>Proposition</span>
+                </div>
+                <p>
+                  Je prends le filtrage des projets. Gardons une seule source de données et une
+                  recherche insensible aux accents.
+                </p>
+              </article>
+              <article class="agent-message">
+                <div class="agent-heading">
+                  <span class="agent-avatar claude" aria-hidden="true">✳</span
+                  ><strong>Claude</strong><span>Relecture du plan</span>
+                </div>
+                <p>
+                  Je m'occupe du champ et du clavier. Prévoyons aussi l'état « aucun résultat » et
+                  le retour du focus.
+                </p>
+              </article>
+              <div class="system-line">
+                <span aria-hidden="true">↳</span> Plan partagé : logique Codex, interface Claude,
+                relecture croisée.
+              </div>
+            </div>
+            <div id="panel-plan" role="tabpanel" aria-labelledby="tab-plan" tabindex="0" hidden>
+              <p class="panel-intro">Un responsable par tâche. Un partenaire pour vérifier.</p>
+              <div class="task-line">
+                <span class="task-number">01</span>
+                <div>
+                  <strong>Filtrer les projets</strong><small>Accents, noms et dossiers</small>
+                </div>
+                <span class="owner codex-text">Codex</span>
+              </div>
+              <div class="task-line">
+                <span class="task-number">02</span>
+                <div>
+                  <strong>Construire le champ de recherche</strong
+                  ><small>Clavier et état vide</small>
+                </div>
+                <span class="owner claude-text">Claude</span>
+              </div>
+              <div class="task-line">
+                <span class="task-number">03</span>
+                <div>
+                  <strong>Relire les modifications</strong
+                  ><small>Chaque agent vérifie le partenaire</small>
+                </div>
+                <span class="owner">Les deux</span>
+              </div>
+              <div class="system-line">
+                <span aria-hidden="true">↳</span> Écritures séquentielles : un agent modifie les
+                fichiers à la fois.
+              </div>
+            </div>
+            <div id="panel-review" role="tabpanel" aria-labelledby="tab-review" tabindex="0" hidden>
+              <article class="agent-message">
+                <div class="agent-heading">
+                  <span class="agent-avatar claude" aria-hidden="true">✳</span
+                  ><strong>Claude</strong><span>Relecture de Codex</span>
+                </div>
+                <p>
+                  Le filtre couvre les accents. Il manque le cas où la recherche ne contient que des
+                  espaces.
+                </p>
+              </article>
+              <div class="code-example">
+                <span>search.js · correction proposée</span
+                ><code
+                  ><span class="diff-remove">− query.toLowerCase()</span><br /><span
+                    class="diff-add"
+                    >+ query.trim().toLowerCase()</span
+                  ></code
+                >
+              </div>
+              <div class="system-line">
+                <span aria-hidden="true">↳</span> Une relecture non validée suspend les tâches
+                suivantes.
+              </div>
+            </div>
+            <div id="panel-memory" role="tabpanel" aria-labelledby="tab-memory" tabindex="0" hidden>
+              <p class="panel-intro">Le même contexte utile pour les deux agents.</p>
+              <div class="memory-example">
+                <span>PROFIL PARTAGÉ</span>
+                <p>« Réponses en français. Interface sobre. Navigation clavier. »</p>
+              </div>
+              <div class="memory-example">
+                <span>NOTE DE CE PROJET</span>
+                <p>« Les projets archivés restent exclus de la recherche principale. »</p>
+              </div>
+              <div class="system-line">
+                <span aria-hidden="true">↳</span> Extraits ciblés. Le reste de l'historique reste
+                dans Duo.
+              </div>
+            </div>
+          </div>
+          <div class="mission-bottom">
+            <span
+              ><i class="status-dot" aria-hidden="true"></i> Deux agents · un contexte partagé</span
+            ><span>Exemple illustratif</span>
+          </div>
+        </div>
+      </section>
+      <div class="principles wrap">
+        <span>Abonnements via CLI officiels</span><span>Code ouvert · MIT</span
+        ><span>Projets sur votre ordinateur</span>
+      </div>
+
+      <section class="section light" id="collaboration" aria-labelledby="collaboration-title">
+        <div class="wrap collaboration-grid">
+          <div class="section-heading">
+            <p class="eyebrow">01 / COLLABORATION</p>
+            <h2 id="collaboration-title">Le travail avance.<br />Vous gardez le fil.</h2>
+            <p>
+              Deux points de vue sont utiles quand ils aboutissent à un plan clair. Duo organise la
+              discussion, les fichiers et les relectures dans une seule mission.
+            </p>
+            <a class="text-link" href="https://github.com/kofudev/duo/blob/main/docs/usage.fr.md"
+              >Lire le guide complet <span aria-hidden="true">↗</span></a
+            >
+          </div>
+          <ol class="workflow">
+            <li>
+              <span class="step-number">01</span>
+              <div>
+                <h3>Une demande commune</h3>
+                <p>
+                  Chaque agent reçoit votre objectif et le contexte choisi. Le mode Discuter permet
+                  de commencer en lecture seule.
+                </p>
+              </div>
+            </li>
+            <li>
+              <span class="step-number">02</span>
+              <div>
+                <h3>Un plan et des responsables</h3>
+                <p>
+                  Les tâches sont attribuées à Codex ou Claude. Un seul agent écrit à la fois, pour
+                  limiter les changements concurrents.
+                </p>
+              </div>
+            </li>
+            <li>
+              <span class="step-number">03</span>
+              <div>
+                <h3>Une relecture par le partenaire</h3>
+                <p>
+                  Chaque tâche passe par l'autre agent. Une relecture non validée arrête la suite et
+                  vous laisse inspecter les modifications.
+                </p>
+              </div>
+            </li>
+            <li>
+              <span class="step-number">04</span>
+              <div>
+                <h3>Des changements inspectables</h3>
+                <p>
+                  Messages, outils, plan, éditeur et diffs restent accessibles. Vous choisissez les
+                  fichiers à committer et confirmez le push.
+                </p>
+              </div>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="section memory-section" aria-labelledby="memory-title">
+        <div class="wrap memory-grid">
+          <div class="section-heading">
+            <p class="eyebrow">02 / CONTEXTE</p>
+            <h2 id="memory-title">Vos habitudes.<br />Leur point de départ.</h2>
+            <p>
+              Une mémoire personnelle commune à Codex et Claude, des notes distinctes pour chaque
+              projet. Duo transmet une sélection pertinente plutôt que tout l'historique à chaque
+              appel.
+            </p>
+            <p class="muted">
+              Importez du texte, du Markdown ou un JSON mémoire. Relisez l'aperçu, modifiez les
+              notes et choisissez celles à partager.
+            </p>
+            <a class="text-link" href="https://github.com/kofudev/duo/blob/main/docs/privacy.md"
+              >Comprendre les données partagées <span aria-hidden="true">↗</span></a
+            >
+          </div>
+          <div class="context-card">
+            <div class="context-top">
+              <span class="small-label">EXEMPLE DE PRÉFÉRENCES</span
+              ><span aria-hidden="true">⌁</span>
+            </div>
+            <div class="context-note">
+              <span class="note-pin" aria-hidden="true">↗</span>
+              <div>
+                <h3>Comment travailler avec moi</h3>
+                <p>Français, réponses courtes. Expliquer les décisions qui changent le projet.</p>
+                <span class="note-tag">Personnel · partagé</span>
+              </div>
+            </div>
+            <div class="context-note">
+              <span class="note-pin" aria-hidden="true">↗</span>
+              <div>
+                <h3>Conventions du projet</h3>
+                <p>Réutiliser les composants existants. Vérifier la navigation au clavier.</p>
+                <span class="note-tag">Projet · sélection ciblée</span>
+              </div>
+            </div>
+            <div class="context-recipients">
+              <span class="agent-avatar codex" aria-hidden="true">C</span
+              ><span class="agent-avatar claude" aria-hidden="true">✳</span>
+              <p>Mêmes extraits.<br /><strong>Deux points de vue.</strong></p>
+            </div>
+            <p class="context-caption">
+              La mémoire des chats web se transfère manuellement, après vérification.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section light tools-section" aria-labelledby="tools-title">
+        <div class="wrap">
+          <div class="section-heading tools-heading">
+            <p class="eyebrow">03 / VOTRE ESPACE DE TRAVAIL</p>
+            <h2 id="tools-title">Du contexte au commit.</h2>
+            <p>Les outils pour suivre un projet, ajuster les agents et reprendre le travail.</p>
+          </div>
+          <div class="tools-grid">
+            <article>
+              <span class="tool-icon" aria-hidden="true">⌘</span>
+              <h3>Projets & Git</h3>
+              <p>
+                Dossiers existants, nouveaux projets, clonage GitHub et worktrees isolés. Éditeur,
+                diff et commits sélectionnés.
+              </p>
+            </article>
+            <article>
+              <span class="tool-icon" aria-hidden="true">✳</span>
+              <h3>Modèles & skills</h3>
+              <p>
+                Catalogues des CLI, efforts compatibles, Caveman et UI/UX Pro Max. 19 skills
+                sélectionnables, avec leur provenance.
+              </p>
+            </article>
+            <article>
+              <span class="tool-icon" aria-hidden="true">◷</span>
+              <h3>Durée & budgets</h3>
+              <p>
+                Durée libre par défaut. Limites d'appels et de tokens, réserve quota quand
+                disponible, départ planifié avec Duo ouvert.
+              </p>
+            </article>
+          </div>
+          <div class="budget-note">
+            <span class="small-label">MOINS D'APPELS, SI LA TÂCHE LE PERMET</span>
+            <p>
+              Le mode économe évite les débats systématiques. Le mode complet ajoute des échanges.
+              La meilleure option dépend de votre tâche : deux agents consomment aussi deux
+              abonnements.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section
+        class="section light installation-section"
+        id="installation"
+        aria-labelledby="installation-title"
+      >
+        <div class="wrap">
+          <div class="section-heading">
+            <p class="eyebrow">04 / DÉMARRAGE</p>
+            <h2 id="installation-title">Vos comptes.<br />Trois étapes.</h2>
+          </div>
+          <div class="setup-grid">
+            <article>
+              <span class="setup-number">1</span>
+              <h3>Installer Duo</h3>
+              <p>
+                Téléchargez la version Windows x64. L'installateur permet de choisir le dossier. Une
+                archive portable est aussi disponible.
+              </p>
+              <a class="text-link" href="#telecharger"
+                >Choisir le téléchargement <span aria-hidden="true">↓</span></a
+              >
+            </article>
+            <article>
+              <span class="setup-number">2</span>
+              <h3>Connecter les CLI officiels</h3>
+              <p>
+                Installez <a href="https://learn.chatgpt.com/docs/cli">Codex CLI</a> et
+                <a href="https://code.claude.com/docs/en/setup">Claude Code</a>, puis connectez vos
+                comptes dans PowerShell.
+              </p>
+              <div class="commands">
+                <div>
+                  <code>codex login</code
+                  ><button type="button" data-copy="codex login" aria-label="Copier codex login">
+                    Copier
+                  </button>
+                </div>
+                <div>
+                  <code>claude auth login</code
+                  ><button
+                    type="button"
+                    data-copy="claude auth login"
+                    aria-label="Copier claude auth login"
+                  >
+                    Copier
+                  </button>
+                </div>
+              </div>
+            </article>
+            <article>
+              <span class="setup-number">3</span>
+              <h3>Ouvrir votre projet</h3>
+              <p>
+                Dans Duo : Connexions → Actualiser. Choisissez un dossier et envoyez une première
+                demande en mode Discuter.
+              </p>
+              <a class="text-link" href="https://github.com/kofudev/duo/blob/main/docs/usage.fr.md"
+                >Guide d'installation <span aria-hidden="true">↗</span></a
+              >
+            </article>
+          </div>
+          <p class="setup-note">
+            Accès Codex et Claude Code requis dans vos comptes. Modèles disponibles selon
+            abonnement, organisation et version CLI. Node.js requis pour les CLI installés via npm ;
+            Git requis pour les opérations dépôt.
+          </p>
+        </div>
+      </section>
+
+      <section class="section downloads-section" id="telecharger" aria-labelledby="download-title">
+        <div class="wrap">
+          <div class="download-heading">
+            <div>
+              <p class="eyebrow">WINDOWS X64 · v<span data-version>0.4.1</span></p>
+              <h2 id="download-title">Faites place au duo.</h2>
+            </div>
+            <span class="release-pill">Première version publique</span>
+          </div>
+          <div class="download-options">
+            <article class="download-main">
+              <div>
+                <h3>Installateur Windows</h3>
+                <p>Installation guidée, dossier au choix et raccourci.</p>
+                <span class="file-meta" data-size="installer">.exe · Windows x64</span>
+              </div>
+              <a
+                class="button primary"
+                data-download="installer"
+                href="https://github.com/kofudev/duo/releases/download/v0.4.1/Duo-Setup-0.4.1.exe"
+                >Télécharger Duo <span aria-hidden="true">↓</span></a
+              >
+            </article>
+            <article class="download-portable">
+              <h3>Version portable</h3>
+              <p>Extraire tout le dossier, puis ouvrir Duo.exe.</p>
+              <a
+                class="text-link"
+                data-download="portable"
+                href="https://github.com/kofudev/duo/releases/download/v0.4.1/Duo-0.4.1-windows-x64.zip"
+                >Télécharger le ZIP <span aria-hidden="true">↓</span></a
+              ><span class="file-meta" data-size="portable">.zip · Windows x64</span>
+            </article>
+          </div>
+          <p class="release-note">
+            Cette version n'est pas signée. Windows peut afficher un avertissement à l'ouverture. La
+            coordination est vérifiée avec des CLI de test locaux ; une mission complète sur deux
+            abonnements réels reste à valider.
+          </p>
+          <div class="release-links">
+            <a href="https://github.com/kofudev/duo/releases/download/v0.4.1/SHA256SUMS.txt"
+              >Empreintes SHA-256 <span aria-hidden="true">↗</span></a
+            ><a
+              data-download="source"
+              href="https://github.com/kofudev/duo/releases/download/v0.4.1/Duo-0.4.1-sources.zip"
+              >Sources <span aria-hidden="true">↓</span></a
+            ><a href="https://github.com/kofudev/duo/releases"
+              >Toutes les versions <span aria-hidden="true">↗</span></a
+            ><a href="https://github.com/kofudev/duo/blob/main/docs/validation.md"
+              >Vérifications & limites <span aria-hidden="true">↗</span></a
+            >
+          </div>
+        </div>
+      </section>
+
+      <section class="section light faq-section" aria-labelledby="faq-title">
+        <div class="wrap faq-grid">
+          <div class="section-heading">
+            <p class="eyebrow">AVANT DE COMMENCER</p>
+            <h2 id="faq-title">Quelques réponses<br />sans détour.</h2>
+          </div>
+          <div class="faq">
+            <details>
+              <summary>Faut-il des clés API ?</summary>
+              <p>
+                Duo utilise les CLI officiels connectés à vos abonnements existants. Aucun
+                formulaire de clé API. Vos comptes doivent inclure l'accès à Codex et Claude Code ;
+                Duo ne le fournit pas.
+              </p>
+            </details>
+            <details>
+              <summary>Est-ce que je vois les deux agents parler ?</summary>
+              <p>
+                Oui. Les messages, phases, tâches et événements d'outils apparaissent dans la
+                mission. Les échanges dépendent du mode : le mode complet ajoute une discussion, le
+                mode économe va plus directement au plan et aux relectures.
+              </p>
+            </details>
+            <details>
+              <summary>Duo peut garantir de ne jamais atteindre mes quotas ?</summary>
+              <p>
+                Non. Duo relit les quotas Codex disponibles, conserve une réserve et applique des
+                budgets locaux. Les quotas du compte Claude ne sont pas exposés ici. Une autre
+                application ou un appel déjà lancé peut consommer la réserve. Le mode strict bloque
+                lorsque les données requises manquent.
+              </p>
+            </details>
+            <details>
+              <summary>Peut-il récupérer la mémoire de mes chats ?</summary>
+              <p>
+                Le transfert est manuel. Faites préparer un résumé par votre assistant, vérifiez-le
+                puis importez du texte, du Markdown ou un JSON mémoire. Duo affiche un aperçu et
+                vous laisse choisir les notes. Il n'importe pas automatiquement vos conversations
+                web.
+              </p>
+            </details>
+            <details>
+              <summary>Est-ce forcément plus efficace qu'un seul agent ?</summary>
+              <p>
+                Non. Une relecture peut détecter des erreurs, mais elle ajoute des appels et peut
+                aussi se tromper. Commencez par une tâche courte, inspectez les changements et
+                comparez avec votre façon habituelle de travailler.
+              </p>
+            </details>
+            <details>
+              <summary>Qu'est-ce qui reste sur mon ordinateur ?</summary>
+              <p>
+                Vos projets, historique et notes sont stockés localement. Les prompts et extraits
+                nécessaires à une mission sont envoyés aux fournisseurs via leurs CLI. Le stockage
+                local est en texte clair. Consultez
+                <a href="https://github.com/kofudev/duo/blob/main/docs/privacy.md"
+                  >le détail des données</a
+                >.
+              </p>
+            </details>
+          </div>
+        </div>
+      </section>
+
+      <section
+        class="section light contribute-section"
+        id="contribuer"
+        aria-labelledby="contribute-title"
+      >
+        <div class="wrap contribute-grid">
+          <div>
+            <p class="eyebrow">CONSTRUIRE LA SUITE</p>
+            <h2 id="contribute-title">Un projet ouvert.<br />Du travail concret.</h2>
+            <p>
+              Un bug reproductible, une meilleure traduction, un test sur votre configuration ou une
+              contribution au code : chaque retour précis aide le projet à avancer.
+            </p>
+          </div>
+          <div class="contribute-links">
+            <a href="https://github.com/kofudev/duo"
+              ><strong>Explorer le dépôt</strong
+              ><span>Code, architecture et feuille de route <b aria-hidden="true">↗</b></span></a
+            ><a href="https://github.com/kofudev/duo/issues/new/choose"
+              ><strong>Signaler un problème</strong
+              ><span>Version, étapes et résultat observé <b aria-hidden="true">↗</b></span></a
+            ><a href="https://github.com/kofudev/duo/blob/main/CONTRIBUTING.md"
+              ><strong>Proposer une contribution</strong
+              ><span
+                >Installation, conventions et vérifications <b aria-hidden="true">↗</b></span
+              ></a
+            >
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer class="footer wrap">
+      <div>
+        <a class="brand" href="#" aria-label="Duo, retour en haut"
+          ><img src="assets/duo.svg" width="30" height="30" alt="" /><span
+            >duo<span class="brand-dot">.</span></span
+          ></a
+        >
+        <p>
+          Un projet Varelia · Code ouvert, licence MIT.<br />Application indépendante d'OpenAI et
+          d'Anthropic.
+        </p>
+      </div>
+      <div class="footer-links">
+        <a href="https://github.com/kofudev/duo/blob/main/docs/privacy.md">Confidentialité</a
+        ><a href="https://github.com/kofudev/duo/blob/main/THIRD_PARTY.md">Licences</a
+        ><a href="https://github.com/kofudev/duo/blob/main/SECURITY.md">Sécurité</a
+        ><span>Sans cookies ni mesure d'audience.</span>
+      </div>
+    </footer>
+    <p id="copy-status" class="sr-only" role="status" aria-live="polite"></p>
+  </body>
+</html>

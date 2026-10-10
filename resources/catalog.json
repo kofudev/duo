@@ -1,0 +1,195 @@
+[
+  {
+    "id": "caveman",
+    "name": "Caveman",
+    "category": "Communication",
+    "description": "Skill officiel. Réponses courtes, faits et code préservés. Intensité réglable.",
+    "source": "https://github.com/JuliusBrussee/caveman",
+    "license": "Apache-2.0 + notices MIT",
+    "route": "always",
+    "revision": "2e08b9177c07bb7249a8a2d1a6758e5db281d002"
+  },
+  {
+    "id": "ultracave",
+    "name": "Ultracave",
+    "category": "Communication",
+    "description": "Caveman ultra. Chargé via intensité Caveman.",
+    "source": "https://github.com/JuliusBrussee/caveman",
+    "license": "Apache-2.0 + notices MIT",
+    "hidden": true,
+    "route": "manual",
+    "revision": "2e08b9177c07bb7249a8a2d1a6758e5db281d002"
+  },
+  {
+    "id": "caveman-review",
+    "name": "Caveman Review",
+    "category": "Qualité",
+    "description": "Relectures compactes. Risque, preuve, correction.",
+    "source": "https://github.com/JuliusBrussee/caveman",
+    "license": "Apache-2.0 + notices MIT",
+    "route": "review",
+    "revision": "2e08b9177c07bb7249a8a2d1a6758e5db281d002"
+  },
+  {
+    "id": "caveman-commit",
+    "name": "Caveman Commit",
+    "category": "Git",
+    "description": "Messages commits courts, précis, liés au diff réel.",
+    "source": "https://github.com/JuliusBrussee/caveman",
+    "license": "Apache-2.0 + notices MIT",
+    "route": "manual",
+    "revision": "2e08b9177c07bb7249a8a2d1a6758e5db281d002"
+  },
+  {
+    "id": "frontend-design",
+    "name": "Frontend Design",
+    "category": "Design",
+    "description": "Design intentionnel. Typographie, composition, identité visuelle.",
+    "route": "ui",
+    "source": "https://github.com/anthropics/skills",
+    "license": "Apache-2.0",
+    "revision": "dbd4588f9e1033efb41dad4bef2f7947c8993d44"
+  },
+  {
+    "id": "webapp-testing",
+    "name": "Webapp Testing",
+    "category": "Tests",
+    "description": "Playwright. Parcours réels, captures écran, logs navigateur.",
+    "route": "manual",
+    "source": "https://github.com/anthropics/skills",
+    "license": "Apache-2.0",
+    "revision": "dbd4588f9e1033efb41dad4bef2f7947c8993d44"
+  },
+  {
+    "id": "vercel-react-best-practices",
+    "name": "React Best Practices",
+    "category": "Développement",
+    "description": "Règles Vercel. Performances React/Next, requêtes, bundles, rendus.",
+    "route": "manual",
+    "source": "https://github.com/vercel-labs/agent-skills",
+    "license": "MIT",
+    "revision": "063bee94c3f4df8453406c830b0a7df0f2860278"
+  },
+  {
+    "id": "vercel-composition-patterns",
+    "name": "React Composition",
+    "category": "Développement",
+    "description": "Composants réutilisables, contextes, API React 19.",
+    "route": "manual",
+    "source": "https://github.com/vercel-labs/agent-skills",
+    "license": "MIT",
+    "revision": "063bee94c3f4df8453406c830b0a7df0f2860278"
+  },
+  {
+    "id": "ui-ux-pro-max",
+    "name": "UI/UX Pro Max",
+    "category": "Design",
+    "description": "Design systems, palettes, typographie, UX et accessibilité. Scripts + données inclus.",
+    "source": "https://github.com/nextlevelbuilder/ui-ux-pro-max-skill",
+    "license": "MIT",
+    "route": "ui",
+    "revision": "50d8a7de0900119855614541f15a1a616691eb33"
+  },
+  {
+    "id": "engineering",
+    "name": "Engineering",
+    "category": "Développement",
+    "description": "Conventions projet, changements ciblés, vérification réelle.",
+    "route": "always",
+    "license": "MIT · Duo",
+    "author": "Duo"
+  },
+  {
+    "id": "review",
+    "name": "Relecture croisée",
+    "category": "Qualité",
+    "description": "Critères vérifiés sur fichiers réels. Validation ou corrections concrètes.",
+    "route": "review",
+    "license": "MIT · Duo",
+    "author": "Duo"
+  },
+  {
+    "id": "debugging",
+    "name": "Debugging",
+    "category": "Qualité",
+    "description": "Reproduction, hypothèses, preuve, correction cause racine.",
+    "route": "debug",
+    "license": "MIT · Duo",
+    "author": "Duo"
+  },
+  {
+    "id": "accessibility",
+    "name": "Accessibilité",
+    "category": "Design",
+    "description": "Clavier, focus, contrastes, états, lecteurs écran.",
+    "route": "ui",
+    "license": "MIT · Duo",
+    "author": "Duo"
+  },
+  {
+    "id": "architecture",
+    "name": "Architecture projet",
+    "category": "Développement",
+    "description": "Responsabilités, données, frontières et migration.",
+    "route": "manual",
+    "license": "MIT · Duo",
+    "author": "Duo"
+  },
+  {
+    "id": "documentation",
+    "name": "Documentation utile",
+    "category": "Documentation",
+    "description": "Installation exacte, exemples exécutables, limites constatées.",
+    "route": "manual",
+    "license": "MIT · Duo",
+    "author": "Duo"
+  },
+  {
+    "id": "project-memory",
+    "name": "Project Memory",
+    "description": "Mémoire ciblée, checkpoints, reprise sans tout relire.",
+    "category": "Mémoire & efficacité",
+    "route": "always",
+    "license": "MIT · Duo",
+    "author": "Duo"
+  },
+  {
+    "id": "quota-efficiency",
+    "name": "Quota Efficiency",
+    "description": "Plans courts, contexte ciblé, travail utile dans budgets.",
+    "category": "Mémoire & efficacité",
+    "route": "always",
+    "license": "MIT · Duo",
+    "author": "Duo"
+  },
+  {
+    "id": "memory-systems",
+    "name": "Memory Systems",
+    "description": "Référence Context Engineering : mémoire persistante, récupération et validité.",
+    "category": "Mémoire & efficacité",
+    "route": "manual",
+    "license": "MIT",
+    "source": "https://github.com/muratcankoylan/Agent-Skills-for-Context-Engineering",
+    "revision": "58b55a8921758d13453b440704fb1b5b208c0b0e"
+  },
+  {
+    "id": "context-compression",
+    "name": "Context Compression",
+    "description": "Référence Context Engineering : compaction et résumés de reprise.",
+    "category": "Mémoire & efficacité",
+    "route": "manual",
+    "license": "MIT",
+    "source": "https://github.com/muratcankoylan/Agent-Skills-for-Context-Engineering",
+    "revision": "58b55a8921758d13453b440704fb1b5b208c0b0e"
+  },
+  {
+    "id": "context-optimization",
+    "name": "Context Optimization",
+    "description": "Référence Context Engineering : budgets de contexte et réduction usage.",
+    "category": "Mémoire & efficacité",
+    "route": "manual",
+    "license": "MIT",
+    "source": "https://github.com/muratcankoylan/Agent-Skills-for-Context-Engineering",
+    "revision": "58b55a8921758d13453b440704fb1b5b208c0b0e"
+  }
+]

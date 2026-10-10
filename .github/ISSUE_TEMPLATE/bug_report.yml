@@ -1,0 +1,38 @@
+name: Bug report
+description: Something did not work as expected.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: Please remove private prompts, file paths and credentials before posting logs.
+  - type: input
+    id: duo_version
+    attributes:
+      label: Duo version
+      placeholder: 0.4.1
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Windows version, Codex CLI version and Claude Code version. No account tokens.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected and actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs or screenshots
+      description: Optional. Review them for private data first.

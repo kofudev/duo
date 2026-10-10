@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Installation and usage guide
+    url: https://github.com/kofudev/duo/blob/main/docs/usage.fr.md
+    about: Start here for setup, models, memory and quotas.
+  - name: Private security report
+    url: https://github.com/kofudev/duo/security/advisories/new
+    about: Do not disclose vulnerabilities with private data in a public issue.

@@ -1,0 +1,11 @@
+node_modules/
+resources/
+build/
+release/
+dist/
+qa/
+.cache/
+website-package/
+package-lock.json
+playwright-report/
+test-results/
