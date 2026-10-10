@@ -5,6 +5,7 @@
 - 113 unit tests passed. Production dependency audit reported no known vulnerabilities.
 - Website browser checks passed at 320–1440 px with zero reported axe violations. All five provider images decoded successfully from local assets.
 - Native Electron checks passed for the welcome screen, connections, model catalog, project/workspace management and file editor. Codex, Claude and GitHub marks were visually checked in the connections dialog; both model tabs use the same assets.
+- Native advanced checks also passed for Git worktrees, file conflict handling, skill editing, mission stop and restart persistence, using local CLI fixtures. The release workflow passed its packaged application and update-dialog checks.
 - Website mission and social illustrations were regenerated from the updated page. Provider SVG paths and their recorded hashes are preserved; source notices accompany the installed application.
 
 ## First public release · 0.4.1
