@@ -66,6 +66,25 @@ test('actual usage may exceed reservation; token threshold interrupts and prohib
   assert.equal(entry.chargedTokens, 5500);
   assert.throws(() => h.instance.reserve('claude'), /Seuil tokens/);
 });
+test('per-call telemetry retains interrupted usage and cache without discounting token guard', () => {
+  const h = budget({ tokenBudget: 50000 });
+  const entry = h.instance.reserve('codex', {
+    phase: 'Relecture',
+    model: 'model-selected',
+    promptChars: 900,
+  });
+  h.instance.observe(entry, { inputTokens: 10000, outputTokens: 300, cachedInputTokens: 9000 });
+  h.instance.observe(entry, { inputTokens: 10000, outputTokens: 300, cachedInputTokens: 9000 });
+  h.instance.finish(entry, false);
+  assert.equal(h.session.budget.tokens, 10300);
+  assert.equal(h.session.budget.chargedTokens, 10300);
+  assert.equal(h.session.telemetry[0].cachedInputTokens, 9000);
+  assert.equal(h.session.telemetry[0].cacheWriteInputTokens, undefined);
+  assert.equal(h.session.telemetry[0].state, 'interrupted');
+  assert.equal(h.session.telemetry[0].phase, 'Relecture');
+  assert.equal(h.session.telemetry[0].promptChars, 900);
+  assert.equal(h.session.budget.unknownCalls, 1);
+});
 test('timebox and rolling-day budgets account for other projects and interrupted usage', () => {
   const h = budget({}, [{ id: 'old', at: 990000, chargedTokens: 19000, usageKnown: false }]);
   assert.throws(() => h.instance.reserve('codex'), /24 h/);
@@ -335,18 +354,22 @@ function mission(options = {}) {
     },
   };
 }
-test('economy builds both assigned tasks and mandatory peer reviews in six calls', async () => {
+test('economy builds both assigned tasks and mandatory peer reviews in five calls without AI synthesis', async () => {
   const h = mission();
   h.orchestrator.start(h.session, 'App', h.config);
   const result = await h.done;
   assert.equal(result.state, 'completed');
-  assert.equal(h.calls.length, 6);
+  assert.equal(h.calls.length, 5);
   assert.deepEqual(
     h.calls.filter((call) => call.write).map((call) => call.agent),
     ['codex', 'claude']
   );
-  assert.equal(result.budget.tokens, 720);
-  assert.equal(h.ledger.filter((record) => record.state === 'completed').length, 6);
+  assert.equal(result.budget.tokens, 600);
+  assert.equal(h.ledger.filter((record) => record.state === 'completed').length, 5);
+  assert.equal(result.efficiency.summaryCallsAvoided, 1);
+  assert.equal(result.tasks.filter((task) => task.status === 'done').length, 2);
+  assert.ok(result.messages.some((message) => message.phase === 'Bilan observé'));
+  assert.equal(result.telemetry.length, 5);
 });
 test('budget pause preserves completed task and prevents next writer without extra summary call', async () => {
   const h = mission({ maxCalls: 3 });

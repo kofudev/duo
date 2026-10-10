@@ -9,6 +9,7 @@ const { UsageBudget, BudgetStop } = require('./budget.cjs');
 const { recentContext } = require('./memory.cjs');
 const { captureMission, compareMission } = require('./mission-evidence.cjs');
 const { teamTools } = require('./team-tools.cjs');
+const { taskBrief, completedWork, localSummary, reportExcerpt } = require('./efficiency.cjs');
 const { planSchema, reviewSchema } = require('./mission-schema.cjs');
 const continuation = (text) =>
   /^(?:continue[rz]?|continuer|reprendre|reprends|resume|go|vas[- ]?y|poursuis|poursuivre)[\s.!]*$/i.test(
@@ -296,9 +297,13 @@ class Orchestrator {
       else await budget.quota(agent, this.providers[agent]);
       if (this.active.controller.signal.aborted)
         throw budget.stopReason || new Error('Arrêt demandé.');
-      reservation = budget.reserve(agent);
+      reservation = budget.reserve(agent, {
+        phase,
+        model: config[`${agent}Model`],
+        promptChars: prompt.length,
+      });
       this.save();
-      this.event(session, 'budget', { budget: session.budget });
+      this.event(session, 'budget', { budget: session.budget, telemetry: session.telemetry });
     }
     const id = randomUUID(),
       startedAt = Date.now();
@@ -319,10 +324,16 @@ class Orchestrator {
     });
     const instructions = `You are ${agent === 'codex' ? 'Codex' : 'Claude'}, collaborating with the other agent in Duo. Reply in French. Communicate useful decisions, never private chain of thought. Never invent tool results. Never commit, push or change credentials. Access only selected local project and enabled skill resources. ${sshProfile ? `Selected SSH target: ${sshProfile.name}, remote folder ${sshProfile.root}. Use ONLY Duo SSH tools for this target. Remote writing ${write && sshProfile.allowWrite ? 'authorized within user request' : 'disabled'}. Remote shell ${write && config.commands && sshProfile.allowCommands ? 'explicitly enabled; starting folder is NOT a sandbox, preserve unrelated services' : 'disabled'}. Deploy only when user objective explicitly requests deployment to this target.` : 'No remote target authorized. Never deploy.'} Do not spawn subagents. Read duo_team_status before work. Share concrete findings with duo_message_partner. ${consultation ? 'Answer partner directly, no recursive consultation.' : 'Consult partner with duo_consult_partner when their inspection can resolve a technical uncertainty, especially before significant implementation. Responses are real model calls and consume budget. Avoid repetitive chatter.'} If USER information, selected folder or permission is missing, call duo_request_user immediately and stop. Alternatively return JSON {"status":"waiting_user","question":"actionable question","options":[]}. Never treat a missing user choice as a code defect or request CONTINUE repeatedly. ${write ? 'Implement assigned task only. Preserve unrelated changes. Other agent reviews actual files afterwards. On resumption inspect existing partial work first. Verify remote action outcomes before repeating non-idempotent commands.' : `READ ONLY. Propose or review. Never modify files. ${readPolicy}`}\n${this.skillContext(config.skills, { ...config, prompt, phase })}`;
     this.active.working[agent] = { phase, write, startedAt };
+    const providerInstructions =
+      instructions +
+      (config.collaboration === 'economy'
+        ? '\nEFFICIENCY: Consult partner for unresolved technical decisions that affect work. Routine confirmation belongs in the mandatory peer review, not an additional consultation. Keep handoffs under 120 words unless needed to explain critical failures. Never omit failed tests, missing checks or acceptance requirements.'
+        : '');
+    if (reservation) reservation.instructionsChars = providerInstructions.length;
     try {
       const result = await this.providers[agent].run({
         prompt,
-        instructions,
+        instructions: providerInstructions,
         outputSchema:
           phase === 'Plan' ? planSchema : phase.startsWith('Relecture') ? reviewSchema : undefined,
         project: config.project,
@@ -379,14 +390,14 @@ class Orchestrator {
           usage = value;
           if (budget) {
             budget.observe(reservation, value);
-            this.event(session, 'budget', { budget: session.budget });
+            this.event(session, 'budget', { budget: session.budget, telemetry: session.telemetry });
             if (budget.stopReason) this.active.controller.abort();
           }
         },
         onQuota: (value) => {
           if (budget) {
             budget.observeQuota(agent, value);
-            this.event(session, 'budget', { budget: session.budget });
+            this.event(session, 'budget', { budget: session.budget, telemetry: session.telemetry });
             if (budget.stopReason) this.active.controller.abort();
           }
         },
@@ -426,7 +437,7 @@ class Orchestrator {
       if (budget) {
         budget.finish(reservation, completed);
         this.save();
-        this.event(session, 'budget', { budget: session.budget });
+        this.event(session, 'budget', { budget: session.budget, telemetry: session.telemetry });
       }
     }
   }
@@ -492,6 +503,8 @@ class Orchestrator {
       session.progress = { objective, mode: config.mode, stage: 'analysis', updates: [] };
       session.tasks = [];
       session.metrics = { calls: 0, agents: {} };
+      session.telemetry = [];
+      session.efficiency = { summaryCallsAvoided: 0 };
       session.budget = null;
       session.results = [];
       session.recap = null;
@@ -616,7 +629,10 @@ class Orchestrator {
     const history = recentContext(session.messages);
     const memory =
       config.memoryEnabled !== false || config.personalMemoryEnabled !== false
-        ? this.services.memory?.(config, prompt)
+        ? this.services.memory?.(
+            config,
+            `${session.progress.objective}\n${session.progress.updates.join('\n')}`
+          )
         : null;
     session.context = {
       historyChars: history.length,
@@ -626,7 +642,9 @@ class Orchestrator {
       projectMemoryIds: memory?.projectIds || [],
       totalNotes: memory?.total || 0,
     };
-    const base = `USER REQUEST: ${session.progress.objective}\nUSER CLARIFICATIONS: ${session.progress.updates.join('\n')}\nRECENT CONTEXT: ${history}\nProject: ${config.project}\nPROJECT BRIEF: ${config.projectBrief || '(none)'}\n${memory?.text || ''}\n`;
+    const common = `USER REQUEST: ${session.progress.objective}\nUSER CLARIFICATIONS: ${session.progress.updates.join('\n')}\nProject: ${config.project}\nPROJECT BRIEF: ${config.projectBrief || '(none)'}\n${memory?.text || ''}\n`;
+    const base = `${common}RECENT CONTEXT: ${history}\n`;
+    const workBase = config.collaboration === 'economy' ? common : base;
     if (this.active.budget && config.collaboration === 'economy' && config.mode === 'build') {
       this.status(session, 'Vérification budgets + quotas');
       await Promise.all(
@@ -734,13 +752,7 @@ class Orchestrator {
           config,
           task.owner,
           'Construction',
-          `${base}Shared plan: ${planText}\nTask assigned to you: ${JSON.stringify(task)}\nCompleted work: ${session.messages
-            .filter((m) => m.phase === 'Construction' || m.phase === 'Correction')
-            .map((m) => m.text)
-            .join('\n')
-            .slice(
-              -20000
-            )}\nObserved changes: ${JSON.stringify(session.recap?.changes || [])}\nImplement this task now. Inspect partial work first on resumption. Use shared tools and consult partner when useful. Summarize actual modifications and validations.`,
+          `${workBase}Shared plan: ${planText}\nTask assigned to you: ${JSON.stringify(taskBrief(task))}\nCompleted work: ${completedWork(session.tasks)}\nObserved changes: ${JSON.stringify(session.recap?.changes || [])}\nImplement this task now. Inspect partial work first on resumption. Use shared tools and consult partner when useful. Summarize actual modifications and validations.`,
           true
         );
         task.checkpoint = 'review';
@@ -762,7 +774,7 @@ class Orchestrator {
           config,
           reviewer,
           final ? 'Relecture finale' : 'Relecture',
-          `${base}${final ? 'Review actual files again after correction for ' : 'Review actual current files for this task: '}${JSON.stringify(task)}\n${this.evidence.text(snapshot)}Implementer report: ${task.report || ''}\nRemote operations: ${JSON.stringify((session.results || []).filter((entry) => entry.remote).slice(-10))}\nReturn ONLY JSON {"approved":true or false,"summary":"...","issues":["actionable issues"]}. Check against request and acceptance criteria. Do not modify files. Missing user choice is waiting_user, never a defect requiring another correction. If blocked return {"status":"waiting_user","question":"...","options":[]}.`
+          `${workBase}${final ? 'Review actual files again after correction for ' : 'Review actual current files for this task: '}${JSON.stringify(taskBrief(task))}\n${this.evidence.text(snapshot)}Implementer report: ${reportExcerpt(task.report)}\nRemote operations: ${JSON.stringify((session.results || []).filter((entry) => entry.remote).slice(-10))}\nReturn ONLY JSON {"approved":true or false,"summary":"...","issues":["actionable issues"]}. Check against request and acceptance criteria. Do not modify files. Missing user choice is waiting_user, never a defect requiring another correction. If blocked return {"status":"waiting_user","question":"...","options":[]}.`
         );
         const changed = this.evidence.changed(snapshot),
           blocked = snapshot.files
@@ -802,7 +814,7 @@ class Orchestrator {
           config,
           task.owner,
           'Correction',
-          `${base}Fix these review issues in your assigned task: ${task.review || ''}\nTask: ${JSON.stringify(task)}. Inspect existing changes before proceeding. Report actual changes and validation.`,
+          `${workBase}Fix these review issues in your assigned task: ${task.review || ''}\nTask: ${JSON.stringify(taskBrief(task))}. Inspect existing changes before proceeding. Report actual changes and validation.`,
           true
         );
         task.corrections = (task.corrections || 0) + 1;
@@ -831,6 +843,13 @@ class Orchestrator {
     session.progress.stage = 'summary';
     this.save();
     this.status(session, 'Bilan commun');
+    if (config.collaboration === 'economy') {
+      this.recap(session);
+      session.efficiency ||= { summaryCallsAvoided: 0 };
+      session.efficiency.summaryCallsAvoided = 1;
+      this.message(session, 'system', 'Bilan observé', localSummary(session));
+      return;
+    }
     await this.ask(
       session,
       config,

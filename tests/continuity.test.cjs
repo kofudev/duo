@@ -127,14 +127,14 @@ test('budget resumption preserves objective, done tasks, real deltas and cumulat
     h.calls.filter((call) => call.write).map((call) => call.agent),
     ['codex', 'claude']
   );
-  assert.equal(h.session.budget.calls, 6);
-  assert.equal(h.session.metrics.calls, 6);
+  assert.equal(h.session.budget.calls, 5);
+  assert.equal(h.session.metrics.calls, 5);
   assert.deepEqual(h.session.recap.changes.map((file) => [file.path, file.kind]).sort(), [
     ['one.js', 'created'],
     ['two.js', 'created'],
   ]);
   await h.start('CONTINUE');
-  assert.equal(h.calls.length, 6);
+  assert.equal(h.calls.length, 5);
 });
 test('missing user input stops before construction; CONTINUE spends zero; answer preserves original goal', async () => {
   let answered = false;
@@ -209,7 +209,7 @@ test('real consultation dispatches partner read-only, returns actual inspection,
   });
   await h.start('Collaborate');
   assert.equal(h.session.state, 'completed');
-  assert.equal(h.session.budget.calls, 7);
+  assert.equal(h.session.budget.calls, 6);
   assert.ok(h.events.some((event) => event.message?.phase === 'Question → Claude'));
   assert.ok(h.events.some((event) => event.message?.phase === 'Réponse → Codex'));
 });
@@ -275,4 +275,41 @@ test('legacy completed conversation blocks redundant continue but allows explici
   assert.equal(h.session.progress.objective, 'Build from discussion');
   assert.equal(h.session.config.mode, 'build');
   assert.equal(h.calls.filter((call) => call.write).length, 2);
+});
+test('compact build handoff preserves objective and criteria without replaying long reports or adding synthesis', async () => {
+  let memoryQuery;
+  const h = fixture((agent, options, project) => {
+    if (options.outputSchema?.properties.tasks)
+      return JSON.stringify({
+        tasks: [
+          { title: 'One', owner: 'codex', files: ['one.js'], acceptance: 'CRITICAL_CONTRACT' },
+          { title: 'Two', owner: 'claude', files: ['two.js'], acceptance: 'CRITICAL_CONTRACT' },
+        ],
+      });
+    if (options.write) {
+      fs.writeFileSync(path.join(project, agent === 'codex' ? 'one.js' : 'two.js'), agent);
+      return 'Long implementation details. '.repeat(1000) + 'VALIDATION_PENDING_EXTERNAL_TEST';
+    }
+    return approved;
+  });
+  h.orchestrator.services.memory = (_config, query) => {
+    memoryQuery = query;
+    return { text: '', selectedIds: [], total: 0 };
+  };
+  await h.start('PRESERVE_ORIGINAL_GOAL');
+  const second = h.calls.find((call) => call.write && call.agent === 'claude');
+  assert.ok(
+    second.prompt.includes('PRESERVE_ORIGINAL_GOAL') && second.prompt.includes('CRITICAL_CONTRACT')
+  );
+  assert.ok(second.prompt.length < 7000);
+  assert.ok(second.prompt.includes('VALIDATION_PENDING_EXTERNAL_TEST'));
+  assert.ok(!second.prompt.includes('Long implementation details. '.repeat(30)));
+  assert.ok(
+    h.calls
+      .filter((call) => call.outputSchema && !call.outputSchema.properties.tasks)
+      .every((call) => call.prompt.includes('CRITICAL_CONTRACT'))
+  );
+  assert.equal(h.calls.length, 5);
+  assert.equal(memoryQuery, 'PRESERVE_ORIGINAL_GOAL\n');
+  assert.equal(h.session.efficiency.summaryCallsAvoided, 1);
 });

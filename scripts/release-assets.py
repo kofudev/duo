@@ -4,6 +4,7 @@ Run after npm run dist and staging the public source files. Does not publish.
 """
 import hashlib
 import json
+import re
 import shutil
 import subprocess
 import sys
@@ -48,6 +49,8 @@ manifest['assets']['source'] = {
     'url': f'https://github.com/kofudev/duo/releases/download/v{VERSION}/Duo-{VERSION}-sources.zip'
 }
 manifest_file.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+index_file = ROOT / 'website' / 'index.html'
+index_file.write_text(re.sub(r'(<span data-version>)\d+\.\d+\.\d+(</span>)', lambda match: match[1] + VERSION + match[2], index_file.read_text(encoding='utf-8')), encoding='utf-8')
 subprocess.run(['node', str(ROOT / 'node_modules' / 'prettier' / 'bin' / 'prettier.cjs'), '--write', str(manifest_file)], cwd=ROOT, check=True)
 run('package-release.py', 'source')
 run('package-site.py')

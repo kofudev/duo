@@ -106,6 +106,8 @@ class UsageBudget {
       : null;
     this.records = new Map();
     this.stopReason = null;
+    if (!session.telemetry?.length)
+      session.telemetry = ledger.filter((record) => record.sessionId === session.id).slice(-200);
     const previous = session.budget;
     session.budget = {
       deadline: this.deadline,
@@ -165,7 +167,7 @@ class UsageBudget {
         );
       }
   }
-  reserve(agent) {
+  reserve(agent, details = {}) {
     this.check();
     const budget = this.session.budget,
       daily = this.daily(),
@@ -182,6 +184,9 @@ class UsageBudget {
       id: randomUUID(),
       sessionId: this.session.id,
       agent,
+      phase: String(details.phase || 'Appel').slice(0, 100),
+      model: String(details.model || '').slice(0, 160),
+      promptChars: Number.isFinite(details.promptChars) ? Math.max(0, details.promptChars) : null,
       at: this.now(),
       chargedTokens: amount,
       actualTokens: 0,
@@ -193,6 +198,8 @@ class UsageBudget {
     budget.chargedTokens += amount;
     this.records.set(record.id, record);
     this.ledger.push(record);
+    this.session.telemetry.push(record);
+    this.session.telemetry = this.session.telemetry.slice(-200);
     // Keep a rolling day. Never evict a pending reservation.
     const cutoff = this.now() - 86400000;
     for (let index = this.ledger.length - 1; index >= 0; index--)
@@ -234,6 +241,9 @@ class UsageBudget {
   observe(record, usage) {
     const amount = tokenCount(usage);
     if (amount === null) return;
+    for (const key of ['inputTokens', 'outputTokens', 'cachedInputTokens', 'cacheWriteInputTokens'])
+      if (Number.isFinite(usage?.[key]) && usage[key] >= 0)
+        record[key] = Math.max(record[key] || 0, usage[key]);
     const budget = this.session.budget,
       delta = Math.max(0, amount - record.actualTokens);
     record.actualTokens += delta;
@@ -257,6 +267,7 @@ class UsageBudget {
     if (!record || record.state !== 'running') return;
     const budget = this.session.budget;
     record.state = completed ? 'completed' : 'interrupted';
+    record.durationMs = Math.max(0, this.now() - record.at);
     // Failed or interrupted calls may have unreported usage: retain their reservation.
     if (completed && record.usageKnown) {
       budget.chargedTokens += record.actualTokens - record.chargedTokens;

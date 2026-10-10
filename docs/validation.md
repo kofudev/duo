@@ -1,5 +1,12 @@
 # Validation
 
+## Measured consumption and shorter handoffs · 0.5.1
+
+- 132 unit tests passed. Economy fixtures complete two writes and mandatory partner reviews in five calls, with a local assembled report; no AI synthesis call is launched.
+- A long-report fixture verifies that later writers and reviewers retain original objective, acceptance criteria and the report's final validation warning without repeating the full report. Interrupted token reports retain known cache fields and conservative token accounting.
+- Native Windows fixtures passed both the ten-call full workflow and five-call economy workflow, including the consumption panel, actual file writes, reviews, restart, wrong-folder recovery, cancellation and no renderer errors.
+- No live A/B token savings or quality comparison has been performed for this optimization. The 0.5.0 live measurements below include cached tokens and do not establish superiority over a single agent. See [measurement guide](economie.fr.md).
+
 ## Mission continuity and SSH · 0.5.0
 
 - 130 unit tests passed, including cumulative resumption budgets, legacy plan migration, review resumption without repeating a writer, human blockers, real partner dispatch, recursive-consultation rejection and cancellation locks.

@@ -1,4 +1,4 @@
-# Duo · Windows · 0.5.0
+# Duo · Windows · 0.5.1
 
 Un prompt → Codex + Claude. Analyses simultanées → discussion croisée → plan partagé → écritures séquentielles → relecture partenaire.
 
@@ -6,7 +6,7 @@ Application personnelle locale. Electron + React. CLI officiels installés sur o
 
 ## Installer et connecter
 
-1. Télécharger puis ouvrir `Duo-Setup-0.5.0.exe` depuis [GitHub Releases](https://github.com/kofudev/duo/releases/latest). Installation Windows x64, dossier configurable. Installateur non signé.
+1. Télécharger puis ouvrir `Duo-Setup-0.5.1.exe` depuis [GitHub Releases](https://github.com/kofudev/duo/releases/latest). Installation Windows x64, dossier configurable. Installateur non signé.
 2. Installer CLI officiels [Codex](https://learn.chatgpt.com/docs/cli), [Claude Code](https://code.claude.com/docs/en/setup) et Git. Node.js reste requis pour lanceurs npm JavaScript. Versions natives prises en charge.
 3. Connecter comptes dans PowerShell :
 
@@ -28,7 +28,7 @@ Version portable : conserver **dossier complet** `release/win-unpacked`, puis ou
 
 **Discuter** : propositions et critique en lecture seule, puis synthèse. **Construire** : huit tâches maximum, responsabilité Codex/Claude, construction séquentielle, relecture autre agent. Une correction maximum par tâche ; relecture non validée → « À vérifier », tâches suivantes suspendues.
 
-Mode économe par défaut : Discuter = deux avis + synthèse ; Construire = plan direct puis tâches et relectures. Mode complet ajoute deux propositions et 1 à 5 tours de débat. Un écrivain IA à la fois. Arrêter accessible depuis autres pages. Nouvelle mission possible après fin ou annulation. Missions renommables, recherchables, archivables et restaurables.
+Mode économe par défaut : Discuter = deux avis + synthèse ; Construire = plan direct puis tâches et relectures, avec bilan assemblé localement sans appel IA supplémentaire. Deux tâches sans correction ni consultation = cinq appels. Mode complet ajoute deux propositions et 1 à 5 tours de débat. Un écrivain IA à la fois. Arrêter accessible depuis autres pages. Nouvelle mission possible après fin ou annulation. Missions renommables, recherchables, archivables et restaurables.
 
 Avant relecture, coordonnateur lit fichiers déclarés du plan, fournit snapshot borné et empreinte SHA-256. Fichier changé pendant relecture → validation arrêtée. Extraits volumineux exigent inspection complémentaire par agent. `.env`, clés privées, fichiers nommés secrets/credentials et métadonnées Git ne sont pas copiés automatiquement. Cette exclusion ne détecte pas tous secrets présents dans code.
 
@@ -55,6 +55,8 @@ Réserve fournisseur par défaut : 20 %. Codex : fenêtres compte relues avant p
 **Impossible garantir jamais atteindre quota** : activité autres applis, lecture retardée et consommation appel en cours. Plafond tokens = seuil d'interruption + réservation, consommation réelle peut le dépasser. Arrêt demande annulation aux CLI ; quelques secondes possibles avant fin processus. Tokens cache comptés lorsqu'exposés. Les prix API ne donnent pas coût abonnement.
 
 Ledger usage conservé dans profil Duo, commun à tous projets. Appel échoué/interrompu ou usage non fourni → réservation conservée par prudence. Historique 24 h glissantes. Les valeurs des plafonds utilisées sont celles de mission ; modifier plafond ne rembourse pas usage passé.
+
+**Consommation mesurée** dans mission → détails par phase, entrée/sortie, cache lu/écrit et usage manquant. Cache réutilisé ne signifie pas pourcentage de réduction sur abonnement. [Mesurer économies et résultat](economie.fr.md).
 
 Budget atteint → mission en pause, fichiers conservés, aucun appel de bilan supplémentaire. Tâches validées restent visibles ; travail interrompu pendant écriture/relecture demande vérification. Le bouton Reprendre reprend dernière étape après inspection des changements. Tâches validées ne sont pas réécrites et compteurs restent cumulatifs ; augmenter plafond si nécessaire ne rembourse pas consommation.
 

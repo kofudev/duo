@@ -174,7 +174,47 @@ let app;
         .filter((c) => c.event === 'permissions' && c.agent === 'claude' && !c.write)
         .every((c) => !c.tools.includes('Write') && !c.tools.includes('Bash'))
     );
+    await page.locator('.token-usage summary').click();
+    assert.equal(await page.locator('.token-calls > div').count(), 10);
+    assert.ok(
+      (await page.locator('.token-usage').innerText()).includes(
+        'Gain face à un agent seul non mesuré'
+      )
+    );
     await page.screenshot({ path: path.join(root, 'qa', 'duo-v2-mission-simulation.png') });
+    await page.evaluate(() => window.duo.settings({ collaboration: 'economy' }));
+    await page.reload();
+    await page.waitForFunction(() =>
+      document.querySelector('.connection-pill')?.textContent.includes('2/2')
+    );
+    await page
+      .getByRole('button', { name: /^Nouvelle mission/ })
+      .first()
+      .click();
+    await page
+      .getByLabel('Demande commune pour Codex et Claude')
+      .fill('Simulation économie : garder deux constructions et relectures.');
+    const beforeEconomy = records().filter((entry) => entry.event === 'start').length;
+    await page.getByRole('button', { name: 'Lancer Duo', exact: true }).click();
+    await page.waitForFunction(
+      () =>
+        document.querySelectorAll('.task.done').length === 2 &&
+        !document.querySelector('.phase-bar'),
+      null,
+      { timeout: 60000 }
+    );
+    const economical = (await page.evaluate(() => window.duo.library())).sessions[0];
+    assert.equal(economical.state, 'completed');
+    assert.equal(economical.budget.calls, 5);
+    assert.equal(economical.efficiency.summaryCallsAvoided, 1);
+    assert.equal(economical.telemetry.length, 5);
+    assert.equal(records().filter((entry) => entry.event === 'start').length - beforeEconomy, 5);
+    assert.ok(economical.messages.some((message) => message.phase === 'Bilan observé'));
+    await page.locator('.token-usage summary').click();
+    assert.equal(await page.locator('.token-calls > div').count(), 5);
+    assert.ok(
+      (await page.locator('.token-usage').innerText()).includes('1 appel de synthèse évité')
+    );
     // Human blockers survive reload; blind CONTINUE cannot spend or rebuild.
     await page
       .getByRole('button', { name: /^Nouvelle mission/ })
@@ -247,6 +287,11 @@ let app;
     assert.equal(data.sessions[0].state, 'attention');
     assert.equal(data.sessions[0].tasks[1].status, 'pending');
     // Cancellation interrupts Codex and kills Claude, then permits a new mission.
+    await page.evaluate(() => window.duo.settings({ collaboration: 'full' }));
+    await page.reload();
+    await page.waitForFunction(() =>
+      document.querySelector('.connection-pill')?.textContent.includes('2/2')
+    );
     await page
       .getByRole('button', { name: /^Nouvelle mission/ })
       .first()
@@ -283,6 +328,8 @@ let app;
           'Markdown export with evidence and metrics',
           'authoritative finals',
           'per-agent token counts including cache',
+          'native per-call consumption with explicit unknown and cache semantics',
+          'five-call economy build preserves two writers and two reviews without AI synthesis',
           'read-only tool permissions',
           'native mission accessibility',
           'waiting user survives reload without CONTINUE calls',

@@ -3859,3 +3859,38 @@ button:active:not(:disabled) {
 .task.paused .task-number {
   color: #d8bc68;
 }
+.token-usage {
+  border-top: 1px solid var(--line);
+  margin-top: 12px;
+  padding-top: 12px;
+  font-size: 11px;
+}
+.token-usage summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+.token-usage summary span {
+  margin-left: auto;
+  font-variant-numeric: tabular-nums;
+}
+.token-usage p {
+  color: var(--muted);
+  line-height: 1.55;
+  margin: 10px 0;
+}
+.token-usage .token-avoided {
+  color: var(--accent);
+}
+.token-calls > div {
+  display: grid;
+  gap: 5px;
+  padding: 9px 0;
+  border-top: 1px solid var(--line);
+}
+.token-calls span,
+.token-calls small {
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
