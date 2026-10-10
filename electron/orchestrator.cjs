@@ -626,6 +626,16 @@ class Orchestrator {
     }
   }
   async execute(session, prompt, config) {
+    // A persisted mission may have completed all work before an older AI summary hit quota.
+    if (
+      config.mode === 'build' &&
+      config.collaboration === 'economy' &&
+      session.tasks.length &&
+      session.tasks.every((task) => task.status === 'done')
+    ) {
+      this.finishEconomy(session);
+      return;
+    }
     const history = recentContext(session.messages);
     const memory =
       config.memoryEnabled !== false || config.personalMemoryEnabled !== false
@@ -842,14 +852,11 @@ class Orchestrator {
     }
     session.progress.stage = 'summary';
     this.save();
-    this.status(session, 'Bilan commun');
     if (config.collaboration === 'economy') {
-      this.recap(session);
-      session.efficiency ||= { summaryCallsAvoided: 0 };
-      session.efficiency.summaryCallsAvoided = 1;
-      this.message(session, 'system', 'Bilan observé', localSummary(session));
+      this.finishEconomy(session);
       return;
     }
+    this.status(session, 'Bilan commun');
     await this.ask(
       session,
       config,
@@ -863,6 +870,14 @@ class Orchestrator {
           -16000
         )}\nDeliver concise final report of actual changes, tests executed, remaining issues. No invented verification.`
     );
+  }
+  finishEconomy(session) {
+    session.progress.stage = 'summary';
+    this.status(session, 'Bilan commun');
+    this.recap(session);
+    session.efficiency ||= { summaryCallsAvoided: 0 };
+    session.efficiency.summaryCallsAvoided = 1;
+    this.message(session, 'system', 'Bilan observé', localSummary(session));
   }
   stop() {
     if (this.active) {

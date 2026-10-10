@@ -313,3 +313,40 @@ test('compact build handoff preserves objective and criteria without replaying l
   assert.equal(memoryQuery, 'PRESERVE_ORIGINAL_GOAL\n');
   assert.equal(h.session.efficiency.summaryCallsAvoided, 1);
 });
+test('already-reviewed persisted work assembles local summary even when provider quota is unavailable', async () => {
+  const h = fixture(() => {
+    throw new Error('No new inference allowed');
+  });
+  let quotaRequests = 0;
+  for (const provider of Object.values(h.orchestrator.providers))
+    provider.quota = async () => {
+      quotaRequests++;
+      return null;
+    };
+  h.session.state = 'paused';
+  h.session.progress = {
+    objective: 'Already finished',
+    mode: 'build',
+    stage: 'summary',
+    updates: [],
+  };
+  h.session.tasks = [
+    {
+      id: 'finished',
+      title: 'Done',
+      owner: 'codex',
+      files: [],
+      status: 'done',
+      checkpoint: 'done',
+      report: 'Actual old work',
+      review: approved,
+    },
+  ];
+  h.session.budget = { calls: 3, tokens: 1000, chargedTokens: 1000 };
+  await h.start('CONTINUE', { quotaPolicy: 'strict', maxCalls: 3 });
+  assert.equal(h.session.state, 'completed');
+  assert.equal(h.calls.length, 0);
+  assert.equal(quotaRequests, 0);
+  assert.equal(h.session.budget.calls, 3);
+  assert.equal(h.session.efficiency.summaryCallsAvoided, 1);
+});
