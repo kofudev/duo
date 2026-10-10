@@ -26,7 +26,7 @@ Les imports mémoire passent par un aperçu : texte, Markdown ou JSON mémoire. 
 
 ## Limites connues
 
-La coordination a été vérifiée avec des CLI de test locaux, jusqu'à la construction et la relecture. Une mission complète avec deux abonnements réels reste à valider. [Détail des vérifications](docs/validation.md).
+La coordination a été vérifiée avec des CLI de test locaux, jusqu'à la construction et la relecture. Deux CLI réels ont aussi créé leurs fichiers et consulté le partenaire ; ce chantier s'est arrêté à la réserve quota avant la dernière relecture. Une mission réelle terminée reste à valider. [Détail des vérifications](docs/validation.md).
 
 Les quotas du compte Claude ne sont pas exposés ici. Les budgets locaux et réserves Codex ne peuvent pas garantir de ne jamais atteindre les limites : d'autres applications et l'appel en cours peuvent consommer du quota. La planification nécessite Duo ouvert et Windows éveillé.
 

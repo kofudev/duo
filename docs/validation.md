@@ -4,11 +4,13 @@
 
 - 130 unit tests passed, including cumulative resumption budgets, legacy plan migration, review resumption without repeating a writer, human blockers, real partner dispatch, recursive-consultation rejection and cancellation locks.
 - Native mission fixtures verified that waiting survives reload, CONTINUE spends no additional inference while blocked, and selecting the correct existing folder preserves mission objective and build mode. Observed file changes were displayed independently of model reports.
-- Codex (`gpt-6.1-sol`) and Claude (`haiku`) each completed one live custom-tool call with a canary returned by the coordinator and a structured response. This verifies both transport integrations; a full construction mission across two live subscriptions remains unvalidated.
+- Codex (`gpt-6.1-sol`) and Claude (`haiku`) each completed one live custom-tool call with a canary returned by the coordinator and a structured response. A subsequent isolated live construction produced `alpha.mjs` and `beta.mjs` with one writer per provider. Claude read the actual first file during consultation and approved it during review. Importing the second module returned the expected `DUO_LIVE_A_B` value. The mission paused when the Codex quota reached its 20% reserve, before the second task's mandatory review; full live mission completion remains unvalidated. No quota override was used.
 - Native SSH management passed create/select/test/edit/delete workflows, readonly defaults and zero reported axe violations in its modal. The connection-test response in this UI fixture is local and does not contact a server.
 - A real OpenSSH readonly probe succeeded on Unix with Python 3.13.5. Four helper tests passed on that server in temporary directories: actual create/read/replace, stale-hash rejection, traversal/symlink/hardlink/secret protections, literal filenames, command exit codes, timeout and bounded output.
 
 The packaged application also passed SSH management, the actual MCP bridge as a child Node process, resource checks and a real file save. Release checks repeat these workflows before publication. These checks do not guarantee model quality or accessibility for every user.
+
+The public 0.5.0 release workflow passed Windows construction, unit and native integration checks, Unix helper checks, artifact verification and website deployment. The live site manifest matches the published versioned installer and portable hashes; the permanent installer URL returns an executable attachment.
 
 ## Logo update · 0.4.2
 

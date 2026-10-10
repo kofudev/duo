@@ -34,7 +34,7 @@ Economy mode is the default. Full mode adds discussion rounds. Two agents can he
 
 ## Current limits
 
-This is an early Windows release. Coordination has been tested with local CLI fixtures, including a complete ten-call mission and the packaged application's memory workflow. Live custom-tool calls and structured responses were verified with both Codex and Claude; a full live mission across both subscriptions has **not** been validated. See [validation details](docs/validation.md).
+This is an early Windows release. Coordination has been tested with local CLI fixtures, including a complete ten-call mission and the packaged application's memory workflow. Live calls, partner inspection and file creation were verified with both Codex and Claude. The live construction paused at the configured quota reserve before its last review; full live mission completion remains unvalidated. See [validation details](docs/validation.md).
 
 Claude account quotas are not exposed by this integration. Strict quota mode blocks when required quota data is unavailable. Local budgets and Codex reserves cannot guarantee that a shared account never reaches its limit: other applications and calls already in progress also consume usage.
 
