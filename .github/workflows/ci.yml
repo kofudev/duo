@@ -30,6 +30,7 @@ jobs:
       - run: npm run check:public
       - run: npx playwright install chromium
       - run: npm run test:site
+      - run: node tests/autonomy-smoke.cjs
   remote-security:
     runs-on: ubuntu-latest
     timeout-minutes: 5

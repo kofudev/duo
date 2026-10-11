@@ -4,6 +4,10 @@ Duo is an early Windows application. These are areas to explore, not promised de
 
 ## Reliability first
 
+The 0.6 autonomy work adds explicit full host access and coordinator-run checks with bounded, peer-reviewed repairs. The next useful work is a reproducible real-account comparison: time to a tested result, failures, corrections and actual tokens. No blanket quality or cost advantage is established.
+
+Persistent provider sessions could reduce repeated context, but must preserve read-only review permissions, current user instructions and restart safety. Independent mission worktrees could allow concurrent writes without sharing one checkout; conflict resolution and a final integrated check need design and validation first. These remain future work.
+
 - More real-account compatibility reports for current Codex and Claude Code releases.
 - Better diagnostics when a provider stops, needs login, or returns incomplete usage.
 - More realistic local fixtures for cancellation, streaming and review failures.

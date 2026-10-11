@@ -1,4 +1,4 @@
-const { randomUUID } = require('node:crypto');
+const { randomUUID, createHash } = require('node:crypto');
 const {
   captureReview,
   changedSince,
@@ -11,6 +11,7 @@ const { captureMission, compareMission } = require('./mission-evidence.cjs');
 const { teamTools } = require('./team-tools.cjs');
 const { taskBrief, completedWork, localSummary, reportExcerpt } = require('./efficiency.cjs');
 const { planSchema, reviewSchema } = require('./mission-schema.cjs');
+const { validationCommands, runValidation } = require('./validation.cjs');
 const continuation = (text) =>
   /^(?:continue[rz]?|continuer|reprendre|reprends|resume|go|vas[- ]?y|poursuis|poursuivre)[\s.!]*$/i.test(
     text.trim()
@@ -172,6 +173,13 @@ class Orchestrator {
         .map(({ agent, phase, text }) => ({ agent, phase, text: text.slice(-3000) })),
       changes: session.recap?.changes || [],
       selectedSSH: session.config?.sshProfileId || null,
+      validation: session.validation
+        ? {
+            state: session.validation.state,
+            commands: session.validation.commands,
+            repairs: session.validation.repairs,
+          }
+        : null,
     };
   }
   async toolCall(session, config, agent, phase, write, consultation, name, args) {
@@ -185,6 +193,50 @@ class Orchestrator {
     };
     const partner = agent === 'codex' ? 'claude' : 'codex';
     if (name === 'duo_team_status') return this.teamStatus(session);
+    if (name === 'duo_add_validation') {
+      if (
+        !write ||
+        (config.validationMode || 'auto') !== 'auto' ||
+        (!config.commands && config.accessMode !== 'full')
+      )
+        throw new Error('Ajout de validations non autorisé dans cette phase.');
+      if (
+        !Array.isArray(args.commands) ||
+        !args.commands.length ||
+        args.commands.length > 6 ||
+        args.commands.some(
+          (value) =>
+            typeof value !== 'string' ||
+            !value.trim() ||
+            value.length > 2000 ||
+            /[\x00-\x1f]/.test(value)
+        )
+      )
+        throw new Error('1 à 6 commandes valides requises.');
+      const previous = session.progress.extraValidationCommands || [];
+      const next = [...new Set([...previous, ...args.commands.map((command) => command.trim())])];
+      if (next.length > 6)
+        throw new Error(
+          'Six vérifications supplémentaires maximum. Contrôles existants conservés.'
+        );
+      session.progress.extraValidationCommands = next;
+      const commands = this.configuredChecks(session, config);
+      session.validation = {
+        ...session.validation,
+        state: 'configured',
+        commands,
+        repairs: session.validation?.repairs || 0,
+      };
+      this.save();
+      this.event(session, 'validation', { validation: session.validation });
+      if (next.length > previous.length)
+        this.message(session, agent, 'Vérifications ajoutées', args.commands.join('\n'));
+      return {
+        commands,
+        added: next.length - previous.length,
+        note: 'Duo exécute ces contrôles après relecture. Les contrôles existants restent obligatoires.',
+      };
+    }
     if (name === 'duo_request_user') {
       const error = this.wait(session, { question: text('question'), options: args.options });
       this.active.controller.abort();
@@ -321,11 +373,35 @@ class Orchestrator {
       ssh: !!sshProfile,
       write: write && sshProfile?.allowWrite,
       commands: write && config.commands && sshProfile?.allowCommands,
+      validation:
+        write &&
+        (config.commands || config.accessMode === 'full') &&
+        (config.validationMode || 'auto') === 'auto',
     });
-    const instructions = `You are ${agent === 'codex' ? 'Codex' : 'Claude'}, collaborating with the other agent in Duo. Reply in French. Communicate useful decisions, never private chain of thought. Never invent tool results. Never commit, push or change credentials. Access only selected local project and enabled skill resources. ${sshProfile ? `Selected SSH target: ${sshProfile.name}, remote folder ${sshProfile.root}. Use ONLY Duo SSH tools for this target. Remote writing ${write && sshProfile.allowWrite ? 'authorized within user request' : 'disabled'}. Remote shell ${write && config.commands && sshProfile.allowCommands ? 'explicitly enabled; starting folder is NOT a sandbox, preserve unrelated services' : 'disabled'}. Deploy only when user objective explicitly requests deployment to this target.` : 'No remote target authorized. Never deploy.'} Do not spawn subagents. Read duo_team_status before work. Share concrete findings with duo_message_partner. ${consultation ? 'Answer partner directly, no recursive consultation.' : 'Consult partner with duo_consult_partner when their inspection can resolve a technical uncertainty, especially before significant implementation. Responses are real model calls and consume budget. Avoid repetitive chatter.'} If USER information, selected folder or permission is missing, call duo_request_user immediately and stop. Alternatively return JSON {"status":"waiting_user","question":"actionable question","options":[]}. Never treat a missing user choice as a code defect or request CONTINUE repeatedly. ${write ? 'Implement assigned task only. Preserve unrelated changes. Other agent reviews actual files afterwards. On resumption inspect existing partial work first. Verify remote action outcomes before repeating non-idempotent commands.' : `READ ONLY. Propose or review. Never modify files. ${readPolicy}`}\n${this.skillContext(config.skills, { ...config, prompt, phase })}`;
+    const fullAccess = write && config.accessMode === 'full';
+    const accessPolicy = fullAccess
+      ? 'FULL HOST ACCESS explicitly selected for construction: files outside project, shell commands and network are available for the requested objective. Preserve unrelated files and services. Never expose secrets or change credentials. Local commits are permitted when requested. Push, publish and deploy ONLY when user objective explicitly authorizes the destination; perform requested checks first.'
+      : config.accessMode === 'full'
+        ? 'READ ONLY phase of a full-access mission: inspect relevant host files for requested objective, including outside project. Never write, commit, push or change credentials.'
+        : 'Access only selected local project and enabled skill resources. Never commit, push or change credentials.';
+    const executionPolicy =
+      write && !config.commands && !fullAccess
+        ? 'Project code, scripts, tests and installers must not be executed: command execution is disabled. Read-only listing and inspection are permitted.'
+        : '';
+    const remotePolicy = sshProfile
+      ? `Selected SSH target: ${sshProfile.name}, remote folder ${sshProfile.root}. Use ONLY Duo SSH tools for this target. Remote writing ${write && sshProfile.allowWrite ? 'authorized within user request' : 'disabled'}. Remote shell ${write && config.commands && sshProfile.allowCommands ? 'explicitly enabled; starting folder is NOT a sandbox, preserve unrelated services' : 'disabled'}. Deploy only when user objective explicitly requests deployment to this target.`
+      : fullAccess
+        ? 'No SSH connection selected: do not use direct SSH or invent a server. Non-SSH publication or deployment is allowed only to the destination explicitly requested by user, using an existing authenticated tool; never change credentials.'
+        : 'No remote target authorized. Never deploy.';
+    const instructions = `You are ${agent === 'codex' ? 'Codex' : 'Claude'}, collaborating with the other agent in Duo. Reply in French. Communicate useful decisions, never private chain of thought. Never invent tool results. ${accessPolicy} ${executionPolicy} ${remotePolicy} Do not spawn subagents. Read duo_team_status before work. Share concrete findings with duo_message_partner. ${consultation ? 'Answer partner directly, no recursive consultation.' : 'Consult partner with duo_consult_partner when their inspection can resolve a technical uncertainty, especially before significant implementation. Responses are real model calls and consume budget. Avoid repetitive chatter.'} If USER information, selected folder or permission is missing, call duo_request_user immediately and stop. Alternatively return JSON {"status":"waiting_user","question":"actionable question","options":[]}. Never treat a missing user choice as a code defect or request CONTINUE repeatedly. ${write ? 'Implement assigned task only. Preserve unrelated changes. Other agent reviews actual files afterwards. On resumption inspect existing partial work first. Verify remote action outcomes before repeating non-idempotent commands.' : `READ ONLY. Propose or review. Never modify files. ${readPolicy}`}\n${this.skillContext(config.skills, { ...config, prompt, phase })}`;
+    const validationPolicy = sharedTools.some((tool) => tool.name === 'duo_add_validation')
+      ? 'Register meaningful project checks with duo_add_validation after inspecting project technology. Existing checks are mandatory; you may add checks but never remove, bypass or weaken them. Coordinator runs final registered suite after peer reviews; avoid duplicate full validation loops.'
+      : '';
     this.active.working[agent] = { phase, write, startedAt };
     const providerInstructions =
       instructions +
+      '\n' +
+      validationPolicy +
       (config.collaboration === 'economy'
         ? '\nEFFICIENCY: Consult partner for unresolved technical decisions that affect work. Routine confirmation belongs in the mandatory peer review, not an additional consultation. Keep handoffs under 120 words unless needed to explain critical failures. Never omit failed tests, missing checks or acceptance requirements.'
         : '');
@@ -340,6 +416,7 @@ class Orchestrator {
         model: config[`${agent}Model`],
         effort: config[`${agent}Effort`],
         commands: config.commands,
+        accessMode: config.accessMode,
         write,
         tools: sharedTools,
         onToolCall: (name, args) => {
@@ -501,6 +578,8 @@ class Orchestrator {
           prompt
         : prompt;
       session.progress = { objective, mode: config.mode, stage: 'analysis', updates: [] };
+      if (config.mode === 'build' && (config.validationMode || 'auto') === 'auto')
+        session.progress.requiredValidationCommands = validationCommands(config.project, config);
       session.tasks = [];
       session.metrics = { calls: 0, agents: {} };
       session.telemetry = [];
@@ -508,6 +587,7 @@ class Orchestrator {
       session.budget = null;
       session.results = [];
       session.recap = null;
+      session.validation = null;
       try {
         session.progress.baseline = captureMission(config.project);
       } catch {}
@@ -515,6 +595,11 @@ class Orchestrator {
     } else if (!continuation(prompt)) {
       session.progress.updates.push(prompt);
       session.progress.updates = session.progress.updates.slice(-10);
+      // A new request after reviewed work needs a new plan, never just another old summary.
+      if (session.tasks.length && session.tasks.every((task) => task.status === 'done')) {
+        session.progress.needsPlan = true;
+        session.validation = null;
+      }
       if (session.state === 'attention') {
         const task = session.tasks.find((item) => item.status === 'attention');
         if (task) {
@@ -631,10 +716,15 @@ class Orchestrator {
       config.mode === 'build' &&
       config.collaboration === 'economy' &&
       session.tasks.length &&
+      !session.progress.needsPlan &&
       session.tasks.every((task) => task.status === 'done')
     ) {
-      this.finishEconomy(session);
-      return;
+      const outcome = await this.validate(session, config);
+      if (outcome === 'attention') return;
+      if (outcome !== 'repair') {
+        this.finishEconomy(session);
+        return;
+      }
     }
     const history = recentContext(session.messages);
     const memory =
@@ -728,7 +818,7 @@ class Orchestrator {
       return;
     }
     let planText = session.progress.planText;
-    if (!session.tasks.length) {
+    if (!session.tasks.length || session.progress.needsPlan) {
       this.status(session, 'Répartition des tâches');
       session.progress.stage = 'plan';
       planText = await this.ask(
@@ -736,10 +826,16 @@ class Orchestrator {
         config,
         'codex',
         'Plan',
-        `${base}Codex: ${gpt}\nClaude: ${claude}\nReturn ONLY valid JSON: {"summary":"...","tasks":[{"title":"...","owner":"codex or claude","files":["relative paths"],"acceptance":"..."}]}. At most 8 concrete tasks. Prefer few coherent tasks to reduce coordination overhead. Assign tasks to both agents when appropriate. Tasks execute sequentially in this shared project. No commit/push tasks. ${config.sshProfileId ? 'SSH deployment tasks only if explicitly requested to selected connection.' : 'No deploy tasks.'} If blocked on user input or wrong/missing project sources, return ONLY {"status":"waiting_user","question":"specific missing input or folder","options":[]} instead of inventing tasks.`
+        `${base}Codex: ${gpt}\nClaude: ${claude}\nAlready completed work: ${completedWork(session.tasks)}\n${session.progress.needsPlan ? 'Plan only additional work needed for latest user clarification; do not repeat completed tasks.' : ''}\nReturn ONLY valid JSON: {"summary":"...","tasks":[{"title":"...","owner":"codex or claude","files":["relative paths"],"acceptance":"..."}]}. At most 8 concrete tasks. Prefer few coherent tasks to reduce coordination overhead. Assign tasks to both agents when appropriate. Tasks execute sequentially in this shared project. ${config.accessMode === 'full' ? 'Commit/push tasks only if explicitly requested by user, with destination authorized; validate before publication.' : 'No commit/push tasks.'} ${config.sshProfileId ? 'SSH deployment tasks only if explicitly requested to selected connection.' : config.accessMode === 'full' ? 'No SSH deployment tasks without a selected connection. Non-SSH publication only when destination explicitly requested by user; validate first.' : 'No deploy tasks.'} If blocked on user input or wrong/missing project sources, return ONLY {"status":"waiting_user","question":"specific missing input or folder","options":[]} instead of inventing tasks.`
       );
       const plan = extractJson(planText);
-      session.tasks = normalizeTasks(plan);
+      const added = normalizeTasks(plan);
+      if (!session.progress.needsPlan) session.tasks = [];
+      for (const task of added) {
+        task.order = session.tasks.length + 1;
+        session.tasks.push(task);
+      }
+      session.progress.needsPlan = false;
       session.progress.planText = planText;
       session.progress.stage = 'tasks';
       this.save();
@@ -807,15 +903,17 @@ class Orchestrator {
         return extractJson(text);
       };
       let verdict;
-      if (task.checkpoint === 'review') {
-        verdict = await reviewNow();
-        if (session.state === 'attention') return;
-        if (verdict?.approved === false) {
+      const maxCorrections = config.maxFixCycles ?? 1;
+      for (;;) {
+        if (['review', 'review_final'].includes(task.checkpoint)) {
+          verdict = await reviewNow(task.checkpoint === 'review_final');
+          if (session.state === 'attention') return;
+          if (verdict?.approved !== false || (task.corrections || 0) >= maxCorrections) break;
           task.checkpoint = 'correct';
           this.save();
         }
-      }
-      if (task.checkpoint === 'correct') {
+        if (task.checkpoint !== 'correct' || (task.corrections || 0) >= maxCorrections) break;
+        this.active.budget?.capacity(2, 'correction + relecture');
         task.status = 'running';
         this.save();
         this.event(session, 'tasks', { tasks: session.tasks });
@@ -830,10 +928,6 @@ class Orchestrator {
         task.corrections = (task.corrections || 0) + 1;
         task.checkpoint = 'review_final';
         this.save();
-      }
-      if (task.checkpoint === 'review_final') {
-        verdict = await reviewNow(true);
-        if (session.state === 'attention') return;
       }
       task.status = verdict?.approved === true ? 'done' : 'attention';
       if (task.status === 'done') task.checkpoint = 'done';
@@ -850,6 +944,9 @@ class Orchestrator {
         return;
       }
     }
+    const validation = await this.validate(session, config);
+    if (validation === 'repair') return this.execute(session, prompt, config);
+    if (validation === 'attention') return;
     session.progress.stage = 'summary';
     this.save();
     if (config.collaboration === 'economy') {
@@ -870,6 +967,153 @@ class Orchestrator {
           -16000
         )}\nDeliver concise final report of actual changes, tests executed, remaining issues. No invented verification.`
     );
+  }
+  configuredChecks(session, config) {
+    const detected = validationCommands(config.project, config);
+    if (['off', 'manual'].includes(config.validationMode)) return detected;
+    session.progress.requiredValidationCommands = [
+      ...new Set([...(session.progress.requiredValidationCommands || []), ...detected]),
+    ];
+    return [
+      ...new Set([
+        ...session.progress.requiredValidationCommands,
+        ...(session.progress.extraValidationCommands || []),
+      ]),
+    ];
+  }
+  async validate(session, config) {
+    const commands = this.configuredChecks(session, config);
+    const update = () => {
+      this.save();
+      this.event(session, 'validation', { validation: session.validation });
+    };
+    if (!commands.length || (!config.commands && config.accessMode !== 'full')) {
+      session.validation = {
+        state:
+          config.validationMode === 'off'
+            ? 'disabled'
+            : commands.length
+              ? 'not_run'
+              : 'unconfigured',
+        reason:
+          config.validationMode === 'off'
+            ? 'Validation automatique désactivée.'
+            : commands.length
+              ? 'Commandes désactivées. Activer commandes projet ou accès complet.'
+              : 'Aucune commande configurée ou script npm test/build détecté.',
+        commands,
+        repairs: session.validation?.repairs || 0,
+      };
+      update();
+      return 'done';
+    }
+    const baseline = captureMission(config.project);
+    const fingerprint = (snapshot) =>
+      createHash('sha256')
+        .update(
+          JSON.stringify([
+            commands,
+            Object.entries(snapshot.files).sort(([a], [b]) => a.localeCompare(b)),
+          ])
+        )
+        .digest('hex');
+    if (
+      session.validation?.state === 'passed' &&
+      !baseline.limited &&
+      session.validation.fingerprint === fingerprint(baseline)
+    )
+      return 'done';
+    const repairs = session.validation?.repairs || 0;
+    session.validation = { state: 'running', commands, repairs, results: [] };
+    session.progress.stage = 'validation';
+    update();
+    for (const command of commands) {
+      if (this.active.controller.signal.aborted) throw new Error('Arrêt demandé.');
+      this.status(session, `Validation · ${command}`);
+      const entry = {
+        id: randomUUID(),
+        agent: 'system',
+        phase: 'Validation',
+        kind: 'command',
+        executor: 'duo',
+        at: Date.now(),
+        command,
+        status: 'running',
+      };
+      session.results ||= [];
+      session.results.push(entry);
+      session.results = session.results.slice(-200);
+      session.validation.results.push(entry);
+      update();
+      this.event(session, 'result', { entry });
+      try {
+        Object.assign(
+          entry,
+          await (this.services.validate || runValidation)(config.project, command, {
+            signal: this.active.controller.signal,
+            timeoutMs: (config.validationTimeoutSeconds || 120) * 1000,
+          })
+        );
+      } catch (error) {
+        entry.status = 'unknown';
+        entry.error = error.message;
+        session.validation.state = 'interrupted';
+        throw error;
+      } finally {
+        update();
+        this.event(session, 'result', { entry });
+      }
+    }
+    const after = captureMission(config.project);
+    const changed = compareMission(baseline, after).changes;
+    const failures = session.validation.results.filter(
+      (entry) => entry.status !== 'completed' || entry.exitCode !== 0
+    );
+    session.validation.state = failures.length
+      ? 'failed'
+      : changed.length
+        ? 'review_required'
+        : 'passed';
+    session.validation.fingerprint = fingerprint(after);
+    update();
+    if (!failures.length && !changed.length) return 'done';
+    if (repairs >= (config.maxFixCycles ?? 1)) {
+      session.state = 'attention';
+      this.message(
+        session,
+        'system',
+        'Validation à vérifier',
+        'Limite de corrections atteinte. Consulter commandes, sorties et fichiers. Réussite non déclarée.'
+      );
+      return 'attention';
+    }
+    const task = {
+      id: randomUUID(),
+      order: session.tasks.length + 1,
+      title: failures.length
+        ? 'Corriger validations échouées'
+        : 'Relire fichiers changés par validations',
+      owner: session.tasks.at(-1)?.owner || 'codex',
+      files: [
+        ...new Set([
+          ...changed.map((entry) => entry.path),
+          ...(session.recap?.changes || []).map((entry) => entry.path),
+        ]),
+      ].slice(0, 20),
+      acceptance: `Original objective remains required. ${failures.length ? 'Fix observed failures; do not delete tests, suppress checks or weaken their assertions to obtain green status.' : 'Review actual modifications made by validation commands.'}\nActual commands and outcomes (output excerpts; retained bounded output in mission results): ${JSON.stringify(session.validation.results.map(({ command, exitCode, status, error, stdout, stderr }) => ({ command, exitCode, status, error, stdout: stdout?.slice(-2000), stderr: stderr?.slice(-2000) })))}`,
+      status: 'pending',
+      checkpoint: failures.length ? 'implement' : 'review',
+      report: failures.length
+        ? ''
+        : 'Validation commands succeeded but changed source files. Review required before completion.',
+    };
+    session.tasks.push(task);
+    session.validation.state = 'repairing';
+    session.validation.repairs++;
+    session.progress.stage = 'tasks';
+    update();
+    this.event(session, 'tasks', { tasks: session.tasks });
+    return 'repair';
   }
   finishEconomy(session) {
     session.progress.stage = 'summary';

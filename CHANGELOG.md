@@ -1,3 +1,11 @@
+# Duo 0.6.0 · 2026-10-11
+
+- Accès complet explicite par projet : fichiers de l’ordinateur, commandes et réseau pendant construction. Codex et Claude utilisent leurs modes officiels ; relectures et consultations restent en lecture seule.
+- Validation exécutée par Duo après les relectures : scripts npm détectés, commandes ajoutées par les agents ou contrôles personnalisés. Codes de sortie et sorties visibles, indépendants des rapports IA.
+- Échec de validation → tâche de correction, relecture partenaire, puis nouvelle exécution. Cycles bornés ; budgets et droits SSH conservés. Les contrôles enregistrés ne peuvent pas être retirés par l’outil de proposition.
+- Rejets de relecture corrigés jusqu’au plafond choisi. Sources modifiées par une validation relues avant conclusion ; contrôles réussis liés aux empreintes du projet.
+- Une demande supplémentaire après un travail déjà relu ajoute un nouveau plan au lieu de réafficher l’ancien bilan. Résultats et droits de mission conservés au redémarrage.
+
 # Duo 0.5.1 · 2026-10-10
 
 - Mode économe : bilan assemblé localement depuis rapports et résultats, sans appel IA supplémentaire. Relectures conservées ; deux tâches sans correction passent de six à cinq appels.

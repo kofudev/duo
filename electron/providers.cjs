@@ -108,6 +108,7 @@ class CodexProvider {
     model,
     effort,
     write,
+    accessMode = 'project',
     signal,
     onDelta,
     onTool,
@@ -127,7 +128,11 @@ class CodexProvider {
       model: model || null,
       modelProvider: 'openai',
       approvalPolicy: 'never',
-      sandbox: write ? 'workspace-write' : 'read-only',
+      sandbox: write
+        ? accessMode === 'full'
+          ? 'danger-full-access'
+          : 'workspace-write'
+        : 'read-only',
       developerInstructions: instructions,
       ephemeral: true,
       ...(tools.length
@@ -313,6 +318,7 @@ class ClaudeProvider {
     effort,
     write,
     commands,
+    accessMode = 'project',
     signal,
     onDelta,
     onTool,
@@ -358,7 +364,15 @@ class ClaudeProvider {
       }
     }
     const tools = write
-      ? ['Read', 'Glob', 'Grep', 'Edit', 'Write', ...(commands ? ['Bash'] : [])]
+      ? [
+          'Read',
+          'Glob',
+          'Grep',
+          'Edit',
+          'Write',
+          ...(commands || accessMode === 'full' ? ['Bash'] : []),
+          ...(accessMode === 'full' ? ['WebFetch', 'WebSearch'] : []),
+        ]
       : ['Read', 'Glob', 'Grep'];
     const args = [
       '-p',
@@ -367,7 +381,13 @@ class ClaudeProvider {
       '--verbose',
       '--include-partial-messages',
       '--permission-mode',
-      write ? 'acceptEdits' : bridge ? 'default' : 'plan',
+      write
+        ? accessMode === 'full'
+          ? 'bypassPermissions'
+          : 'acceptEdits'
+        : bridge
+          ? 'default'
+          : 'plan',
       '--tools',
       tools.join(','),
       '--allowedTools',

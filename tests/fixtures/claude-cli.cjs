@@ -58,8 +58,15 @@ process.stdin.on('data', (chunk) => {
   prompt += chunk;
 });
 process.stdin.on('end', async () => {
-  const write = args[args.indexOf('--permission-mode') + 1] === 'acceptEdits';
-  log({ event: 'permissions', agent: 'claude', write, tools: args[args.indexOf('--tools') + 1] });
+  const permissionMode = args[args.indexOf('--permission-mode') + 1];
+  const write = ['acceptEdits', 'bypassPermissions'].includes(permissionMode);
+  log({
+    event: 'permissions',
+    agent: 'claude',
+    write,
+    permissionMode,
+    tools: args[args.indexOf('--tools') + 1],
+  });
   if (prompt.includes('MOCK_CANCEL')) {
     log({ event: 'waiting', agent: 'claude' });
     setInterval(() => {}, 1000);

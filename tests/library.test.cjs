@@ -20,6 +20,8 @@ test('v1 migration preserves messages and associates every historical project', 
     phase: 'Écriture',
     messages: [{ id: 'm', agent: 'user', text: 'Ne pas perdre' }],
     tasks: [{ id: 't', status: 'done' }],
+    results: [{ id: 'check', executor: 'duo', status: 'running' }],
+    validation: { state: 'running', results: [{ id: 'check', status: 'running' }] },
   };
   const library = new Library({
     settings: { project: root, rounds: 2, skills: ['caveman'] },
@@ -30,6 +32,9 @@ test('v1 migration preserves messages and associates every historical project', 
   assert.deepEqual(library.data.sessions[0].messages, session.messages);
   assert.equal(library.data.sessions[0].state, 'stopped');
   assert.equal(library.data.sessions[0].phase, '');
+  assert.equal(library.data.sessions[0].validation.state, 'interrupted');
+  assert.equal(library.data.sessions[0].validation.results[0].status, 'unknown');
+  assert.equal(library.data.sessions[0].results[0].status, 'unknown');
   library.activateSession('old');
   assert.equal(library.settings.project, other);
   const reloaded = new Library(JSON.parse(JSON.stringify(library.data)));

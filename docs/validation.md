@@ -1,5 +1,12 @@
 # Validation
 
+## Full host access and autonomous checks · 0.6.0
+
+- 150 unit tests passed, including official permission arguments, actual command exit codes, process-tree cancellation, timeout failures, bounded repair/review loops, quota-preserving resumption and additional plans after completed work. Interrupted validation is restored as interrupted, with running command outcomes marked unknown.
+- Native Windows fixtures passed the full and economy mission workflows. A separate autonomy workflow selected full access for both providers, retained read-only reviews, ran an actual failing command (code 3), created a repair, verified partner file inspection, then reran the command successfully (code 0). Both attempts and permissions survived restart. No renderer errors or axe violations were reported in the settings modal.
+- The packaged 0.6.0 executable passed the same autonomy workflow and startup/model/skill checks, with 246 dependency notices and an actual editor save. Source UI screenshots were inspected; hidden packaged Windows windows skip raster captures because their compositor can suspend. Website checks passed at 320–1440 px with no reported axe violations. Scheduling and quota pause fixtures also passed.
+- Provider responses in these workflows are local fixtures; command execution, file writes and Electron persistence are real. A zero-inference probe against installed Codex also created a `dangerFullAccess` thread successfully. No new paid generation or complete live two-subscription benchmark was run for this release.
+
 ## Measured consumption and shorter handoffs · 0.5.1
 
 - 133 unit tests passed. Economy fixtures complete two writes and mandatory partner reviews in five calls, with a local assembled report; no AI synthesis call is launched. Persisted work already reviewed can finish its local report without requesting quota or inference.

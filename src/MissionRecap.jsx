@@ -83,7 +83,13 @@ export default function MissionRecap({ session, openFile }) {
           {commands.map((entry) => (
             <div className="recap-command" key={entry.id}>
               <strong>
-                {entry.remote ? entry.connection : entry.agent === 'codex' ? 'Codex' : 'Claude'}
+                {entry.remote
+                  ? entry.connection
+                  : entry.agent === 'system'
+                    ? 'Duo'
+                    : entry.agent === 'codex'
+                      ? 'Codex'
+                      : 'Claude'}
               </strong>
               <code>{entry.command}</code>
               <span>

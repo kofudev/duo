@@ -2,6 +2,20 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const { CodexProvider } = require('../electron/providers.cjs');
 const tick = () => new Promise((resolve) => setImmediate(resolve));
+test('Codex full host access applies only to writable phases; reviewers retain read-only sandbox', async () => {
+  for (const write of [true, false]) {
+    const f = fixture();
+    const running = f.provider.run({ ...f.runOptions, write, accessMode: 'full' });
+    await tick();
+    assert.equal(f.requests[0].params.sandbox, write ? 'danger-full-access' : 'read-only');
+    assert.equal(f.requests[0].params.approvalPolicy, 'never');
+    f.emit('item/completed', {
+      item: { id: 'final', type: 'agentMessage', text: 'Actual report' },
+    });
+    f.emit('turn/completed', { turn: { status: 'completed' } });
+    await running;
+  }
+});
 test('Codex dynamic tool request gets actual scoped callback result and structured turn schema', async () => {
   const f = fixture();
   const schema = { type: 'object', properties: { approved: { type: 'boolean' } } };

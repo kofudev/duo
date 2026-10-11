@@ -487,7 +487,7 @@ function register() {
         projectBrief: target.description || '',
         rounds,
         skills,
-        commands: config.commands === true,
+        commands: config.commands === true || config.accessMode === 'full',
       };
       if (normalized.sshProfileId) ssh.profile(normalized.sshProfileId);
       if (session.archived || session.projectId !== target.id)
