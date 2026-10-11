@@ -1,18 +1,18 @@
 {
-  "version": "0.5.1",
+  "version": "0.6.0",
   "assets": {
     "installer": {
-      "url": "https://github.com/kofudev/duo/releases/download/v0.5.1/Duo-Setup-0.5.1.exe",
-      "bytes": 119764829,
-      "sha256": "e60269534544e838a27fdca50d0d66f797c703ed2ba41c36f67dbc4bbd374d8b"
+      "url": "https://github.com/kofudev/duo/releases/download/v0.6.0/Duo-Setup-0.6.0.exe",
+      "bytes": 119773567,
+      "sha256": "a7b74d35c87fb0d45af35932629f389d04f7eac37aa07944d7700a11d027a9c1"
     },
     "portable": {
-      "url": "https://github.com/kofudev/duo/releases/download/v0.5.1/Duo-0.5.1-windows-x64.zip",
-      "bytes": 169738408,
-      "sha256": "2436994a4e5d07e3c4e323faf0a3fd16e7969a32f0f6bcb8604907958e72e85b"
+      "url": "https://github.com/kofudev/duo/releases/download/v0.6.0/Duo-0.6.0-windows-x64.zip",
+      "bytes": 169748871,
+      "sha256": "9e6c661da35f930ba63d5230aa3ac1c718170b125a7c449e2c15dece243262d9"
     },
     "source": {
-      "url": "https://github.com/kofudev/duo/releases/download/v0.5.1/Duo-0.5.1-sources.zip"
+      "url": "https://github.com/kofudev/duo/releases/download/v0.6.0/Duo-0.6.0-sources.zip"
     }
   }
 }
