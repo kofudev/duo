@@ -1100,7 +1100,7 @@ class Orchestrator {
           ...(session.recap?.changes || []).map((entry) => entry.path),
         ]),
       ].slice(0, 20),
-      acceptance: `Original objective remains required. ${failures.length ? 'Fix observed failures; do not delete tests, suppress checks or weaken their assertions to obtain green status.' : 'Review actual modifications made by validation commands.'}\nActual commands and outcomes (output tails; complete received output in mission results): ${JSON.stringify(session.validation.results.map(({ command, exitCode, status, error, stdout, stderr }) => ({ command, exitCode, status, error, stdout: stdout?.slice(-2000), stderr: stderr?.slice(-2000) })))}`,
+      acceptance: `Original objective remains required. ${failures.length ? 'Fix observed failures; do not delete tests, suppress checks or weaken their assertions to obtain green status.' : 'Review actual modifications made by validation commands.'}\nActual commands and outcomes (output excerpts; retained bounded output in mission results): ${JSON.stringify(session.validation.results.map(({ command, exitCode, status, error, stdout, stderr }) => ({ command, exitCode, status, error, stdout: stdout?.slice(-2000), stderr: stderr?.slice(-2000) })))}`,
       status: 'pending',
       checkpoint: failures.length ? 'implement' : 'review',
       report: failures.length

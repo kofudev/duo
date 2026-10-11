@@ -46,7 +46,7 @@ export default function ValidationPanel({ session }) {
         </details>
       ))}
       {checks.length > 0 && (
-        <p>Derniers contrôles, y compris échecs corrigés. Historique complet dans export.</p>
+        <p>Derniers contrôles, y compris échecs corrigés. Historique conservé dans export.</p>
       )}
       {validation.state === 'passed' && (
         <p>
