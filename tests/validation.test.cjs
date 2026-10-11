@@ -49,7 +49,7 @@ test('actual command exit codes override success-looking text; literal cwd and s
   fs.writeFileSync(path.join(project, 'check space.cjs'), 'console.log(process.cwd());');
   const passed = await runValidation(project, 'node "check space.cjs"');
   assert.equal(passed.exitCode, 0);
-  assert.equal(passed.stdout.trim(), project);
+  assert.equal(fs.realpathSync.native(passed.stdout.trim()), fs.realpathSync.native(project));
 });
 test('cancellation waits for command tree closure, preventing child heartbeat from continuing', async () => {
   const project = folder(),
