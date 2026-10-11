@@ -1,4 +1,4 @@
-# Duo · Windows · 0.5.1
+# Duo · Windows · 0.6.0
 
 Un prompt → Codex + Claude. Analyses simultanées → discussion croisée → plan partagé → écritures séquentielles → relecture partenaire.
 
@@ -6,7 +6,7 @@ Application personnelle locale. Electron + React. CLI officiels installés sur o
 
 ## Installer et connecter
 
-1. Télécharger puis ouvrir `Duo-Setup-0.5.1.exe` depuis [GitHub Releases](https://github.com/kofudev/duo/releases/latest). Installation Windows x64, dossier configurable. Installateur non signé.
+1. Télécharger puis ouvrir `Duo-Setup-0.6.0.exe` depuis [GitHub Releases](https://github.com/kofudev/duo/releases/latest). Installation Windows x64, dossier configurable. Installateur non signé.
 2. Installer CLI officiels [Codex](https://learn.chatgpt.com/docs/cli), [Claude Code](https://code.claude.com/docs/en/setup) et Git. Node.js reste requis pour lanceurs npm JavaScript. Versions natives prises en charge.
 3. Connecter comptes dans PowerShell :
 
@@ -26,7 +26,11 @@ Version portable : conserver **dossier complet** `release/win-unpacked`, puis ou
 
 ## Missions
 
-**Discuter** : propositions et critique en lecture seule, puis synthèse. **Construire** : huit tâches maximum, responsabilité Codex/Claude, construction séquentielle, relecture autre agent. Une correction maximum par tâche ; relecture non validée → « À vérifier », tâches suivantes suspendues.
+**Discuter** : propositions et critique en lecture seule, puis synthèse. **Construire** : huit tâches maximum par plan, responsabilité Codex/Claude, construction séquentielle, relecture autre agent. Deux cycles de correction par défaut, réglables de zéro à cinq ; relecture non validée après ce plafond → « À vérifier », tâches suivantes suspendues.
+
+**Accès complet** : Réglages mission → Accès pendant construction. Ouvre commandes, réseau et fichiers hors projet avec droits du compte Windows. Projet reste le choix par défaut ; discussion et relectures restent en lecture seule. Les agents peuvent publier lorsque votre demande autorise explicitement la destination. Droits SSH et quotas conservés.
+
+**Validation après construction** : Duo exécute les tests/build détectés ou les commandes enregistrées. Les agents peuvent ajouter leurs vérifications en mode automatique. Un code de sortie non nul crée une correction relue, puis les commandes sont relancées, dans le plafond choisi. Résultats et sorties visibles dans Validation et export. [Autonomie, permissions et limites](autonomie.fr.md).
 
 Mode économe par défaut : Discuter = deux avis + synthèse ; Construire = plan direct puis tâches et relectures, avec bilan assemblé localement sans appel IA supplémentaire. Deux tâches sans correction ni consultation = cinq appels. Mode complet ajoute deux propositions et 1 à 5 tours de débat. Un écrivain IA à la fois. Arrêter accessible depuis autres pages. Nouvelle mission possible après fin ou annulation. Missions renommables, recherchables, archivables et restaurables.
 
@@ -134,7 +138,7 @@ Historique : `%APPDATA%/Duo/workspace.json`. Skills personnels : `%APPDATA%/Duo/
 
 Sauvegardes atomiques, copie précédente et snapshots récupération si verrou Windows. Redémarrage choisit snapshot valide récent. Historique corrompu conservé pour inspection ; schéma plus récent refusé sans écrasement. Migration schéma V1/V2/V3 vers V4 avec sauvegarde antérieure. Duo 0.3 et versions précédentes refusent V4 : conserver nouvelle version après migration. Une instance par profil. Historique limité à 100 Mo. Missions interrompues deviennent arrêtées après redémarrage.
 
-Claude reçoit outils nécessaires. Shell activable dans Réglages pour construction. Hooks et MCP hérités désactivés pour invocations Duo ; fichiers de configuration restent présents. Codex utilise sandbox lecture seule ou écriture projet, sans approbation silencieuse d’escalade. Inspection Codex peut employer commandes ; scripts/tests interdits dans phases lecture seule par consigne. Politiques CLI restent applicables.
+Claude reçoit outils nécessaires. Shell activable dans Réglages pour construction, inclus en accès complet. Hooks et MCP hérités désactivés pour invocations Duo ; fichiers de configuration restent présents. Codex utilise sandbox lecture seule, écriture projet ou accès complet selon phase et réglage explicite. Inspection Codex peut employer commandes ; scripts/tests interdits dans phases lecture seule par consigne. Politiques administrateur des CLI restent applicables. Les validations autorisées démarrent dans le projet avec les droits du compte local, sans isolation supplémentaire des scripts.
 
 Implémenté : collaboration de code, projets, skills, éditeur, GitHub. Terminal interactif, pièces jointes multimodales, cloud, gestion PR/issues et catalogue MCP intégré non implémentés. Duo n’est pas produit OpenAI ou Anthropic. Usage abonnement passe par binaire officiel non modifié et connexion propre utilisateur ; distribution commerciale soumise aux [conditions Anthropic](https://code.claude.com/docs/en/legal-and-compliance).
 

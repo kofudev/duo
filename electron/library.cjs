@@ -24,6 +24,11 @@ const DEFAULT_SETTINGS = Object.freeze({
   mode: 'discuss',
   skills: DEFAULT_SKILLS,
   commands: false,
+  accessMode: 'project',
+  validationMode: 'auto',
+  validationCommands: [],
+  validationTimeoutSeconds: 120,
+  maxFixCycles: 2,
   allowUsageCredits: false,
   cavemanLevel: 'full',
   skillMode: 'auto',
@@ -56,6 +61,26 @@ function configPatch(values = {}) {
       )
         throw new Error('Liste skills invalide.');
       patch.skills = [...new Set(value)];
+    } else if (key === 'validationCommands') {
+      if (
+        !Array.isArray(value) ||
+        value.length > 8 ||
+        value.some(
+          (command) =>
+            typeof command !== 'string' ||
+            !command.trim() ||
+            command.length > 2000 ||
+            /[\x00-\x1f]/.test(command)
+        )
+      )
+        throw new Error('Validations : 8 commandes maximum, une commande par ligne.');
+      patch[key] = value.map((command) => command.trim());
+    } else if (key === 'maxFixCycles' || key === 'validationTimeoutSeconds') {
+      const number = Number(value),
+        range = key === 'maxFixCycles' ? [0, 5] : [10, 900];
+      if (!Number.isInteger(number) || number < range[0] || number > range[1])
+        throw new Error(`${key} : ${range[0]} à ${range[1]}.`);
+      patch[key] = number;
     } else if (key === 'commands' || key === 'allowUsageCredits') patch[key] = value === true;
     else if (key === 'rounds') {
       if (![1, 2, 3, 4, 5].includes(Number(value))) throw new Error('Discussion : 1 à 5 tours.');
@@ -67,6 +92,8 @@ function configPatch(values = {}) {
         mode: ['discuss', 'build'],
         cavemanLevel: ['lite', 'full', 'ultra'],
         skillMode: ['auto', 'manual'],
+        accessMode: ['project', 'full'],
+        validationMode: ['auto', 'manual', 'off'],
       }[key];
       if (options && !options.includes(value)) throw new Error('Option invalide.');
       patch[key] = value;
@@ -126,6 +153,15 @@ function sessionShape(session) {
         ...record,
         state: record.state === 'running' ? 'interrupted' : record.state,
       })),
+    validation: session.validation
+      ? {
+          ...session.validation,
+          state: session.validation.state === 'running' ? 'interrupted' : session.validation.state,
+          results: (session.validation.results || []).map((entry) =>
+            entry.status === 'running' ? { ...entry, status: 'unknown' } : entry
+          ),
+        }
+      : null,
     state: session.state === 'running' ? 'stopped' : session.state || 'idle',
     phase: session.state === 'running' ? '' : session.phase || '',
   };

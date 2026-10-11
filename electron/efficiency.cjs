@@ -57,6 +57,8 @@ function localSummary(session) {
       ''
     );
   lines.push(
+    `Validation exécutée par Duo : ${session.validation?.state === 'passed' ? 'commandes réussies (codes de sortie observés)' : session.validation?.reason || session.validation?.state || 'non configurée'}.`,
+    '',
     'Rapports et verdicts IA conservés. Vérifications effectives : consulter fichiers et résultats des outils.'
   );
   return lines.join('\n');

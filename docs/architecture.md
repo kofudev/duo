@@ -34,7 +34,7 @@ Electron main process
 
 ## Coordination
 
-Discussion mode collects two proposals and returns a synthesis. Complete coordination adds configured rounds of cross discussion. In build mode, the coordinator creates a structured plan, assigns tasks, lets one provider write at a time, and asks the other provider to review the declared files. A failed review gets at most one correction attempt before stopping for attention.
+Discussion mode collects two proposals and returns a synthesis. Complete coordination adds configured rounds of cross discussion. In build mode, the coordinator creates a structured plan, assigns tasks, lets one provider write at a time, and asks the other provider to review the declared files. Failed reviews have a configurable correction ceiling, two by default, before stopping for attention.
 
 Both adapters expose the same team tools. A provider can inspect a bounded live board, send a visible message or synchronously consult the partner about actual files. Consultations are read-only, charged to the same mission budget, limited to three per task and cannot recursively consult another provider. Already-running partners are reported as busy. Cancellation keeps the mission lock until nested provider processes exit.
 
@@ -59,3 +59,11 @@ Claude's per-call MCP configuration is private and temporary. It starts a narrow
 ## Testing
 
 Unit tests exercise filesystem boundaries, provider protocols, quota behavior, migrations and coordination. Native Electron smoke tests use isolated profiles. Mission fixtures implement local CLI protocols and never contact model services. Tests using real accounts are explicit opt-in and can consume allowance.
+
+## Host access and deterministic checks
+
+Access mode is opt-in and stored per project and mission. Writable Codex phases use workspace-write or danger-full-access; Claude switches acceptEdits to bypassPermissions for full host access. Read-only phases retain their restricted tools. CLI administrator requirements, SSH profile rights and cumulative budgets still apply.
+
+The coordinator executes configured commands with electron/validation.cjs after peer reviews, independent of model claims. Automatic npm checks are retained and the agents can append checks through duo_add_validation. Failed commands create bounded repair tasks and a fresh peer review; source changes during checks also require review. Command output, exit status and restart interruption state persist. Passed checks are matched against a project fingerprint before reusing them. No model call assembles the economy report.
+
+Validation commands start in the selected project but execute with the local account rights, including in project mode when shell commands were explicitly enabled. Full access is not a guarantee of review coverage for files outside the project, or proof of successful remote deployment.

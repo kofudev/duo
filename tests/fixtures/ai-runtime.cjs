@@ -91,20 +91,26 @@ async function report(agent, prompt, project, writable, onTool = () => {}) {
   else if (['construction', 'correction'].includes(type)) {
     if (!writable) throw new Error('Fixture refused write without permission');
     const task = taskFrom(prompt);
-    const target = path.resolve(project, task.files[0]);
+    const autonomyRepair =
+      prompt.includes('MOCK_AUTONOMY') && task.title === 'Corriger validations échouées';
+    const target = path.resolve(project, autonomyRepair ? 'interface.js' : task.files[0]);
     if (path.dirname(target) !== project) throw new Error('Fixture path outside selected project');
     onTool('Write', target);
     fs.writeFileSync(
       target,
-      `// fixture-verified : simulation locale ${agent}\nmodule.exports = () => '${agent}';\n`
+      `// fixture-verified : simulation locale ${agent}${autonomyRepair ? ' repaired' : ''}\nmodule.exports = () => '${agent}';\n`
     );
     result = `Simulation locale. ${agent} → ${task.files[0]} créé. Aucun appel IA distant.`;
   } else if (['review', 'review-final'].includes(type)) {
     const task = taskFrom(prompt);
-    onTool('Read', path.join(project, task.files[0]));
-    const content = fs.readFileSync(path.join(project, task.files[0]), 'utf8');
+    const reviewedPath =
+      prompt.includes('MOCK_AUTONOMY') && task.title === 'Corriger validations échouées'
+        ? 'interface.js'
+        : task.files[0];
+    onTool('Read', path.join(project, reviewedPath));
+    const content = fs.readFileSync(path.join(project, reviewedPath), 'utf8');
     const approved = content.includes('fixture-verified') && !prompt.includes('MOCK_ATTENTION');
-    log({ event: 'file-read', agent, file: task.files[0], approved, callId });
+    log({ event: 'file-read', agent, file: reviewedPath, approved, callId });
     result = JSON.stringify({
       approved,
       summary: 'Fichier réellement lu par fixture locale.',

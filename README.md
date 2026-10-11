@@ -12,7 +12,7 @@ _Illustrative workflow from the website. The application shows provider messages
 
 ## Install
 
-1. Download **Duo-Setup-0.5.1.exe** from [Releases](https://github.com/kofudev/duo/releases/latest), or extract the complete portable ZIP. Windows x64 is required. This early release is unsigned.
+1. Download **Duo-Setup-0.6.0.exe** from [Releases](https://github.com/kofudev/duo/releases/latest), or extract the complete portable ZIP. Windows x64 is required. This early release is unsigned.
 2. Install the official [Codex CLI](https://learn.chatgpt.com/docs/cli) and [Claude Code](https://code.claude.com/docs/en/setup). Authenticate with `codex login` and `claude auth login` using accounts that include access to those tools.
 3. Open Duo, refresh **Connexions**, choose a project and send your request. Start in **Discuter** to inspect the proposed approach before allowing changes.
 
@@ -22,6 +22,7 @@ Duo uses your CLI subscriptions. It does not import passwords, implement its own
 
 - **Shared missions:** parallel proposals, cross discussion, an assigned plan and partner reviews. Only one agent writes at a time. An unresolved review pauses further work.
 - **Visible activity:** streamed messages, live partner consultations, task ownership, observed file changes, command results and a Markdown export.
+- **Autonomous checks:** actual detected or configured commands, recorded exit codes and output, then bounded repair, partner review and recheck on failure. Two correction cycles by default. Optional full host access uses your account's rights; reviews remain read-only. See the [autonomy guide](docs/autonomie.fr.md).
 - **Continuity:** keep the original objective and resume the interrupted step. A missing user choice pauses the mission; bare CONTINUE does not spend more inference while waiting.
 - **SSH targets:** share one explicit Unix server connection per project, with read-only defaults and separate file-write/command permissions. See the [SSH guide](docs/ssh.fr.md).
 - **Project workspaces:** create or import folders, clone repositories, use isolated worktrees, edit files, inspect diffs and commit selected changes. Push requires confirmation.

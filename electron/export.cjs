@@ -97,6 +97,41 @@ function formatSession(session) {
       ''
     );
   if (session.waiting) lines.push('## Information attendue', '', session.waiting.question, '');
+  if (session.config)
+    lines.push(
+      '## Accès mission',
+      '',
+      session.config.mode === 'discuss'
+        ? 'Lecture seule.'
+        : session.config.accessMode === 'full'
+          ? 'Accès complet au compte local, commandes et réseau ; quotas actifs.'
+          : 'Accès projet.',
+      ''
+    );
+  if (session.validation) {
+    lines.push(
+      '## Validation exécutée par Duo',
+      '',
+      `État : ${oneLine(session.validation.state)} · cycles de correction : ${count(session.validation.repairs)}`,
+      '',
+      oneLine(session.validation.reason),
+      ''
+    );
+    for (const entry of session.results || [])
+      if (entry.executor === 'duo')
+        lines.push(
+          `### ${code(entry.command)}`,
+          '',
+          `Code : ${Number.isInteger(entry.exitCode) ? entry.exitCode : 'inconnu'} · ${oneLine(entry.status)}`,
+          '',
+          String(entry.error || ''),
+          '',
+          String(entry.stdout || ''),
+          '',
+          String(entry.stderr || ''),
+          ''
+        );
+  }
   if (session.recap) {
     lines.push(
       '## Modifications locales observées',

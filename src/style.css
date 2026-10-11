@@ -3894,3 +3894,53 @@ button:active:not(:disabled) {
   color: var(--muted);
   overflow-wrap: anywhere;
 }
+.autonomy-settings {
+  border-top: 1px solid var(--line);
+  padding-top: 14px;
+  margin-top: 14px;
+}
+.access-description {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+.mission-access {
+  font-size: 11px;
+  color: var(--accent);
+}
+.validation-panel {
+  border-top: 1px solid var(--line);
+  padding-top: 12px;
+  margin-top: 12px;
+  font-size: 11px;
+}
+.validation-panel > strong {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.validation-panel p {
+  color: var(--muted);
+  line-height: 1.6;
+}
+.validation-panel details {
+  border-top: 1px solid var(--line);
+  padding: 8px 0;
+}
+.validation-panel summary {
+  cursor: pointer;
+}
+.validation-panel summary code {
+  overflow-wrap: anywhere;
+}
+.validation-panel summary span {
+  margin-left: 8px;
+  color: var(--muted);
+}
+.validation-panel pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  max-height: 230px;
+  overflow: auto;
+  font-size: 10px;
+}

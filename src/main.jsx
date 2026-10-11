@@ -49,6 +49,8 @@ import ModelsView, { highestEffort } from './ModelsView';
 import ActivityPanel from './ActivityPanel';
 import MissionRecap from './MissionRecap';
 import TokenUsage from './TokenUsage';
+import AutonomySettings from './AutonomySettings';
+import ValidationPanel from './ValidationPanel';
 import SSHModal from './SSHModal';
 import PilotView, { ScheduleDialog } from './PilotView';
 import { Modal, IconButton, ErrorContext } from './ui';
@@ -310,6 +312,7 @@ function App() {
           'waiting',
           'recap',
           'result',
+          'validation',
         ].includes(event.type)
       )
         setSessions((old) =>
@@ -332,6 +335,7 @@ function App() {
                 telemetry: event.telemetry || item.telemetry,
               };
             if (event.type === 'metrics') return { ...item, metrics: event.metrics };
+            if (event.type === 'validation') return { ...item, validation: event.validation };
             if (event.type === 'waiting') return { ...item, waiting: event.waiting };
             if (event.type === 'recap') return { ...item, recap: event.recap };
             if (event.type === 'result')
@@ -1160,7 +1164,9 @@ function App() {
                   <span>
                     <i />
                     {config.mode === 'build'
-                      ? 'Écritures projet · relecture croisée'
+                      ? config.accessMode === 'full'
+                        ? 'Accès complet · relecture croisée'
+                        : 'Écritures projet · relecture croisée'
                       : 'Discussion · lecture seule'}
                   </span>
                   <span>Ctrl + Entrée pour lancer</span>
@@ -1363,6 +1369,14 @@ function App() {
                 ))}
               </div>
               <ActivityPanel key={session?.id} session={session} />
+              <p className="mission-access">
+                {(session?.config || config).mode === 'discuss'
+                  ? 'Lecture seule'
+                  : (session?.config || config).accessMode === 'full'
+                    ? 'Accès complet · quotas actifs'
+                    : 'Accès projet'}
+              </p>
+              <ValidationPanel session={session} />
               <TokenUsage session={session} />
               <div className="local-note">
                 <Circle size={12} />
@@ -1612,6 +1626,7 @@ function App() {
                 </select>
               </label>
             </div>
+            <AutonomySettings config={config} change={changeConfig} />
             <label className="field">
               ID Claude personnalisé
               <input
@@ -1635,19 +1650,6 @@ function App() {
                 </small>
               </span>
             </label>
-            <label className="checkbox-setting">
-              <input
-                type="checkbox"
-                checked={config.commands}
-                onChange={(e) => changeConfig({ commands: e.target.checked })}
-              />
-              <span>
-                <strong>Autoriser commandes projet à Claude</strong>
-                <small>
-                  Claude peut lancer tests + scripts. Codex suit sandbox projet de son CLI.
-                </small>
-              </span>
-            </label>
             <button
               className="secondary-button full"
               onClick={() => {
@@ -1661,7 +1663,8 @@ function App() {
             <div className="info-note">
               <Workflow size={17} />
               Analyses simultanées. Écritures séquentielles. Relecture obligatoire. Actions commit +
-              push depuis panneau Git.
+              push depuis panneau Git ; agents autorisés à publier en accès complet lorsque votre
+              demande le précise.
             </div>
           </Modal>
         )}

@@ -5,7 +5,7 @@ const schema = (properties, required = []) => ({
   additionalProperties: false,
 });
 const string = { type: 'string' };
-function teamTools({ ssh = false, write = false, commands = false } = {}) {
+function teamTools({ ssh = false, write = false, commands = false, validation = false } = {}) {
   const tools = [
     {
       name: 'duo_team_status',
@@ -35,6 +35,16 @@ function teamTools({ ssh = false, write = false, commands = false } = {}) {
       ),
     },
   ];
+  if (validation)
+    tools.push({
+      name: 'duo_add_validation',
+      description:
+        'Register meaningful project test/build commands for coordinator to execute after partner review. Adds checks only; cannot remove existing checks. Available with automatic validation and authorized commands. Maximum six additional checks. Never register deployment, destructive or credential commands as tests.',
+      inputSchema: schema(
+        { commands: { type: 'array', items: string, minItems: 1, maxItems: 6 } },
+        ['commands']
+      ),
+    });
   if (ssh)
     tools.push(
       {

@@ -1,6 +1,6 @@
 {
   "name": "duo-workspace",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "private": true,
   "description": "A shared Windows workspace for Codex and Claude Code",
   "main": "electron/main.cjs",
@@ -15,6 +15,7 @@
     "test": "node --test tests/*.test.cjs",
     "test:ui": "node tests/ui-smoke.cjs && node tests/workspaces-smoke.cjs && node tests/files-smoke.cjs && node tests/advanced-smoke.cjs",
     "test:mission": "node tests/mission-smoke.cjs",
+    "test:autonomy": "node tests/autonomy-smoke.cjs",
     "test:a11y": "node tests/accessibility-smoke.cjs",
     "test:packaged": "node tests/packaged-smoke.cjs",
     "pack": "npm run electron:install && npm run build && npm run notices && electron-builder --win --dir --publish never",

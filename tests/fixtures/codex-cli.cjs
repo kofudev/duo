@@ -102,7 +102,7 @@ readline.createInterface({ input: process.stdin }).on('line', async (line) => {
       'codex',
       prompt,
       path.resolve(config.cwd),
-      config.sandbox === 'workspace-write',
+      ['workspace-write', 'danger-full-access'].includes(config.sandbox),
       (name, file) =>
         notify('item/started', {
           threadId,

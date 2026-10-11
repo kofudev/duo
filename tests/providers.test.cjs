@@ -16,6 +16,21 @@ processTools.stopTree = (target) => {
   setTimeout(() => target.emit('close', 143), 20);
 };
 const { ClaudeProvider } = require('../electron/providers.cjs');
+test('Claude full construction uses bypass with shell and web; reviewers cannot write or execute', async () => {
+  for (const write of [true, false]) {
+    const f = fixture();
+    const running = f.provider.run({ ...f.options, write, accessMode: 'full', commands: false });
+    const args = launchOptions.args;
+    assert.equal(args[args.indexOf('--permission-mode') + 1], write ? 'bypassPermissions' : 'plan');
+    const tools = args[args.indexOf('--tools') + 1].split(',');
+    assert.equal(tools.includes('Bash'), write);
+    assert.equal(tools.includes('Write'), write);
+    assert.equal(tools.includes('WebFetch'), write);
+    f.line({ type: 'result', result: 'Actual report' });
+    child.emit('close', 0);
+    await running;
+  }
+});
 test('Claude scoped MCP config never places bridge token in argv, restricts native tools and removes private config on exit', async () => {
   const fs = require('node:fs');
   const f = fixture();
