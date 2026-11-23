@@ -9,3 +9,4 @@ export default defineConfig({
   build: { outDir: 'dist' },
 });
 // Kofu
+// KOFUDEV
