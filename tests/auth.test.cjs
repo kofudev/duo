@@ -26,3 +26,4 @@ test('Claude subscription status does not mistake Console OAuth or cloud credent
   assert.equal(isClaudeSubscription({ loggedIn: false, authMethod: 'claude.ai' }), false);
 });
 // Kofu
+// KOFUDEV
