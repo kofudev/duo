@@ -26,3 +26,4 @@ L'archive utilise Python 3, exclut les fichiers de développement et vérifie so
 Modifier la version et les liens dans `website/release.json`, puis les liens de secours et la version dans `website/index.html`. Les liens fonctionnent sans JavaScript. Ne publiez pas un lien avant ses fichiers GitHub. Les empreintes finales sont attachées à la release dans `SHA256SUMS.txt`.
 
 Le nom canonique, le sitemap et les métadonnées de partage utilisent `https://duo.varelia.fr`. Un autre domaine nécessite leur mise à jour. Le site vise la racine du sous-domaine ; un sous-dossier demande d'adapter les liens commençant par `/`.
+Kofu

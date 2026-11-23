@@ -151,3 +151,4 @@ Tests UI nécessitent build récent (`npm run build`). Mission smoke utilise CLI
 - [Claude Agent SDK](https://platform.claude.com/docs/en/agent-sdk/overview)
 
 Code Duo et huit skills créés pour app : MIT. Ressources tierces conservent leurs licences.
+Kofu

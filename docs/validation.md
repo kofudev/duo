@@ -15,3 +15,4 @@ These coordination checks use local CLI fixtures. They do not establish quality,
 The Windows installer is unsigned. The installer workflow was exercised in the previous release; this application is checked as a packaged executable. Future releases should record installation, upgrade and uninstall results alongside runtime checks.
 
 `npm audit --omit=dev` reported no known vulnerabilities in production dependencies when preparing this release. The complete development audit reported eight moderate dependency entries arising from the build toolchain's `sprintf-js` advisory, [GHSA-hp3w-g68c-fv3c](https://github.com/advisories/GHSA-hp3w-g68c-fv3c). The compatible audit-fix preview proposed no changes. This is recorded for maintainers; the package is not included in the application runtime. Audit results are a snapshot, not a guarantee that every dependency is safe.
+Kofu

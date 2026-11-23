@@ -14,3 +14,4 @@ Build on Windows with a clean checkout and Node.js 24. Changes to provider behav
 The manual Windows-build workflow creates downloadable build artifacts without publishing a release. Its permissions are read-only; publication remains a maintainer action.
 
 Do not replace a published binary silently. Ship a new version for changed application files. Unsigned status must remain clear until the executables are actually signed.
+Kofu

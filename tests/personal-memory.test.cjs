@@ -207,3 +207,4 @@ test('both providers receive same shared memory; turning project memory off keep
   assert.ok(events.some((event) => event.type === 'stream/delta'));
   assert.equal(session.context.personalMemoryIds.length, 1);
 });
+// Kofu

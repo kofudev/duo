@@ -56,3 +56,4 @@ contextBridge.exposeInMainWorld('duo', {
     return () => ipcRenderer.removeListener('duo:event', handler);
   },
 });
+// Kofu

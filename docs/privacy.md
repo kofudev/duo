@@ -23,3 +23,4 @@ Conversation exports, memory backups and screenshots can include sensitive infor
 ## Website
 
 The supplied landing site has no analytics, trackers, accounts or application backend. Download links lead to GitHub Releases, and documentation links may lead to GitHub, OpenAI or Anthropic. Those services process their own requests. The hosting provider may retain ordinary access logs.
+Kofu

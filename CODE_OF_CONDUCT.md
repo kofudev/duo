@@ -7,3 +7,4 @@ Do not post other people's private information, credentials or private conversat
 Maintainers may edit or remove content, close a discussion, or restrict participation when needed to protect the community. Contact the maintainer through a private GitHub report for concerns involving private information; otherwise flag the content through GitHub's reporting tools.
 
 This applies to repository issues, pull requests and project discussions.
+Kofu

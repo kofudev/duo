@@ -286,3 +286,4 @@ class Skills {
 }
 
 module.exports = { Skills, readManifest, copySkill, inside };
+// Kofu
