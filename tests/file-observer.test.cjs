@@ -42,3 +42,4 @@ test('native watcher debounces source changes and ignores dependency/index paths
   assert.equal(observer.watcher, null);
 });
 // Kofu
+// KOFUDEV
