@@ -147,3 +147,4 @@ test('relink updates session paths and refuses duplicate project ownership', () 
   );
   assert.equal(project.name, 'Moved');
 });
+// Kofu

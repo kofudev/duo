@@ -22,3 +22,4 @@ Les commandes durent au plus 120 secondes, avec sortie bornée. Les résultats i
 Les deux agents voient le même nom de connexion et disposent des outils correspondant à leur phase. Un partenaire consulté pour une relecture reste en lecture seule. Le récapitulatif distingue fichiers locaux, écritures SSH confirmées et commandes observées. Duo conserve les chemins, commandes, empreintes et statuts, sans recopier le contenu distant ou la sortie SSH dans ce journal. Les réponses des agents peuvent toutefois reprendre des extraits : relire les exports avant de les partager.
 
 La clé choisie, son agent et les permissions OpenSSH continuent à fonctionner hors de Duo. Supprimer une connexion dans Duo efface seulement ses métadonnées locales.
+Kofu

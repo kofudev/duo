@@ -55,3 +55,4 @@
 - Native UI, process/Git/storage tests, WCAG axe-core audits and packaged/installed app checks.
 
 Claude account login still required on this test machine. Live Codex read-only inference verified; a live two-provider construction has not been verified. Interactive terminal, multimodal attachments, cloud projects and a general MCP connector catalog remain outside this version.
+Kofu

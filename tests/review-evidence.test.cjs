@@ -51,3 +51,4 @@ test('review snapshots reject paths or junctions outside selected project', () =
   assert.ok(snapshot.files.every((file) => file.status === 'blocked'));
   assert.ok(!evidenceText(snapshot).includes('OUTSIDE_BYTES'));
 });
+// Kofu

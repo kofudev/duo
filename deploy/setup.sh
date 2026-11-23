@@ -27,3 +27,4 @@ if ! nginx -t; then
 fi
 systemctl reload nginx
 echo 'Duo host ready. Deploy site, then provision HTTPS with certbot.'
+# Kofu
