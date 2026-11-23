@@ -125,3 +125,4 @@ function formatSession(session) {
   return lines.join('\n');
 }
 module.exports = { formatSession };
+// Kofu

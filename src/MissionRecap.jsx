@@ -104,3 +104,4 @@ export default function MissionRecap({ session, openFile }) {
     </section>
   );
 }
+// Kofu

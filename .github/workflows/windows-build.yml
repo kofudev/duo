@@ -28,3 +28,4 @@ jobs:
           path: |
             release/*.exe
             release/*.zip
+# Kofu

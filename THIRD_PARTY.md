@@ -27,3 +27,4 @@ The transitive `standardwebhooks` 1.1.1 package declares MIT but omits a license
 ## Provider marks
 
 Codex, Claude and GitHub logos identify their respective integrations. They remain the property of OpenAI, Anthropic and GitHub and are excluded from Duo’s MIT license. Source assets, preserved geometry and brand guidance are recorded in [website/assets/BRANDS.txt](website/assets/BRANDS.txt). The application and site share those SVG files.
+Kofu

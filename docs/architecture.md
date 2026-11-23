@@ -55,3 +55,4 @@ Claude's per-call MCP configuration is private and temporary. It starts a narrow
 ## Testing
 
 Unit tests exercise filesystem boundaries, provider protocols, quota behavior, migrations and coordination. Native Electron smoke tests use isolated profiles. Mission fixtures implement local CLI protocols and never contact model services. Tests using real accounts are explicit opt-in and can consume allowance.
+Kofu
