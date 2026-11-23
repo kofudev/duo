@@ -96,3 +96,4 @@ function evidenceSummary(snapshot) {
 }
 module.exports = { captureReview, changedSince, evidenceText, evidenceSummary, protectedName };
 // Kofu
+// KOFUDEV
