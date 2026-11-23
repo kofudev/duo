@@ -8,3 +8,4 @@ Maintainers may edit or remove content, close a discussion, or restrict particip
 
 This applies to repository issues, pull requests and project discussions.
 Kofu
+KOFUDEV
