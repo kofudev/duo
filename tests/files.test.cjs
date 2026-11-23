@@ -197,3 +197,4 @@ test('failed write restores original contents and reports failure', () => {
   }
   assert.equal(fs.readFileSync(target, 'utf8'), 'original contents');
 });
+// Kofu

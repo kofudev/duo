@@ -103,3 +103,4 @@ export default function CodeEditor({ file, content, readonly, onChange, onSave }
   }, [content]);
   return <div className="code-editor" ref={parent} />;
 }
+// Kofu

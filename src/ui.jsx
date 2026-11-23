@@ -57,3 +57,4 @@ export function Empty({ icon: Icon, title, children }) {
     </div>
   );
 }
+// Kofu
