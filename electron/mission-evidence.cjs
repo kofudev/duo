@@ -110,3 +110,4 @@ function compareMission(before, after) {
 }
 module.exports = { captureMission, compareMission };
 // Kofu
+// KOFUDEV
