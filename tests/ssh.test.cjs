@@ -71,3 +71,4 @@ test('host refusal and remote errors stay failures, never connection success', a
   await assert.rejects(ssh.call(item.id, 'read', { path: 'link' }), /Symlink/);
 });
 // Kofu
+// KOFUDEV
