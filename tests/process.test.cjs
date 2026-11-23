@@ -109,3 +109,4 @@ test('subscription environment removes conflicting credentials with any casing',
   );
   assert.equal(env.DUO_REQUIRED_PATH, 'kept');
 });
+// Kofu

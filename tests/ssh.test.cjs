@@ -70,3 +70,4 @@ test('host refusal and remote errors stay failures, never connection success', a
   ssh.execute = async () => '{"ok":false,"error":"Symlink refused"}';
   await assert.rejects(ssh.call(item.id, 'read', { path: 'link' }), /Symlink/);
 });
+// Kofu

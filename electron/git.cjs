@@ -148,3 +148,4 @@ function remoteUrl(remote) {
   return match ? `https://github.com/${match[1]}` : null;
 }
 module.exports = { parseStatus, inspectGit, commitSelected, remoteUrl, git };
+// Kofu

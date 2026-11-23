@@ -21,3 +21,4 @@ Le taux de cache représente les entrées réutilisées parmi les appels dont le
 Les tests locaux vérifient les cinq appels, les deux relectures, les fichiers effectivement produits, les informations de validation conservées et l’absence d’appel de bilan. Le chantier réel enregistré pour 0.5.0 a consommé environ 263 000 tokens connus, cache inclus, avant pause à la réserve quota. Deux fichiers ont été créés et leur résultat vérifié ; la dernière relecture n’a pas terminé.
 
 Aucun comparatif réel contrôlé ne démontre encore une économie globale face à un agent seul, ni le gain de tokens de 0.5.1 par rapport à 0.5.0. Pour le mesurer : mêmes sources initiales, même objectif, mêmes modèles et efforts, mêmes critères de validation ; relever appels, tokens, cache, durée, corrections et résultat effectivement testé. Refaire plusieurs tâches et conserver les échecs. Un résultat plus court ou non vérifié ne suffit pas à prouver un gain.
+Kofu

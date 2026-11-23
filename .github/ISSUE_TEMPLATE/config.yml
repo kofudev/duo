@@ -6,3 +6,4 @@ contact_links:
   - name: Private security report
     url: https://github.com/kofudev/duo/security/advisories/new
     about: Do not disclose vulnerabilities with private data in a public issue.
+# Kofu

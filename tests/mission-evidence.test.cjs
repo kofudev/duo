@@ -35,3 +35,4 @@ test('bounded incomplete scan does not misreport existing files as deleted', () 
   assert.equal(after.limited, true);
   assert.deepEqual(compareMission(before, after).changes, []);
 });
+// Kofu
