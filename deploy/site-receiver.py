@@ -124,3 +124,4 @@ if __name__ == '__main__':
     except Exception as error:
         print(f'Deploy refused: {error}', file=sys.stderr)
         sys.exit(1)
+# Kofu

@@ -26,3 +26,4 @@ L’écran **Validation** montre les derniers contrôles. Le récapitulatif et l
 ## Ce que cela permet
 
 Duo peut poursuivre un travail au-delà d’une première tentative, partager les observations entre les deux agents et produire un bilan de fichiers et de commandes. Les sorties sont bornées, les relectures restent des jugements IA et une commande peut réussir sans couvrir toutes les exigences. Une mission s’arrête quand une information manque, quand les corrections sont épuisées ou quand un budget bloque la suite. Cette version ne démontre pas encore une meilleure qualité qu’un agent seul sur un comparatif réel.
+Kofu
