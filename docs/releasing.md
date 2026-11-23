@@ -34,3 +34,4 @@ Duo's **Mises à jour** dialog checks the public stable release only on request.
 
 The manual Windows-build workflow remains available for review builds. Its artifacts are not public releases. Do not include profiles, caches, credentials or private diagnostic reports in any asset. Executables remain unsigned until signing is configured and actually verified.
 Kofu
+KOFUDEV
