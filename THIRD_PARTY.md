@@ -24,3 +24,4 @@ Electron's `LICENSE.electron.txt` and `LICENSES.chromium.html` accompany Duo.exe
 
 The transitive `standardwebhooks` 1.1.1 package declares MIT but omits a license file. Its original npm metadata and the upstream Apache-2.0 LICENSE at the published gitHead are both retained, with provenance, in the generated notices. Sources: [published upstream revision](https://github.com/standard-webhooks/standard-webhooks/blob/b4d2c14fc5b4ccff3ff271e3b087dff812254c59/LICENSE), `build/license-sources/standardwebhooks-1.1.1/README.md`.
 Kofu
+KOFUDEV
