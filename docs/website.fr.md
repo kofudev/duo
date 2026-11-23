@@ -27,3 +27,4 @@ Modifier la version et les liens dans `website/release.json`, puis les liens de 
 
 Le nom canonique, le sitemap et les métadonnées de partage utilisent `https://duo.varelia.fr`. Un autre domaine nécessite leur mise à jour. Le site vise la racine du sous-domaine ; un sous-dossier demande d'adapter les liens commençant par `/`.
 Kofu
+KOFUDEV
