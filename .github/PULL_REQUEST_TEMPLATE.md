@@ -10,3 +10,4 @@ List commands or manual checks actually completed. Mention checks you could not 
 
 Screenshots for UI changes, compatibility concerns, migrations, or remaining limitations.
 Kofu
+KOFUDEV
