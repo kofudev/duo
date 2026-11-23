@@ -68,3 +68,4 @@ The coordinator executes configured commands with electron/validation.cjs after 
 
 Validation commands start in the selected project but execute with the local account rights, including in project mode when shell commands were explicitly enabled. Full access is not a guarantee of review coverage for files outside the project, or proof of successful remote deployment.
 Kofu
+KOFUDEV
