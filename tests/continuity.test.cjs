@@ -277,3 +277,4 @@ test('legacy completed conversation blocks redundant continue but allows explici
   assert.equal(h.calls.filter((call) => call.write).length, 2);
 });
 // Kofu
+// KOFUDEV
