@@ -82,3 +82,4 @@ test('oversized UTF-8 snapshot fails before replacing last valid history', () =>
   assert.ok(!fs.readdirSync(path.dirname(file)).some((name) => name.includes('.pending-')));
 });
 // Kofu
+// KOFUDEV
