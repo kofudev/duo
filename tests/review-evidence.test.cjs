@@ -52,3 +52,4 @@ test('review snapshots reject paths or junctions outside selected project', () =
   assert.ok(!evidenceText(snapshot).includes('OUTSIDE_BYTES'));
 });
 // Kofu
+// KOFUDEV
