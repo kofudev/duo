@@ -128,3 +128,4 @@ class JsonStore {
   }
 }
 module.exports = { JsonStore, readJson };
+// Kofu

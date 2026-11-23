@@ -24,3 +24,4 @@ test('malformed and duplicate release checksum entries are refused', () => {
   ])
     assert.throws(() => parseChecksums(text));
 });
+// Kofu

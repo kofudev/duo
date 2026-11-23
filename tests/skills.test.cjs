@@ -181,3 +181,4 @@ test('personal skill editing preserves metadata and rejects stale edits or bundl
     /personnels/
   );
 });
+// Kofu

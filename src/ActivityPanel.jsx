@@ -95,3 +95,4 @@ export default function ActivityPanel({ session }) {
     </div>
   );
 }
+// Kofu

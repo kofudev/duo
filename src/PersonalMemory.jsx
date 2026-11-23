@@ -404,3 +404,4 @@ export default function PersonalMemory({ config, changeConfig, running, perform,
     </section>
   );
 }
+// Kofu

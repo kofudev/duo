@@ -67,3 +67,4 @@ Access mode is opt-in and stored per project and mission. Writable Codex phases 
 The coordinator executes configured commands with electron/validation.cjs after peer reviews, independent of model claims. Automatic npm checks are retained and the agents can append checks through duo_add_validation. Failed commands create bounded repair tasks and a fresh peer review; source changes during checks also require review. Command output, exit status and restart interruption state persist. Passed checks are matched against a project fingerprint before reusing them. No model call assembles the economy report.
 
 Validation commands start in the selected project but execute with the local account rights, including in project mode when shell commands were explicitly enabled. Full access is not a guarantee of review coverage for files outside the project, or proof of successful remote deployment.
+Kofu

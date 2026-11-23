@@ -387,3 +387,4 @@ export default function SkillsView({
     </div>
   );
 }
+// Kofu

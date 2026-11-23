@@ -57,3 +57,4 @@ fs.createReadStream(file).pipe(ssh.stdin);
 ssh.on('exit', (code) => {
   process.exitCode = code === 0 ? 0 : 1;
 });
+// Kofu

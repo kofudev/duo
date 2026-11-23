@@ -20,3 +20,4 @@ Only the latest published version receives fixes during this early stage. There 
 - Memory imports are local data. An imported note grants no tool permissions.
 
 These controls reduce risk; they do not make arbitrary generated code safe. CLI behavior, inherited project guidance and external changes still matter. More detail: [privacy and data](docs/privacy.md).
+Kofu
