@@ -64,3 +64,4 @@ export default function UpdatesModal({ close }) {
   );
 }
 // Kofu
+// KOFUDEV
