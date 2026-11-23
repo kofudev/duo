@@ -27,3 +27,4 @@ const planSchema = object({
 const reviewSchema = object({ ...common, approved: { type: 'boolean' }, issues: strings });
 module.exports = { planSchema, reviewSchema };
 // Kofu
+// KOFUDEV
