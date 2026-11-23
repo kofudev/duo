@@ -65,3 +65,4 @@ jobs:
           curl --fail --retry 3 --retry-delay 3 --max-time 15 https://duo.varelia.fr/release.json -o /tmp/duo-live.json
           cmp website-package/release.json /tmp/duo-live.json
 # Kofu
+# KOFUDEV
