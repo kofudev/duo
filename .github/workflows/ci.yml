@@ -31,3 +31,4 @@ jobs:
       - run: npx playwright install chromium
       - run: npm run test:site
 # Kofu
+# KOFUDEV
