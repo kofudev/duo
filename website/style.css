@@ -111,7 +111,7 @@ h3 {
   gap: 10px;
   font-size: 37px;
   font-weight: 600;
-  letter-spacing: -0.08em;
+  letter-spacing: -0.03em;
   line-height: 1;
 }
 .brand-dot {
@@ -273,16 +273,16 @@ nav a:hover {
   padding: 0 19px;
   color: #abb9ad;
   font-family: Mono, monospace;
-  font-size: 10px;
+  font-size: 11px;
 }
 .window-dots {
-  font-size: 8px;
+  font-size: 11px;
   letter-spacing: 2px;
   color: #6d806a;
   margin-right: 14px;
 }
 .example-badge {
-  font-size: 8px;
+  font-size: 11px;
   letter-spacing: 0.12em;
   border: 1px solid #53684f;
   color: #c9e0b9;
@@ -295,7 +295,7 @@ nav a:hover {
 }
 .small-label {
   font-family: Mono, monospace;
-  font-size: 9px;
+  font-size: 11px;
   letter-spacing: 0.11em;
   color: #aebfac;
 }
@@ -312,7 +312,7 @@ nav a:hover {
   flex-wrap: wrap;
 }
 .request-meta span {
-  font-size: 9px;
+  font-size: 11px;
   border: 1px solid #465740;
   border-radius: 4px;
   padding: 2px 7px;
@@ -331,7 +331,7 @@ nav a:hover {
   border-bottom: 2px solid transparent;
   background: none;
   color: #aebdaf;
-  font-size: 10px;
+  font-size: 11px;
   padding: 16px 6px;
   white-space: nowrap;
   letter-spacing: -0.01em;
@@ -368,7 +368,7 @@ nav a:hover {
   font-weight: 500;
 }
 .agent-heading > span:last-child {
-  font-size: 9px;
+  font-size: 11px;
   color: #a5b6a6;
   margin-left: auto;
 }
@@ -404,7 +404,7 @@ nav a:hover {
   margin-top: 22px;
   display: flex;
   gap: 9px;
-  font-size: 10px;
+  font-size: 11px;
   line-height: 1.6;
   color: #b1c4aa;
 }
@@ -418,7 +418,7 @@ nav a:hover {
   display: flex;
   justify-content: space-between;
   gap: 8px;
-  font-size: 9px;
+  font-size: 11px;
   color: #a6b5a5;
 }
 .mission-bottom > span:first-child {
@@ -445,7 +445,7 @@ nav a:hover {
 }
 .task-number {
   font-family: Mono, monospace;
-  font-size: 10px;
+  font-size: 11px;
   color: #8ea58b;
 }
 .task-line > div {
@@ -458,11 +458,11 @@ nav a:hover {
   line-height: 1.4;
 }
 .task-line small {
-  font-size: 9px;
+  font-size: 11px;
   color: #a6b7a3;
 }
 .owner {
-  font-size: 10px;
+  font-size: 11px;
   color: #c8d7c4;
 }
 .codex-text {
@@ -477,7 +477,7 @@ nav a:hover {
   border-radius: 5px;
   padding: 13px 15px;
   margin: 19px 0 0;
-  font-size: 10px;
+  font-size: 11px;
 }
 .code-example > span {
   display: block;
@@ -504,7 +504,7 @@ nav a:hover {
 .memory-example > span {
   font-family: Mono, monospace;
   color: #aecda0;
-  font-size: 8px;
+  font-size: 11px;
   letter-spacing: 0.07em;
 }
 .memory-example p {
@@ -520,7 +520,7 @@ nav a:hover {
   border-top: 1px solid #344032;
   padding: 25px 0 28px;
   font-family: Mono, monospace;
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 0.01em;
   color: #b5c4b0;
 }
@@ -626,7 +626,7 @@ nav a:hover {
   border: 1px solid #607655;
   border-radius: 10px;
   padding: 26px 30px;
-  box-shadow: 8px 8px 0 #344b2e;
+  box-shadow: 0 8px 24px #0003;
 }
 .context-top {
   display: flex;
@@ -668,7 +668,7 @@ nav a:hover {
   border: 1px solid #52674b;
   border-radius: 4px;
   padding: 3px 8px;
-  font-size: 9px;
+  font-size: 11px;
 }
 .context-recipients {
   display: flex;
@@ -693,7 +693,7 @@ nav a:hover {
 }
 .context-caption {
   margin: 18px 0 0;
-  font-size: 10px;
+  font-size: 11px;
   color: #b6c5aa;
   line-height: 1.7;
 }
@@ -810,7 +810,7 @@ nav a:hover {
 .commands button {
   background: transparent;
   border: 0;
-  font-size: 10px;
+  font-size: 11px;
   color: #415c32;
   padding: 5px;
 }
@@ -875,7 +875,7 @@ nav a:hover {
 }
 .file-meta {
   font-family: Mono, monospace;
-  font-size: 10px;
+  font-size: 11px;
   color: #aabd9e;
   display: block;
 }
@@ -1033,7 +1033,7 @@ nav a:hover {
 }
 .footer-links span {
   width: 100%;
-  font-size: 10px;
+  font-size: 11px;
   text-align: right;
   color: #a6b89d;
 }
@@ -1121,7 +1121,7 @@ nav a:hover {
     font-size: 13px;
   }
   .demo-tabs button {
-    font-size: 9px;
+    font-size: 11px;
     padding: 15px 4px;
   }
   .mission-request {
@@ -1207,10 +1207,10 @@ nav a:hover {
     font-size: 13px;
   }
   .mission-bottom {
-    font-size: 10px;
+    font-size: 11px;
   }
   .principles {
-    font-size: 9px;
+    font-size: 11px;
     gap: 14px;
   }
   .section {
@@ -1278,7 +1278,7 @@ nav a:hover {
     font-size: 42px;
   }
   .release-pill {
-    font-size: 9px;
+    font-size: 11px;
   }
   .download-portable {
     padding-left: 25px;
@@ -1351,7 +1351,7 @@ nav a:hover {
     gap: 28px;
   }
   .eyebrow {
-    font-size: 9px;
+    font-size: 11px;
     letter-spacing: 0.075em;
     margin-bottom: 22px;
   }
@@ -1377,7 +1377,7 @@ nav a:hover {
     font-size: 12px;
   }
   .download-caption {
-    font-size: 10px;
+    font-size: 11px;
     margin-top: 12px;
   }
   .mission {
@@ -1386,7 +1386,7 @@ nav a:hover {
   .mission-top {
     height: 40px;
     padding-inline: 12px;
-    font-size: 9px;
+    font-size: 11px;
   }
   .window-dots {
     margin-right: 9px;
@@ -1403,7 +1403,7 @@ nav a:hover {
     gap: 0;
   }
   .demo-tabs button {
-    font-size: 9px;
+    font-size: 11px;
     padding: 15px 3px;
   }
   .demo-body {
@@ -1417,15 +1417,15 @@ nav a:hover {
     margin-top: 9px;
   }
   .agent-heading > span:last-child {
-    font-size: 8px;
+    font-size: 11px;
   }
   .system-line {
-    font-size: 10px;
+    font-size: 11px;
     margin-top: 20px;
     padding-top: 14px;
   }
   .mission-bottom {
-    font-size: 8px;
+    font-size: 11px;
     padding: 12px;
     gap: 6px;
   }
@@ -1436,10 +1436,10 @@ nav a:hover {
     font-size: 11px;
   }
   .task-line small {
-    font-size: 9px;
+    font-size: 11px;
   }
   .owner {
-    font-size: 9px;
+    font-size: 11px;
   }
   .panel-intro {
     font-size: 12px;
@@ -1449,7 +1449,7 @@ nav a:hover {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    font-size: 10px;
+    font-size: 11px;
   }
   .section {
     padding: 62px 0;
@@ -1524,7 +1524,7 @@ nav a:hover {
   .budget-note .small-label {
     max-width: none;
     min-width: 0;
-    font-size: 9px;
+    font-size: 11px;
   }
   .budget-note p {
     font-size: 13px;
@@ -1562,7 +1562,7 @@ nav a:hover {
   }
   .release-pill {
     padding: 6px 11px;
-    font-size: 10px;
+    font-size: 11px;
   }
   .download-options {
     grid-template-columns: 1fr;
@@ -1620,7 +1620,7 @@ nav a:hover {
   }
   .footer-links span {
     text-align: left;
-    font-size: 10px;
+    font-size: 11px;
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -1649,3 +1649,22 @@ nav a:hover {
   width: 22px;
   height: 22px;
 }
+
+@font-face{font-family:Manrope;src:url('assets/pli/Manrope.woff2') format('woff2');font-weight:200 800;font-display:swap}
+@font-face{font-family:Bricolage;src:url('assets/pli/BricolageGrotesque.woff2') format('woff2');font-weight:200 800;font-display:swap}
+:root{--ink:#211d25;--panel:#2c2731;--line:#49404f;--cream:#f7f4ed;--dark-text:#29232e;--muted:#c4b9ca;--green:#f7a17a;--clay:#d4c7e8}
+body{font-family:Manrope,system-ui,sans-serif}h1,h2,h3,.brand{font-family:Bricolage,Manrope,sans-serif;letter-spacing:-.03em}
+.family{display:block;font:500 11px/1.3 Manrope,sans-serif;color:var(--muted);letter-spacing:0}
+.brand{line-height:1}.brand img{object-fit:contain}
+
+.brand{letter-spacing:-.03em}.mission-request{background:#36303c}.mission-screen{background:#2c2731}.agent-message{background:transparent}
+
+/* Pli family in both system themes; product demo structure remains intact. */
+:root{--page-bg:#211d25;--page-fg:#f7f4ed;--page-panel:#2c2731;--page-raised:#36303c;--page-muted:#c4b9ca;--ink:var(--page-bg);--cream:var(--page-fg);--panel:var(--page-panel);--muted:var(--page-muted);--line:#49404f;--green:#f7a17a}
+@media(prefers-color-scheme:light){:root{--page-bg:#f7f4ed;--page-fg:#29232e;--page-panel:#fffdf8;--page-raised:#eee7dd;--page-muted:#625a68;--line:#dcd3c9;--green:#994223}}
+body,.light,.memory-section,.downloads-section{background:var(--page-bg);color:var(--page-fg)}
+.mission,.mission-request,.demo-tabs,.mission-bottom,.code-example,.context-card,.budget-note,.commands,.header nav{background:var(--page-panel);color:var(--page-fg);border-color:var(--line)}
+.mission-request{background:var(--page-raised)}
+nav a,.hero-description,.source-link,.download-caption,.hero-footnote strong,.mission-top,.window-dots,.example-badge,.small-label,.request-meta span,.demo-tabs button,.agent-heading>span:last-child,.agent-message p,.system-line,.mission-bottom,.panel-intro,.task-number,.task-line small,.owner,.code-example>span,.memory-example>span,.memory-example p,.principles,.section-heading>p:not(.eyebrow),.light .eyebrow,.step-number,.workflow p,.memory-section .section-heading>p:not(.eyebrow),.memory-section .section-heading>p.muted,.note-pin,.context-note p,.note-tag,.context-recipients p,.context-caption,.tool-icon,.tools-grid p,.budget-note .small-label,.budget-note p,.setup-number,.setup-grid p,.commands code,.commands button,.setup-note,.release-pill,.download-options p,.file-meta,.release-note,.release-links,.faq summary:after,.faq details p,.contribute-grid>div>p:not(.eyebrow),.contribute-links span,.contribute-links b,.footer,.footer-links span{color:var(--page-muted)}
+.mission-request p,.context-recipients strong,.footer .brand,.menu-toggle{color:var(--page-fg)}
+.primary,.skip-link{background:#f58250;color:#29232e}.primary:hover{background:#f7a17a}
