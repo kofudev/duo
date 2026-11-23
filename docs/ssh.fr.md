@@ -23,3 +23,4 @@ Les deux agents voient le même nom de connexion et disposent des outils corresp
 
 La clé choisie, son agent et les permissions OpenSSH continuent à fonctionner hors de Duo. Supprimer une connexion dans Duo efface seulement ses métadonnées locales.
 Kofu
+KOFUDEV
