@@ -259,3 +259,4 @@ test('tool activity survives completed mission and is bounded to recent 500 entr
   assert.equal(h.events.filter((event) => event.type === 'tool').length, 750);
 });
 // Kofu
+// KOFUDEV
