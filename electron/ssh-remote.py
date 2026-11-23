@@ -174,3 +174,4 @@ if __name__ == "__main__":
         print(json.dumps({"ok": True, "result": main(json.loads(raw))}))
     except Exception as error:
         print(json.dumps({"ok": False, "error": str(error)}))
+# Kofu

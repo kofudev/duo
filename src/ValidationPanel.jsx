@@ -57,3 +57,4 @@ export default function ValidationPanel({ session }) {
     </section>
   );
 }
+// Kofu
