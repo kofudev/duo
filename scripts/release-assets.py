@@ -61,3 +61,4 @@ checksums = ''.join(f'{digest(file)}  {file.name}\n' for file in assets)
 (RELEASE / 'SHA256SUMS.txt').write_text(checksums, encoding='ascii')
 print(json.dumps({'version': VERSION, 'assets': [{'name': file.name, 'bytes': file.stat().st_size} for file in assets]}))
 # Kofu
+# KOFUDEV
