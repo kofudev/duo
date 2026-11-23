@@ -44,3 +44,4 @@ for (const name of files) {
 console.log(JSON.stringify({ checkedFiles: files.length, findings }));
 if (findings.length) process.exitCode = 1;
 // Kofu
+// KOFUDEV
