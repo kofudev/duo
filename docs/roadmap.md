@@ -22,3 +22,4 @@ Connector management, terminal integration, other operating systems and broader 
 
 Open an issue with the concrete workflow you need. That helps prioritize changes better than a long list of features.
 Kofu
+KOFUDEV
