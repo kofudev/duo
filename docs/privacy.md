@@ -34,3 +34,4 @@ The **Mises à jour** button contacts GitHub's public release API only when you 
 
 The supplied landing site has no analytics, trackers, accounts or application backend. Download links lead to GitHub Releases, and documentation links may lead to GitHub, OpenAI or Anthropic. Those services process their own requests. The hosting provider may retain ordinary access logs.
 Kofu
+KOFUDEV
