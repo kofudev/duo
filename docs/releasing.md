@@ -15,3 +15,4 @@ The manual Windows-build workflow creates downloadable build artifacts without p
 
 Do not replace a published binary silently. Ship a new version for changed application files. Unsigned status must remain clear until the executables are actually signed.
 Kofu
+KOFUDEV
