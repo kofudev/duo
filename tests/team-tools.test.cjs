@@ -82,3 +82,4 @@ test('local bridge refuses unauthenticated and browser-origin requests; MCP chil
   await assert.rejects(fetch(bridge.url));
 });
 // Kofu
+// KOFUDEV
