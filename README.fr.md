@@ -39,3 +39,4 @@ La mémoire des applications web ChatGPT et Claude se transfère manuellement, a
 Consultez [le guide de contribution](CONTRIBUTING.md), [la feuille de route](docs/roadmap.md) ou [les problèmes ouverts](https://github.com/kofudev/duo/issues). Pour lancer le projet : Windows, Node.js 24, `npm ci`, puis `npm start`.
 
 Code Duo sous [licence MIT](LICENSE). Ressources tierces sous leurs licences respectives : [attributions](THIRD_PARTY.md). Application indépendante d'OpenAI et d'Anthropic.
+Kofu

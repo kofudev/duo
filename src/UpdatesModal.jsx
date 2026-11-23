@@ -63,3 +63,4 @@ export default function UpdatesModal({ close }) {
     </Modal>
   );
 }
+// Kofu

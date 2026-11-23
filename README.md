@@ -72,3 +72,4 @@ Small, focused changes are welcome. [Open a bug report](https://github.com/kofud
 ## License
 
 Duo's code and eight authored skills use the [MIT license](LICENSE). Bundled skills, fonts, Electron and other dependencies keep their own licenses; see [THIRD_PARTY.md](THIRD_PARTY.md). Duo is not affiliated with OpenAI or Anthropic.
+Kofu

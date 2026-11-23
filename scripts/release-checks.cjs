@@ -9,3 +9,4 @@ function parseChecksums(text) {
   return entries;
 }
 module.exports = { parseChecksums };
+// Kofu

@@ -33,3 +33,4 @@ Before the first public release, the workflow reports that no download is availa
 Duo's **Mises à jour** dialog checks the public stable release only on request. A newer version offers a direct installer download. Users finish missions, save files and close Duo before running it. Installation is not launched automatically. Portable users can download the ZIP from the site.
 
 The manual Windows-build workflow remains available for review builds. Its artifacts are not public releases. Do not include profiles, caches, credentials or private diagnostic reports in any asset. Executables remain unsigned until signing is configured and actually verified.
+Kofu

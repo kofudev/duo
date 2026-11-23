@@ -64,3 +64,4 @@ function localSummary(session) {
   return lines.join('\n');
 }
 module.exports = { taskBrief, completedWork, localSummary, reportExcerpt };
+// Kofu

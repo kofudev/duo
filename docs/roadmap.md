@@ -25,3 +25,4 @@ Persistent provider sessions could reduce repeated context, but must preserve re
 Connector management, terminal integration, other operating systems and broader provider support need design work before implementation. Exact Claude quota telemetry depends on an official interface becoming available; Duo should not scrape account pages or promise limits it cannot read.
 
 Open an issue with the concrete workflow you need. That helps prioritize changes better than a long list of features.
+Kofu

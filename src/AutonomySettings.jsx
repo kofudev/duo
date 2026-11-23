@@ -103,3 +103,4 @@ export default function AutonomySettings({ config, change }) {
     </div>
   );
 }
+// Kofu

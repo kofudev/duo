@@ -681,3 +681,4 @@ export default function PilotView({
     </div>
   );
 }
+// Kofu
