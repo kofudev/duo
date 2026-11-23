@@ -45,3 +45,4 @@ python scripts/package-site.py
 
 Le site n'utilise ni cookies ni mesure d'audience. L'hébergeur conserve éventuellement ses propres journaux d'accès. Le navigateur ne contacte GitHub qu'après un clic de téléchargement ou vers le dépôt. Domaine canonique : `https://duo.varelia.fr`.
 Kofu
+KOFUDEV
