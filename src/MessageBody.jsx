@@ -99,3 +99,4 @@ export default function MessageBody({ message, openUrl }) {
   );
 }
 // Kofu
+// KOFUDEV
