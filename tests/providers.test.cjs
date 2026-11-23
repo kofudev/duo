@@ -165,3 +165,4 @@ test('pre-cancelled requests do not launch process', async () => {
   await assert.rejects(f.provider.run(f.options), /Arrêt demandé/);
   assert.equal(launchOptions, previous);
 });
+// Kofu

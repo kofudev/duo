@@ -76,3 +76,4 @@ test('Claude live metadata overrides alias capabilities and keeps documented ver
   ]);
   assert.equal(old.find((m) => m.id === 'claude-fable-5-1[1m]').status, 'update-required');
 });
+// Kofu

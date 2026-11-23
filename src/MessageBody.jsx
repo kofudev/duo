@@ -98,3 +98,4 @@ export default function MessageBody({ message, openUrl }) {
     </div>
   );
 }
+// Kofu

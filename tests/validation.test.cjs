@@ -77,3 +77,4 @@ test('timeout stays a failed observed check, never a successful exit', async () 
   assert.equal(result.status, 'failed');
   assert.match(result.error, /Délai/);
 });
+// Kofu

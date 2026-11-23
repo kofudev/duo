@@ -80,3 +80,4 @@ if __name__ == '__main__':
             raise RuntimeError(f'Archive CRC failure: {bad}')
         count = len(check.namelist())
     print(json.dumps({'artifact': artifact.name, 'files': count, 'bytes': artifact.stat().st_size, 'sha256': digest(artifact)}))
+# Kofu

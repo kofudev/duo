@@ -159,3 +159,4 @@ test('Git cannot select files reached through a directory junction outside proje
     /absent du diff/
   );
 });
+// Kofu

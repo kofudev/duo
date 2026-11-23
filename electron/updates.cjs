@@ -66,3 +66,4 @@ async function checkUpdate(current, fetcher = fetch) {
   return releaseInfo(await readJson(response), current);
 }
 module.exports = { API, checkUpdate, releaseInfo, isNewer };
+// Kofu
