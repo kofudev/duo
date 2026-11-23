@@ -38,3 +38,4 @@ Consultez [le guide de contribution](CONTRIBUTING.md), [la feuille de route](doc
 
 Code Duo sous [licence MIT](LICENSE). Ressources tierces sous leurs licences respectives : [attributions](THIRD_PARTY.md). Application indépendante d'OpenAI et d'Anthropic.
 Kofu
+KOFUDEV
