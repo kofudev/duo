@@ -85,3 +85,4 @@ fetch('release.json')
   })
   .catch(() => {});
 // Kofu
+// KOFUDEV
