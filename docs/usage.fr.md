@@ -152,3 +152,4 @@ Tests UI nécessitent build récent (`npm run build`). Mission smoke utilise CLI
 
 Code Duo et huit skills créés pour app : MIT. Ressources tierces conservent leurs licences.
 Kofu
+KOFUDEV
