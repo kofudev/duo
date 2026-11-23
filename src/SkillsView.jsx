@@ -388,3 +388,4 @@ export default function SkillsView({
   );
 }
 // Kofu
+// KOFUDEV
