@@ -58,3 +58,4 @@ Submit contributions under the project's MIT license. Third-party resources keep
 
 Installation troubleshooting, accessible UI fixes, reproducible provider compatibility bugs, translations, and more reliable local fixtures are welcome. The [roadmap](docs/roadmap.md) lists larger areas under consideration.
 Kofu
+KOFUDEV
