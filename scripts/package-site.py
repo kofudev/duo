@@ -25,3 +25,4 @@ with ZipFile(OUTPUT) as archive:
         raise RuntimeError('Invalid website archive')
 print(json.dumps({'artifact': OUTPUT.name, 'bytes': OUTPUT.stat().st_size, 'sha256': hashlib.sha256(OUTPUT.read_bytes()).hexdigest()}))
 # Kofu
+# KOFUDEV
