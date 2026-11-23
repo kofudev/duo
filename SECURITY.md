@@ -21,3 +21,4 @@ Only the latest published version receives fixes during this early stage. There 
 
 These controls reduce risk; they do not make arbitrary generated code safe. CLI behavior, inherited project guidance and external changes still matter. More detail: [privacy and data](docs/privacy.md).
 Kofu
+KOFUDEV
